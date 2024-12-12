@@ -57,6 +57,14 @@ dependencies {
 	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6' 	   // 2. 타임리프에서 스프링 시큐리티를 사용하기 위한 의존성 추가
 	testImplementation 'org.springframework.security:spring-security-test'     // 3. 스프링 시큐리티를 테스트하기 위한 의존성 추가
 
+	// jwt
+	testAnnotationProcessor 'org.projectlombok:lombok'
+	testImplementation 'org.projectlombok:lombok'
+	implementation 'io.jsonwebtoken:jjwt:0.9.1' // 자바 JWT 라이브러리 : JSON 웹 토큰(JSON Web Token, JWT)을 쉽게 생성하고 검증할 수 있는 라이브러리
+	implementation 'javax.xml.bind:jaxb-api:2.3.1' // JAXB API 의존성 추가
+
+	// OAuth2
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 
 	// markdown
 	implementation 'org.commonmark:commonmark:0.21.0'

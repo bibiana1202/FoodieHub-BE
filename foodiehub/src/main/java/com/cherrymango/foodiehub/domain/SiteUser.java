@@ -37,8 +37,13 @@ public class SiteUser implements UserDetails { // UserDetails를 상속받아 �
     private String nickname;
 
     // 권한
+//    @Column(name = "role", nullable = false)
+//    private String role; // ROLE_USER, ROLE_ADMIN, ROLE_OAUTH 등
+//
+    // 권한
     @Column(name = "role", nullable = false)
-    private String role; // ROLE_USER, ROLE_ADMIN, ROLE_OAUTH 등
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
     // 소셜
     @Column(name = "provider", nullable = false)
@@ -57,7 +62,8 @@ public class SiteUser implements UserDetails { // UserDetails를 상속받아 �
         this.email = email;
         this.password = password;
         this.nickname = nickname;
-        this.role = role != null ? role : "ROLE_USER";
+//        this.role = role != null ? Role.valueOf(role) : Role.ROLE_USER; // 문자열을 Enum으로 변환
+        this.role = Role.fromString(role); // 안전한 변환
         this.provider = provider != null ? provider : "local";
     }
 
