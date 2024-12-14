@@ -28,6 +28,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+
 @Configuration // 스프링의 환경 설정 파일
 //@EnableWebSecurity // 모든 요청 URL이 스프링 시큐리티의 제어를 받도록 만드는 애너테이션 , 스프링 시큐리티를 활성화 하는 역할
 @RequiredArgsConstructor
@@ -86,6 +89,18 @@ public class WebSecurityConfig {
                         .userInfoEndpoint(userInfoEndpoint ->userInfoEndpoint.userService(oAuth2UserCustomService))
                         // 5. 인증 성공 시 실행할 핸들러 , 사용자가 인증후 특정 url로 리다이렉트하거나, jwt 토큰을 발급하는등의 작업을 수행
                         .successHandler(oAuth2SuccessHandler())
+                        .failureHandler((request, response, exception) -> {
+//                            System.err.println("OAuth2 login failed. Error: " + exception.getMessage());
+//                            exception.printStackTrace();
+//                            response.sendRedirect("/login?error=" + exception.getMessage());
+//                            String errorMessage = URLEncoder.encode(exception.getMessage(), StandardCharsets.UTF_8);
+//                            response.sendRedirect("/login?error=" + errorMessage);
+
+                            System.err.println("OAuth2 login failed. Error: " + exception.getMessage());
+                            exception.printStackTrace();
+                            response.sendRedirect("/login?error=" + URLEncoder.encode(exception.getMessage(), StandardCharsets.UTF_8));
+
+                        })
                 )
 
                 // 6. /api 로 시작하는 url 인 경우 401 상태 코드를 반환하도록 예외 처리
@@ -120,16 +135,19 @@ public class WebSecurityConfig {
 //
 //    }
 
+    // OAuth2 인증 성공후 수행되는 작업 정의
     @Bean
     public OAuth2SuccessHandler oAuth2SuccessHandler(){
         return new OAuth2SuccessHandler(tokenProvider,refreshTokenRepository,oAuth2AuthorizationRequestBasedOnCookieRepository(),userService);
     }
 
+    // JWT 토큰을 이용한 인증 필터를 구현하는 클래스
     @Bean
     public TokenAuthenticationFilter tokenAuthenticationFilter() throws Exception {
         return new TokenAuthenticationFilter(tokenProvider);
     }
 
+    // OAuth2 에 필요한 정보를 세션이 아닌 쿠키에 저장해서 쓸수 있도록 인증 요청과 관련된 상태를 저장할 저장소
     @Bean
     public OAuth2AuthorizationRequestBasedOnCookieRepository oAuth2AuthorizationRequestBasedOnCookieRepository(){
         return new OAuth2AuthorizationRequestBasedOnCookieRepository();

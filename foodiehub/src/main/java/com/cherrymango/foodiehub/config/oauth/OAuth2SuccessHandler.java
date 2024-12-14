@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -18,6 +19,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
 import java.time.Duration;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @Component
@@ -37,13 +39,51 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     // OAuth2 인증이 성공한 후 호출되는 메서드!!
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
+
+
+        System.out.println("석세스핸들러!!!!!!!!!!!!!!!");
         OAuth2User oAuth2User =(OAuth2User) authentication.getPrincipal(); // 사용자 정보 로드
 
-        // 사용자 이메일 가져오기
-        String email = (String) oAuth2User.getAttributes().get("email");
+        // 사용자 정보 처리
+        Map<String, Object> attributes = oAuth2User.getAttributes();
+        System.out.println("attributres:"+ attributes);
+
+        // OAuth2UserRequest에서 registrationId 추출
+        String registrationId = ((OAuth2AuthenticationToken) authentication).getAuthorizedClientRegistrationId();
+        System.out.println("registrationId: " + registrationId);
+
+
+        String email;
+        String nickname ; // 카카오와 구글 모두 닉네임 처리
+
+        if ("google".equals(registrationId)) {
+            email = (String) oAuth2User.getAttributes().get("email");
+            nickname = (String) oAuth2User.getAttributes().get("name");
+        } else if ("kakao".equals(registrationId)) {
+            // 카카오 계정의 사용자 정보 추출
+            email = (String) oAuth2User.getAttributes().get("email");
+            nickname = (String) oAuth2User.getAttributes().get("nickname");
+            // 이메일 필수 체크
+            if (email == null) {
+                throw new IllegalArgumentException("카카오 계정에 이메일이 없습니다.");
+            }
+        } else {
+            throw new IllegalArgumentException("지원하지 않는 소셜 로그인 제공자입니다: " + registrationId);
+        }
+
+        // 닉네임에 소셜 제공자 이름 추가
+        if (nickname == null) {
+            nickname = "Anonymous"; // 닉네임이 없을 경우 기본값
+        }
+        System.out.println("사용자 닉네임 nickname: " + nickname);
+        String customizedNickname = nickname + "@" + registrationId;
+        System.out.println("사용자 닉네임: " + customizedNickname);
+        System.out.println("사용자 닉네임 email: " + email);
+
         // 2. 사용자 확인 또는 생성
         SiteUser siteUser = userService.findByEmail(email)
-                .orElseGet(() -> userService.saveOAuth2User(email, "google"));
+                .orElseGet(() -> userService.saveOAuth2User(email, customizedNickname,registrationId));
+        System.out.println("사용자 닉네임 siteUser: " + siteUser.getEmail());
 
         // 1. 리프레시 토큰 생성 -> 저장 -> 쿠키에 저장
         String refreshToken = tokenProvider.generateToken(siteUser,REFRESH_TOKEN_DURATION);

@@ -6,7 +6,13 @@
 </head>
 <body>
 <h1>로그인 성공 ! ! ! </h1>
-<h1>Welcome, User!</h1>
+<p>사용자 이름: <b th:text="${username}"></b></p>
+<p>사용자 권한: <b th:text="${role}"></b></p>
+
+<!-- ROLE_ADMIN에 따라 조건부 출력 -->
+<p th:if="${role == 'ROLE_ADMIN'}">관리자 권한이 있습니다.</p>
+<p th:if="${role == 'ROLE_USER'}">일반 사용자 권한이 있습니다.</p>
+
 <button type="button" onclick="location.href='/logout'">로그아웃</button>
 <h1>Welcome, <span th:text="${username}">User</span>!</h1>
 

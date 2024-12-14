@@ -1,25 +1,69 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
-  <meta charset="UTF-8">
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <title>회원가입</title>
 </head>
 <body>
-<h2>SIGN UP</h2>
-<p>서비스 사용을 위한 회원 가입</p>
-<div>
-  <form action="/user" method="POST">
-    <div>
-      <label>Email address</label>
-      <input type="email" name="email">
-    </div>
-    <div>
-      <label>Password</label>
-      <input type="password" name="password">
-    </div>
+<div layout:fragment="content" class="container my-3">
+  <h2>SIGN UP</h2>
+  <p>회원 가입</p>
+  <div>
+    <form th:action="@{/user}" th:object="${addUserRequest}" method="post">
+      <!-- 폼 에러 표시 -->
+      <div th:if="${#fields.hasAnyErrors()}">
+        <ul>
+          <li th:each="err : ${#fields.allErrors()}" th:text="${err}"></li>
+        </ul>
+      </div>
 
-    <button type="submit">Submit</button>
-  </form>
+      <!-- 이메일 입력 -->
+      <div>
+        <label>아이디(Email)</label>
+        <input type="email" th:field="*{email}" required />
+      </div>
+
+      <!-- 비밀번호 입력 -->
+      <div>
+        <label>비밀번호</label>
+        <input type="password" th:field="*{password1}" required />
+      </div>
+
+      <!-- 비밀번호 확인 -->
+      <div>
+        <label>비밀번호 확인</label>
+        <input type="password" th:field="*{password2}" required />
+      </div>
+
+      <!-- 닉네임 -->
+      <div>
+        <label>닉네임</label>
+        <input type="text" th:field="*{nickname}" required />
+      </div>
+
+      <!-- 실명 -->
+      <div>
+        <label>실명</label>
+        <input type="text" th:field="*{name}" required />
+      </div>
+
+      <!-- 전화번호 -->
+      <div>
+        <label>전화번호</label>
+        <input type="text" th:field="*{cellphone}" required />
+      </div>
+
+      <!-- 제출 버튼 -->
+      <button type="submit">회원가입</button>
+
+      <!-- 로그인 안내 -->
+      <div>
+        이미 계정이 있으신가요? <a href="/login">로그인</a>
+      </div>
+    </form>
+  </div>
 </div>
 </body>
 </html>

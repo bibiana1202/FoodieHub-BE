@@ -58,10 +58,12 @@ public class SiteUser implements UserDetails { // UserDetails를 상속받아 �
 
 
     @Builder
-    public SiteUser(String email, String password,String nickname,String role, String provider) {
+    public SiteUser(String email, String password,String nickname,String name,String cellphone,String role, String provider) {
         this.email = email;
         this.password = password;
         this.nickname = nickname;
+        this.name = name;
+        this.cellphone = cellphone;
 //        this.role = role != null ? Role.valueOf(role) : Role.ROLE_USER; // 문자열을 Enum으로 변환
         this.role = Role.fromString(role); // 안전한 변환
         this.provider = provider != null ? provider : "local";
