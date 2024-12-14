@@ -38,6 +38,8 @@ public class UserApiController {
 
         // 회원 저장 시도
         try {
+            System.out.println("저장 권한 singup : "+addUserRequest.getRole());
+            System.out.println("Email singup : "+addUserRequest.getEmail());
             userService.save(addUserRequest);
         } catch (DataIntegrityViolationException e) {
             bindingResult.reject("signupFailed", "이미 등록된 사용자입니다.");

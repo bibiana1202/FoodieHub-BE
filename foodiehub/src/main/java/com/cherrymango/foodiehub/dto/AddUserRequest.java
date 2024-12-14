@@ -1,5 +1,6 @@
 package com.cherrymango.foodiehub.dto;
 
+import com.cherrymango.foodiehub.domain.Role;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -28,4 +29,6 @@ public class AddUserRequest {
 
     @NotBlank(message = "전화번호 은 필수 입력 항목입니다.")
     private String cellphone;
+
+    private String role;
 }

@@ -26,4 +26,16 @@ public class UserViewController {
         return "signup";
     }
 
+    // 회원가입 폼 요청
+    @GetMapping("/signup_admin")
+    public String signupadminForm(Model model) {
+        // AddUserRequest 객체를 모델에 추가
+        if (!model.containsAttribute("addUserRequest")) {
+            model.addAttribute("addUserRequest", new AddUserRequest());
+            System.out.println("addUserRequest 객체를 모델에 추가했습니다.");
+        } else {
+            System.out.println("모델에 이미 addUserRequest 객체가 존재합니다.");
+        }
+        return "signup_admin";
+    }
 }

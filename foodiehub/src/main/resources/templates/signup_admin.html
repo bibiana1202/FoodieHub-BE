@@ -4,14 +4,15 @@
   <!-- Required meta tags -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>회원가입</title>
+  <title>사장님 회원가입</title>
 </head>
 <body>
 <div layout:fragment="content" class="container my-3">
   <h2>SIGN UP</h2>
-  <p>회원 가입</p>
+  <p>사장님 회원 가입</p>
   <div>
     <form th:action="@{/user}" th:object="${addUserRequest}" method="post">
+
       <!-- 폼 에러 표시 -->
       <div th:if="${#fields.hasAnyErrors()}">
         <ul>
@@ -56,7 +57,8 @@
       </div>
 
       <!-- hidden input으로 role 전달 -->
-      <input type="hidden" name="role" value="ROLE_USER" />
+      <input type="hidden" name="role" value="ROLE_ADMIN" />
+
 
       <!-- 제출 버튼 -->
       <button type="submit">회원가입</button>

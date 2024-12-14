@@ -16,6 +16,7 @@ public class UserService {
 
     public Long save(AddUserRequest dto){
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        System.out.println("저장 권한: " + dto.getRole());
 
         return userRepository.save(SiteUser.builder()
                 .email(dto.getEmail())
@@ -23,6 +24,7 @@ public class UserService {
                 .nickname(dto.getNickname())
                 .name(dto.getName())
                 .cellphone(dto.getCellphone())
+                .role(String.valueOf(dto.getRole()))
                 .build()).getId();
     }
     // 전달 받은 유저 ID 로 유저를 검색해서 전달하는 메서드
