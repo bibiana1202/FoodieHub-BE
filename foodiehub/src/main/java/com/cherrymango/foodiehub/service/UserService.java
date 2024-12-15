@@ -1,6 +1,7 @@
 package com.cherrymango.foodiehub.service;
 
 import com.cherrymango.foodiehub.domain.SiteUser;
+import com.cherrymango.foodiehub.dto.AddAdminRequest;
 import com.cherrymango.foodiehub.dto.AddUserRequest;
 import com.cherrymango.foodiehub.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,7 @@ import java.util.Optional;
 public class UserService {
     private final UserRepository userRepository;
 
+    // 회원 저장
     public Long save(AddUserRequest dto){
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         System.out.println("저장 권한: " + dto.getRole());
@@ -27,6 +29,23 @@ public class UserService {
                 .role(String.valueOf(dto.getRole()))
                 .build()).getId();
     }
+
+    // 사장님(관리자) 저장
+    public Long save_admin(AddAdminRequest dto){
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        System.out.println("저장 권한: " + dto.getRole());
+
+        return userRepository.save(SiteUser.builder()
+                .email(dto.getEmail())
+                .password(encoder.encode(dto.getPassword1()))// 패스워드 암호화 , 패스워드를 저장할때 시큐리티를 설정하며 패스워드 인코딩용으로 등록한 빈을 사용해서 암호화후에 저장
+                .nickname(dto.getNickname())
+                .name(dto.getName())
+                .cellphone(dto.getCellphone())
+                .role(String.valueOf(dto.getRole()))
+                .businessno(dto.getBusinessno())
+                .build()).getId();
+    }
+
     // 전달 받은 유저 ID 로 유저를 검색해서 전달하는 메서드
     public SiteUser findById (Long userId){
         return userRepository.findById(userId)

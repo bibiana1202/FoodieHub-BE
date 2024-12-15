@@ -75,6 +75,7 @@ public class WebSecurityConfig {
                 // 3. 토큰 재발급 URL 은 인증 없이 접근 가능하도록 설정. 나머지 API URL 은 인증 필요
                 .authorizeHttpRequests(auth->auth
                         .requestMatchers(new AntPathRequestMatcher("/api/token")).permitAll()  // 권한 필요 없음
+                        .requestMatchers("/api/business/status").permitAll()  // 해당 엔드포인트 접근 허용
                         .requestMatchers(new AntPathRequestMatcher("/api/**")).authenticated() // 권한 필요
                         .anyRequest().permitAll()) // 나머지 권한 필요 없음
 
@@ -90,12 +91,6 @@ public class WebSecurityConfig {
                         // 5. 인증 성공 시 실행할 핸들러 , 사용자가 인증후 특정 url로 리다이렉트하거나, jwt 토큰을 발급하는등의 작업을 수행
                         .successHandler(oAuth2SuccessHandler())
                         .failureHandler((request, response, exception) -> {
-//                            System.err.println("OAuth2 login failed. Error: " + exception.getMessage());
-//                            exception.printStackTrace();
-//                            response.sendRedirect("/login?error=" + exception.getMessage());
-//                            String errorMessage = URLEncoder.encode(exception.getMessage(), StandardCharsets.UTF_8);
-//                            response.sendRedirect("/login?error=" + errorMessage);
-
                             System.err.println("OAuth2 login failed. Error: " + exception.getMessage());
                             exception.printStackTrace();
                             response.sendRedirect("/login?error=" + URLEncoder.encode(exception.getMessage(), StandardCharsets.UTF_8));

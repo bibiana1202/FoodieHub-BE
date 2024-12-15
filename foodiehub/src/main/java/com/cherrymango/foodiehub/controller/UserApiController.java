@@ -1,5 +1,6 @@
 package com.cherrymango.foodiehub.controller;
 
+import com.cherrymango.foodiehub.dto.AddAdminRequest;
 import com.cherrymango.foodiehub.dto.AddUserRequest;
 import com.cherrymango.foodiehub.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,7 +23,7 @@ public class UserApiController {
     private final UserService userService;
 
 
-    // 회원가입
+    // 회원가입_회원
     @PostMapping("/user")
     public String signup(@Valid AddUserRequest addUserRequest, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
@@ -47,6 +48,36 @@ public class UserApiController {
         } catch (Exception e) {
             bindingResult.reject("signupFailed", e.getMessage());
             return "signup";
+        }
+
+        return "redirect:/login"; // 회원 가입이 완료된 이후에 로그인 페이지로 이동
+    }
+
+    // 회원가입_관리자
+    @PostMapping("/admin")
+    public String signup(@Valid AddAdminRequest addAdminRequest, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            System.out.println("BindingResult Errors: " + bindingResult.getAllErrors());
+            return "signup_admin";
+        }
+
+        // 패스워드 불일치 검증
+        if (!addAdminRequest.getPassword1().equals(addAdminRequest.getPassword2())) {
+            bindingResult.rejectValue("password2", "passwordIncorrect", "2개의 패스워드가 일치하지 않습니다.");
+            return "signup_admin";
+        }
+
+        // 회원 저장 시도
+        try {
+            System.out.println("저장 권한 singup : "+addAdminRequest.getRole());
+            System.out.println("Email singup : "+addAdminRequest.getEmail());
+            userService.save_admin(addAdminRequest);
+        } catch (DataIntegrityViolationException e) {
+            bindingResult.reject("signupFailed", "이미 등록된 사용자입니다. 회원정보를 다시 확인해주세요.");
+            return "signup_admin";
+        } catch (Exception e) {
+            bindingResult.reject("signupFailed", e.getMessage());
+            return "signup_admin";
         }
 
         return "redirect:/login"; // 회원 가입이 완료된 이후에 로그인 페이지로 이동

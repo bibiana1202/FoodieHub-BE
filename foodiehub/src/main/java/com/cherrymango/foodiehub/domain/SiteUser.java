@@ -54,11 +54,15 @@ public class SiteUser implements UserDetails { // UserDetails를 상속받아 �
     private String cellphone;
 
     // 사업자 등록증 번호
+    @Column(name="businessno", nullable=true, unique = true)
+    private String businessno;
 
 
 
     @Builder
-    public SiteUser(String email, String password,String nickname,String name,String cellphone,String role, String provider) {
+    public SiteUser(String email, String password,String nickname,
+                    String name,String cellphone,String role,
+                    String provider, String businessno) {
         this.email = email;
         this.password = password;
         this.nickname = nickname;
@@ -67,6 +71,7 @@ public class SiteUser implements UserDetails { // UserDetails를 상속받아 �
 //        this.role = role != null ? Role.valueOf(role) : Role.ROLE_USER; // 문자열을 Enum으로 변환
         this.role = Role.fromString(role); // 안전한 변환
         this.provider = provider != null ? provider : "local";
+        this.businessno =businessno;
     }
 
     // 사용자 이름 변경

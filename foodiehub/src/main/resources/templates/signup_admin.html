@@ -5,13 +5,16 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <title>사장님 회원가입</title>
+  <!-- JQuery 라이브러리 추가 -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 </head>
 <body>
 <div layout:fragment="content" class="container my-3">
   <h2>SIGN UP</h2>
   <p>사장님 회원 가입</p>
   <div>
-    <form th:action="@{/user}" th:object="${addUserRequest}" method="post">
+    <form th:action="@{/admin}" th:object="${addAdminRequest}" method="post">
 
       <!-- 폼 에러 표시 -->
       <div th:if="${#fields.hasAnyErrors()}">
@@ -55,13 +58,63 @@
         <label>전화번호</label>
         <input type="text" th:field="*{cellphone}" required />
       </div>
+      <!-- 사업자 등록 번호-->
+      <div>
+        <label> 사업자 등록번호</label>
+        <input type="text" th:field="*{businessno}" id="corp_reg" />
+        <button type="button"  onclick="checkBusinessStatus()">조회</button>
+        <!-- 결과를 출력할 영역 -->
+        <div id="result"></div>
+        <!-- JQuery를 사용한 API 호출 스크립트 -->
+        <script>
+          function checkBusinessStatus() {
+            // 1. 입력값 가져오기
+            const regNum = $("#corp_reg").val().trim();
+
+            // 2. 입력값 유효성 검사
+            if (!regNum) {
+              alert("사업자등록번호를 입력해주세요.");
+              return;
+            }
+
+            // 3. 요청 데이터 준비
+            const requestData = { "b_no": [regNum] };
+
+            // 4. API 호출
+            $.ajax({
+              url: "https://api.odcloud.kr/api/nts-businessman/v1/status?serviceKey=DG9BCYOkv0KecbO5GENaPuos0JumR8%2BrxO56bwM2jagOzJBJi8EfOoy32MGe0tnZm4JoGNIzGmBkPafHaohiBw%3D%3D",
+              type: "POST",
+              contentType: "application/json",
+              data: JSON.stringify(requestData), // 데이터를 JSON 형식으로 전송
+              success: function (response) {
+                console.log("API 응답: ", response);
+
+                // 결과가 있는지 확인
+                if (response.match_cnt === 1 && response.data[0].b_stt === "계속사업자") {
+                  $("#result").html(`<h4>API 조회 성공</h4><pre>${JSON.stringify(response, null, 2)}</pre>`);
+                  $("#signup-btn").prop("disabled", false); // 회원가입 버튼 활성화
+                } else {
+                  $("#result").html(`<h4>API 조회 결과: 계속사업자가 아닙니다.</h4>`);
+                  $("#signup-btn").prop("disabled", true); // 회원가입 버튼 비활성화
+                  alert("계속사업자만 회원가입이 가능합니다.");
+                }
+              },
+              error: function (error) {
+                console.error("API 호출 실패: ", error);
+                $("#result").html(`<h4>API 호출 실패</h4><p>${error.responseText}</p>`);
+                $("#signup-btn").prop("disabled", true); // 회원가입 버튼 비활성화
+              }
+            });
+          }
+        </script>
+      </div>
 
       <!-- hidden input으로 role 전달 -->
       <input type="hidden" name="role" value="ROLE_ADMIN" />
 
 
       <!-- 제출 버튼 -->
-      <button type="submit">회원가입</button>
+      <button type="submit" id="signup-btn" disabled>회원가입</button>
 
       <!-- 로그인 안내 -->
       <div>
@@ -71,4 +124,5 @@
   </div>
 </div>
 </body>
+
 </html>
