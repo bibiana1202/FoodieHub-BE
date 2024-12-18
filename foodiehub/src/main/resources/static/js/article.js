@@ -132,21 +132,84 @@ function getCookie(key)
 }
 
 // 로그아웃 기능
+// const logoutButton = document.getElementById('logout-btn');
+// if(logoutButton){
+//     logoutButton.addEventListener('click',event=>{
+//         function success(){
+//             localStorage.removeItem('access_token'); // 로컬 스토리지에 저장된 액세스 토큰을 삭제
+//             deleteCookie('refresh_token'); // 쿠키에 저장된 리프레시 토큰을 삭제
+//             deleteCookie('oauth2_auth_request'); // 쿠키에 저장된 리프레시 토큰을 삭제
+//             deleteCookie('JSESSIONID');
+//             location.replace('/login');
+//         }
+//         function fail(){
+//             alert('로그아웃 실패했습니다.')
+//         }
+//         httpRequest('DELETE','/api/refresh-token',null,success,fail);
+//     })
+// }
+
+// const logoutButton = document.getElementById('logout-btn');
+//
+// if (logoutButton) {
+//     logoutButton.addEventListener('click', () => {
+//         // POST /logout 요청 (서버에서 세션 무효화 및 쿠키 삭제)
+//         fetch('/logout', {
+//             method: 'POST',
+//             credentials: 'include', // 쿠키 포함
+//         })
+//             .then(response => {
+//                 if (response.ok) {
+//                     // 리프레시 토큰 삭제 요청
+//                     return httpRequest('DELETE', '/api/refresh-token', null, () => {
+//                         // 성공 시 클라이언트 저장 정보 삭제
+//                         localStorage.removeItem('access_token');
+//                         deleteCookie('refresh_token');
+//                         deleteCookie('oauth2_auth_request');
+//                         location.replace('/login'); // 로그인 페이지로 이동
+//                     }, () => {
+//                         alert('리프레시 토큰 삭제 실패');
+//                     });
+//                 } else {
+//                     console.error('로그아웃 실패');
+//                 }
+//             })
+//             .catch(error => console.error('Error during logout:', error));
+//     });
+// }
+
+
 const logoutButton = document.getElementById('logout-btn');
-if(logoutButton){
-    logoutButton.addEventListener('click',event=>{
-        function success(){
-            localStorage.removeItem('access_token'); // 로컬 스토리지에 저장된 액세스 토큰을 삭제
-            deleteCookie('refresh_token'); // 쿠키에 저장된 리프레시 토큰을 삭제
-            deleteCookie('oauth2_auth_request'); // 쿠키에 저장된 리프레시 토큰을 삭제
-            location.replace('/login');
-        }
-        function fail(){
-            alert('로그아웃 실패했습니다.')
-        }
-        httpRequest('DELETE','/api/refresh-token',null,success,fail);
-    })
+
+if (logoutButton) {
+    logoutButton.addEventListener('click', () => {
+        fetch('/logout', { // 로그아웃 URL
+            method: 'POST', // POST 요청
+            credentials: 'include', // 쿠키 포함해서 서버로 전송
+        })
+            .then(response => {
+                if (response.ok) {
+                    console.log('로그아웃 성공');
+                    localStorage.removeItem('access_token'); // 액세스 토큰 삭제
+                    // deleteCookie('refresh_token');
+                    deleteCookie('oauth2_auth_request');
+                    location.replace('/login'); // 로그인 페이지로 리다이렉트
+                } else {
+                    console.error('로그아웃 실패');
+                    alert('로그아웃에 실패했습니다.');
+                }
+            })
+            .catch(error => {
+                console.error('Error during logout:', error);
+                alert('오류가 발생했습니다.');
+            });
+    });
+} else {
+    console.error('로그아웃 버튼을 찾을 수 없습니다.');
 }
+
+
+
 // 쿠키를 삭제하는 함수
 function deleteCookie(name){
     document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';

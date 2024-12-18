@@ -33,9 +33,19 @@ public class RefreshTokenService {
         }
 
         String token = SecurityContextHolder.getContext().getAuthentication().getCredentials().toString();
+        System.out.println("Extracted Token: " + token);
         Long userId = tokenProvider.getUserId(token);
+        System.out.println("Extracted User ID: " + userId);
 
         refreshTokenRepository.deleteByUserId(userId);
+        System.out.println("Refresh token deleted for user ID: " + userId);
+
     }
+
+    @Transactional
+    public void deleteByToken(String token) {
+        refreshTokenRepository.deleteByRefreshToken(token);
+    }
+
 
 }

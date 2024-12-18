@@ -100,13 +100,13 @@ public class UserApiController {
     }
 
     // 로그아웃
-    @GetMapping("/logout")
-    public String logout(HttpServletRequest request, HttpServletResponse response){
-        new SecurityContextLogoutHandler().logout(request, response,
-                SecurityContextHolder.getContext().getAuthentication());
-        return "redirect:/login";
-
-    }
+//    @GetMapping("/logout")
+//    public String logout(HttpServletRequest request, HttpServletResponse response){
+//        new SecurityContextLogoutHandler().logout(request, response,
+//                SecurityContextHolder.getContext().getAuthentication());
+//        return "redirect:/login";
+//
+//    }
 
     // 닉네임 중복 확인
     @GetMapping("/check-nickname")
