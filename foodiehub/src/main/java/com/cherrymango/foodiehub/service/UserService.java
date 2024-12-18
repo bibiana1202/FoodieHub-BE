@@ -17,6 +17,7 @@ public class UserService {
 
     // 회원 저장
     public Long save(AddUserRequest dto){
+
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         System.out.println("저장 권한: " + dto.getRole());
 
@@ -70,6 +71,11 @@ public class UserService {
                 .provider(provider) // OAuth2 제공자 설정
                 .build();
         return userRepository.save(user);
+    }
+
+    // 닉네임 중복 검사를 수행하는 메서드
+    public boolean isNicknameDuplicated(String nickname){
+        return userRepository.existsByNickname(nickname);
     }
 
 

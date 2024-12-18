@@ -40,7 +40,9 @@
       <!-- 닉네임 -->
       <div>
         <label>닉네임</label>
-        <input type="text" th:field="*{nickname}" required />
+        <input type="text" th:field="*{nickname}" id="nickname" required />
+        <button type="button" onclick="checkNickname()">중복 확인</button>
+        <div id="nickname-check-result" style="margin-top: 10px; color: red;"></div> <!-- 결과 출력 영역 -->
       </div>
 
       <!-- 실명 -->
@@ -69,5 +71,5 @@
   </div>
 </div>
 </body>
-
+<script src="/js/user.js"></script>
 </html>

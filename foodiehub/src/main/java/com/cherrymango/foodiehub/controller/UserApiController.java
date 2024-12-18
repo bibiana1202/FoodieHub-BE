@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
@@ -15,6 +16,9 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.Map;
 
 @RequiredArgsConstructor
 @Controller
@@ -22,10 +26,10 @@ public class UserApiController {
 
     private final UserService userService;
 
-
     // 회원가입_회원
     @PostMapping("/user")
     public String signup(@Valid AddUserRequest addUserRequest, BindingResult bindingResult) {
+        // 입력값 검증 에러 처리
         if (bindingResult.hasErrors()) {
             System.out.println("BindingResult Errors: " + bindingResult.getAllErrors());
             return "signup";
@@ -39,6 +43,12 @@ public class UserApiController {
 
         // 회원 저장 시도
         try {
+            // 닉네임 중복 검사
+            if(userService.isNicknameDuplicated(addUserRequest.getNickname())){
+                bindingResult.rejectValue("nickname","nicknameDuplicated","이미 사용 중인 닉네임 입니다.");
+                return "signup";
+            }
+            // 사용자 저장
             System.out.println("저장 권한 singup : "+addUserRequest.getRole());
             System.out.println("Email singup : "+addUserRequest.getEmail());
             userService.save(addUserRequest);
@@ -56,6 +66,7 @@ public class UserApiController {
     // 회원가입_관리자
     @PostMapping("/admin")
     public String signup(@Valid AddAdminRequest addAdminRequest, BindingResult bindingResult) {
+        // 입력값 검증 에러 처리
         if (bindingResult.hasErrors()) {
             System.out.println("BindingResult Errors: " + bindingResult.getAllErrors());
             return "signup_admin";
@@ -69,6 +80,11 @@ public class UserApiController {
 
         // 회원 저장 시도
         try {
+            // 닉네임 중복 검사
+            if(userService.isNicknameDuplicated(addAdminRequest.getNickname())){
+                bindingResult.rejectValue("nickname","nicknameDuplicated","이미 사용 중인 닉네임 입니다.");
+                return "signup_admin";
+            }
             System.out.println("저장 권한 singup : "+addAdminRequest.getRole());
             System.out.println("Email singup : "+addAdminRequest.getEmail());
             userService.save_admin(addAdminRequest);
@@ -92,5 +108,10 @@ public class UserApiController {
 
     }
 
-
+    // 닉네임 중복 확인
+    @GetMapping("/check-nickname")
+    public ResponseEntity<?> checkNickname(@RequestParam("nickname") String nickname) {
+        boolean isDuplicated = userService.isNicknameDuplicated(nickname);
+        return ResponseEntity.ok().body(Map.of("isDuplicated", isDuplicated));
+    }
 }

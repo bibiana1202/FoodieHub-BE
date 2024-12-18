@@ -1,6 +1,7 @@
 package com.cherrymango.foodiehub.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -82,7 +83,8 @@ public class SiteUser implements UserDetails { // UserDetails를 상속받아 �
 
     @Override //권한 반환
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("user"));
+        // DB에서 저장된 role 값을 권한으로 설정
+        return List.of(new SimpleGrantedAuthority(role.name()));
     }
 
     // 사용자의 id를 반환(고유한 값)
