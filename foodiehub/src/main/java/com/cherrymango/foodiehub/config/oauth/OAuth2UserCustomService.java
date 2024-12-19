@@ -43,8 +43,10 @@ public class OAuth2UserCustomService extends DefaultOAuth2UserService {
         if ("kakao".equals(registrationId)) {
             siteUser = saveOrUpdateForKakao(oAuth2User);
         // 구글은 ID Token에 사용자 정보를 포함하므로 loadUser가 호출되지 않을 수 있습니다.
-        } else {
+        } else if("google".equals(registrationId)){
             siteUser = saveOrUpdateForGoogle(oAuth2User);
+        }else{
+            siteUser = saveOrUpdateForNaver(oAuth2User);
         }
 
         return createCustomOAuth2User(siteUser, oAuth2User);
@@ -135,5 +137,38 @@ public class OAuth2UserCustomService extends DefaultOAuth2UserService {
                 "email"
         );
     }
+
+    private SiteUser saveOrUpdateForNaver(OAuth2User oAuth2User) {
+        Map<String, Object> attributes = oAuth2User.getAttributes();
+        Map<String, Object> response = (Map<String, Object>) attributes.get("response"); // 네이버의 사용자 정보는 "response" 하위에 있음
+
+        String email = (String) response.get("email");
+        String name = (String) response.get("name");
+        String id = (String) response.get("id");
+
+        // 디버깅 출력 (필요 시)
+        System.out.println("attributes: " + attributes);
+        System.out.println("Naver ID: " + id);
+        System.out.println("Name: " + name);
+        System.out.println("Email: " + email);
+
+        if (email == null) {
+            throw new IllegalArgumentException("네이버 계정에 이메일이 없습니다.");
+        }
+
+        String customizedNickname = name + "@naver";
+
+        // 기존 유저가 있다면 업데이트, 없으면 생성
+        return userRepository.findByEmail(email)
+                .map(user -> user.update(name)) // 이름 업데이트
+                .orElseGet(() -> userRepository.save(
+                        SiteUser.builder()
+                                .email(email)
+                                .nickname(customizedNickname)
+                                .provider("naver") // 제공자 정보 저장
+                                .build()
+                ));
+    }
+
 
 }

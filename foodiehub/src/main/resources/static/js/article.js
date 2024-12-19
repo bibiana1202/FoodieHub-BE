@@ -74,14 +74,22 @@ if(createButton){
 
 // HTTP 요청을 보내는 함수
 function httpRequest(method,url,body,success,fail){
+    const headers = {
+        // 로컬 스토리지 에서 액세스 토큰 값을 가져와 헤더에 추가
+        Authorization: "Bearer " + localStorage.getItem("access_token"),
+        "Content-Type": "application/json",
+    };
+
+    // 로그아웃 요청에서는 Authorization 헤더 제거
+    if (url === '/logout') {
+        delete headers.Authorization;
+    }
+
     fetch(url, {
         method: method,
-        headers: {
-            // 로컬 스토리지 에서 액세스 토큰 값을 가져와 헤더에 추가
-            Authorization: "Bearer " + localStorage.getItem("access_token"),
-            "Content-Type": "application/json",
-        },
-        body: body,
+        headers: headers,
+        credentials :'include', //쿠키 포함
+        body: body ? JSON.stringify(body) : null, // body가 null일 경우 처리
     }).then((response)=>{
         if(response.status===200 || response.status === 201){
             return success();
@@ -94,6 +102,7 @@ function httpRequest(method,url,body,success,fail){
                     Authorization :"Bearer " + localStorage.getItem("access_token"),
                     "Content-Type" : "application/json"
                 },
+                credentials: 'include',
                 body :JSON.stringify({
                     refreshToken: getCookie("refresh_token"),
                 }),
@@ -110,6 +119,7 @@ function httpRequest(method,url,body,success,fail){
                 })
                 .catch((error)=>fail());
         }else{
+            console.error('HTTP 요청 실패:', error);
             return fail();
         }
     });
@@ -179,35 +189,61 @@ function getCookie(key)
 // }
 
 
+// // 로그아웃 성공 !!
+// const logoutButton = document.getElementById('logout-btn');
+//
+// if (logoutButton) {
+//     logoutButton.addEventListener('click', () => {
+//         fetch('/logout', { // 로그아웃 URL
+//             method: 'POST', // POST 요청
+//             credentials: 'include', // 쿠키 포함해서 서버로 전송
+//         })
+//             .then(response => {
+//                 if (response.ok) {
+//                     console.log('로그아웃 성공');
+//                     localStorage.removeItem('access_token'); // 액세스 토큰 삭제
+//                     // deleteCookie('refresh_token');
+//                     deleteCookie('oauth2_auth_request');
+//                     location.replace('/login'); // 로그인 페이지로 리다이렉트
+//                 } else {
+//                     console.error('로그아웃 실패');
+//                     alert('로그아웃에 실패했습니다.');
+//                 }
+//             })
+//             .catch(error => {
+//                 console.error('Error during logout:', error);
+//                 alert('오류가 발생했습니다.');
+//             });
+//     });
+// } else {
+//     console.error('로그아웃 버튼을 찾을 수 없습니다.');
+// }
+
+
+// httpRequest 로그아웃 성공!!
 const logoutButton = document.getElementById('logout-btn');
 
 if (logoutButton) {
     logoutButton.addEventListener('click', () => {
-        fetch('/logout', { // 로그아웃 URL
-            method: 'POST', // POST 요청
-            credentials: 'include', // 쿠키 포함해서 서버로 전송
-        })
-            .then(response => {
-                if (response.ok) {
-                    console.log('로그아웃 성공');
-                    localStorage.removeItem('access_token'); // 액세스 토큰 삭제
-                    // deleteCookie('refresh_token');
-                    deleteCookie('oauth2_auth_request');
-                    location.replace('/login'); // 로그인 페이지로 리다이렉트
-                } else {
-                    console.error('로그아웃 실패');
-                    alert('로그아웃에 실패했습니다.');
-                }
-            })
-            .catch(error => {
-                console.error('Error during logout:', error);
-                alert('오류가 발생했습니다.');
-            });
+        httpRequest(
+            'POST',
+            '/logout',
+            null,
+            () => {
+                console.log('로그아웃 성공');
+                localStorage.removeItem('access_token');
+                deleteCookie('oauth2_auth_request');
+                location.replace('/login');
+            },
+            () => {
+                console.error('로그아웃 실패');
+                alert('로그아웃에 실패했습니다.');
+            }
+        );
     });
 } else {
     console.error('로그아웃 버튼을 찾을 수 없습니다.');
 }
-
 
 
 // 쿠키를 삭제하는 함수

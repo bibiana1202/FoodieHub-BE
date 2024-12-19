@@ -56,19 +56,45 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         String email;
         String nickname ; // 카카오와 구글 모두 닉네임 처리
 
-        if ("google".equals(registrationId)) {
-            email = (String) oAuth2User.getAttributes().get("email");
-            nickname = (String) oAuth2User.getAttributes().get("name");
-        } else if ("kakao".equals(registrationId)) {
-            // 카카오 계정의 사용자 정보 추출
-            email = (String) oAuth2User.getAttributes().get("email");
-            nickname = (String) oAuth2User.getAttributes().get("nickname");
-            // 이메일 필수 체크
-            if (email == null) {
-                throw new IllegalArgumentException("카카오 계정에 이메일이 없습니다.");
-            }
-        } else {
-            throw new IllegalArgumentException("지원하지 않는 소셜 로그인 제공자입니다: " + registrationId);
+//        if ("google".equals(registrationId)) {
+//            email = (String) oAuth2User.getAttributes().get("email");
+//            nickname = (String) oAuth2User.getAttributes().get("name");
+//        } else if ("kakao".equals(registrationId)) {
+//            // 카카오 계정의 사용자 정보 추출
+//            email = (String) oAuth2User.getAttributes().get("email");
+//            nickname = (String) oAuth2User.getAttributes().get("nickname");
+//            // 이메일 필수 체크
+//            if (email == null) {
+//                throw new IllegalArgumentException("카카오 계정에 이메일이 없습니다.");
+//            }
+//        } else {
+//            throw new IllegalArgumentException("지원하지 않는 소셜 로그인 제공자입니다: " + registrationId);
+//        }
+        // 소셜 로그인 제공자별 사용자 정보 추출
+        switch (registrationId) {
+            case "google":
+                email = (String) attributes.get("email");
+                nickname = (String) attributes.get("name");
+                break;
+
+            case "kakao":
+                // 카카오 계정의 사용자 정보 추출
+                email = (String) oAuth2User.getAttributes().get("email");
+                nickname = (String) oAuth2User.getAttributes().get("nickname");
+                break;
+
+            case "naver":
+                // 네이버는 attributes에 바로 데이터가 포함되어 있음
+                email = (String) attributes.get("email");
+                nickname = (String) attributes.get("nickname");
+                break;
+
+            default:
+                throw new IllegalArgumentException("지원하지 않는 소셜 로그인 제공자: " + registrationId);
+        }
+
+        if (email == null) {
+            throw new IllegalArgumentException(registrationId + " 계정에 이메일이 없습니다.");
         }
 
         // 닉네임에 소셜 제공자 이름 추가
