@@ -37,6 +37,8 @@ out/
 .vscode/
 
 # Ignore .env
+.env
 foodiehub/.env
+
 
 
