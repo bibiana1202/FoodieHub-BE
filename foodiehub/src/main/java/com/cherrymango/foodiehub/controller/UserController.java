@@ -1,4 +1,4 @@
 package com.cherrymango.foodiehub.controller;
 
-public class MyPageController {
+public class UserController {
 }

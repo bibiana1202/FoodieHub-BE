@@ -13,7 +13,7 @@ function MainPage() {
     useEffect(() => {
         const fetchUserData = async () => {
             try {
-                const data = await httpRequest("GET", "/api/main");
+                const data = await httpRequest("GET", "/api/user/main");
                 setUser({ username: data.username, role: data.role });
             } catch (error) {
                 console.error("사용자 정보를 가져오는 데 실패했습니다.", error);
@@ -25,7 +25,7 @@ function MainPage() {
 
     const handleLogout = async () => {
         try {
-            const response = await httpRequest("POST", "/logout");
+            const response = await httpRequest("POST", "/api/auth/logout");
 
             // 로컬 스토리지 및 상태 초기화
             localStorage.removeItem("access_token");
@@ -58,21 +58,25 @@ function MainPage() {
             {user.role === "ROLE_ADMIN" && <p>관리자 권한이 있습니다.</p>}
             {user.role === "ROLE_USER" && <p>일반 사용자 권한이 있습니다.</p>}
 
-            <button type="button" id="logout-btn" onClick={handleLogout}>로그아웃</button>
-            <button type="button" onClick={goToLoginPage}>로그인 페이지로 이동</button>
-            <button type="button" onClick={goToMyPage}>로그인 페이지로 이동</button>
+            {/*<button type="button" id="logout-btn" onClick={handleLogout}>로그아웃</button>*/}
+            {/*<button type="button" onClick={goToLoginPage}>로그인</button>*/}
+            <button type="button" onClick={goToMyPage}>마이 페이지</button>
 
 
             <h1>Welcome, <span>{user.username}</span>!</h1>
 
             {/* 인증된 사용자만 볼 수 있는 부분 */}
-            {user.username && <div>인증된 사용자만 볼 수 있습니다.</div>}
+            {user.username && <div>인증된 사용자만 볼 수 있습니다.
+                <button type="button" id="logout-btn" onClick={handleLogout}>로그아웃</button>
+            </div>}
 
             {/* 특정 권한이 있는 사용자만 볼 수 있는 부분 */}
             {user.role === "ROLE_ADMIN" && <div>관리자만 볼 수 있습니다.</div>}
 
             {/* 익명 사용자만 볼 수 있는 부분 */}
-            {!user.username && <div>로그인하지 않은 사용자만 볼 수 있습니다.</div>}
+            {!user.username && <div>로그인하지 않은 사용자만 볼 수 있습니다.
+                <button type="button" onClick={goToLoginPage}>로그인</button>
+            </div>}
         </div>
     );
 }
