@@ -11,12 +11,18 @@ function MainPage() {
     useTokenStorage();
 
     useEffect(() => {
+        console.log("useEffect 실행됨");
+
         const fetchUserData = async () => {
             try {
+                console.log("GET /api/user/main 요청 시작");
                 const data = await httpRequest("GET", "/api/user/main");
+                console.log("GET /api/user/main 성공:", data);
                 setUser({ username: data.username, role: data.role });
+                console.log("사용자 상태 업데이트:", { username: data.username, role: data.role }); // 상태 업데이트 확인
+
             } catch (error) {
-                console.error("사용자 정보를 가져오는 데 실패했습니다.", error);
+                console.error("GET /api/user/main 실패:", error);
             }
         };
 

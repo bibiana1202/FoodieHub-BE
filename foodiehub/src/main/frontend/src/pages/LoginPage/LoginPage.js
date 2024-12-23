@@ -36,7 +36,7 @@ function LoginPage() {
             // response는 이미 JSON 데이터
             if (response.message === "Authentication successful") {
                 console.log("로그인 성공:", response.message);
-                window.location.href = "/main";
+                navigate("/main"); // React Router를 이용해 메인 페이지로 이동
             } else {
                 console.error("로그인 실패:", response.message);
                 setError(response.message || "로그인 실패");
