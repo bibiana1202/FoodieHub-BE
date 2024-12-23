@@ -2,11 +2,12 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { httpRequest } from "../../utils/httpRequest"; // httpRequest를 불러옴
 
-function LoginPage() {
+function Login({setUser}) {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState(null);
     const navigate = useNavigate();
+
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -36,6 +37,18 @@ function LoginPage() {
             // response는 이미 JSON 데이터
             if (response.message === "Authentication successful") {
                 console.log("로그인 성공:", response.message);
+                // 사용자 상태 업데이트
+                setUser({
+                    username: response.user, // 서버 응답에서 user 정보
+                    role: response.role || "ROLE_USER", // role이 없는 경우 기본값 설정
+                });
+
+                // 토큰 저장
+                if (response.token) {
+                    localStorage.setItem("access_token", response.token);
+                }
+
+
                 navigate("/main"); // React Router를 이용해 메인 페이지로 이동
             } else {
                 console.error("로그인 실패:", response.message);
@@ -100,4 +113,4 @@ function LoginPage() {
     );
 }
 
-export default LoginPage;
+export default Login;

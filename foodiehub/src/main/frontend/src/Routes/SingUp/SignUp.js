@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { httpRequest } from "../../utils/httpRequest"; // httpRequest를 불러옴
 
-function SignUpPage() {
+function SignUp() {
     const [formData, setFormData] = useState({
         email: "",
         password1: "",
@@ -180,4 +180,4 @@ function SignUpPage() {
     );
 }
 
-export default SignUpPage;
+export default SignUp;

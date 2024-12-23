@@ -6,7 +6,7 @@ export async function httpRequest(method, url, body = null) {
 
     // 로그아웃 시 Authorization 헤더 제외
     if (url === '/api/auth/logout') {
-        console.log('Deleting Authorization Header for Logout Request');
+        console.log('Deleting Authorization UserInfo for Logout Request');
         delete headers.Authorization;
     }
 

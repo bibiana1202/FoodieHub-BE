@@ -1,7 +1,7 @@
-// src/pages/MyPage/Header.js
+// src/pages/MyPage/UserInfo.js
 import React from "react";
 
-const Header = ({ nickname, id }) => {
+const UserInfo = ({ nickname, id }) => {
     return (
         <div className="header">
             <div className="profile">
@@ -22,4 +22,4 @@ const Header = ({ nickname, id }) => {
     );
 };
 
-export default Header;
+export default UserInfo;
