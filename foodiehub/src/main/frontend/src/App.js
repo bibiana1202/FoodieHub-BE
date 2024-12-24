@@ -2,13 +2,13 @@
 import React,{useState,useEffect} from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Header from "./components/Header"; // 공통 헤더
-import Home from "./Routes/Home/Home";
-import Main from "./Routes/Main/Main";
-import Login from "./Routes/Login/Login";
-import MyPage from "./Routes/MyPage/MyPage";
-import SignUp from "./Routes/SingUp/SignUp";
-import SignUpAdmin from "./Routes/SignUpAdmin/SignUpAdmin";
-import EditProfile from "./Routes/MyPage/EditProfile"
+import Home from "./routes/home/Home";
+import Main from "./routes/main/Main";
+import Login from "./routes/login/Login";
+import MyPage from "./routes/mypage/MyPage";
+import SignUp from "./routes/singup/SignUp";
+import SignUpAdmin from "./routes/signupadmin/SignUpAdmin";
+import EditProfile from "./routes/mypage/EditProfile"
 
 function App() {
     const [user, setUser] = useState({ username: "", role: "" }); // 사용자 상태 최상위에서 관리

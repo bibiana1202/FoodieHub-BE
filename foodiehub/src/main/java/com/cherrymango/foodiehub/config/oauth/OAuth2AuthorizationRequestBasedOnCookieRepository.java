@@ -13,8 +13,8 @@ import org.springframework.web.util.WebUtils;
 // AuthorizationRequestRepository:  OAuth2 인증 과정중 인증 요청 정보를 저장,로드,삭제 하는 메서드 정의
 // OAuth2 에 필요한 정보를 세션이 아닌 쿠키에 저장해서 쓸수 있도록 인증 요청과 관련된 상태를 저장할 저장소
 public class OAuth2AuthorizationRequestBasedOnCookieRepository implements AuthorizationRequestRepository<OAuth2AuthorizationRequest> {
-    public final static String OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME="oauth2_auth_request";
-    private final static int COOKIE_EXPIRE_SECONDS =18000;
+    public final static String OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME = "oauth2_auth_request";
+    private final static int COOKIE_EXPIRE_SECONDS = 18000;
 
     // 디버깅용 생성자
     public OAuth2AuthorizationRequestBasedOnCookieRepository() {
@@ -55,9 +55,9 @@ public class OAuth2AuthorizationRequestBasedOnCookieRepository implements Author
         System.out.println("saveAuthorizationRequest called");
         log.debug("Saving state: " + authorizationRequest.getState());
 
-        if(authorizationRequest == null) {
+        if (authorizationRequest == null) {
             log.debug("Authorization Request is null. Removing cookies.");
-            removeAuthorizationRequestCookies(request,response); // 쿠키 삭제
+            removeAuthorizationRequestCookies(request, response); // 쿠키 삭제
             return;
         }
 
@@ -67,7 +67,7 @@ public class OAuth2AuthorizationRequestBasedOnCookieRepository implements Author
 
         // 쿠키 저장
         log.debug("Saving Authorization Request to Cookie: " + authorizationRequest);
-        CookieUtil.addCookie(response,OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME,CookieUtil.serialize(authorizationRequest),COOKIE_EXPIRE_SECONDS); // 쿠키 추가
+        CookieUtil.addCookie(response, OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME, CookieUtil.serialize(authorizationRequest), COOKIE_EXPIRE_SECONDS); // 쿠키 추가
     }
 
     // 쿠키 삭제
@@ -75,7 +75,7 @@ public class OAuth2AuthorizationRequestBasedOnCookieRepository implements Author
         System.out.println("removeAuthorizationRequest called");
 
         log.debug("Removing OAuth2 Authorization Request Cookie.");
-        CookieUtil.deleteCookie(request,response,OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME); // 쿠키 삭제
+        CookieUtil.deleteCookie(request, response, OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME); // 쿠키 삭제
     }
 
     // 쿠키에 저장된 OAuth2 인증요청 정보를 제거

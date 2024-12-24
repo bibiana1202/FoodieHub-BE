@@ -1,7 +1,7 @@
 // src/components/Header.js
 import React, {useEffect, useState} from "react";
 import { useNavigate } from "react-router-dom";
-import {httpRequest} from "../utils/httpRequest";
+import {httpRequest} from "../store/httpRequest";
 
 const Header = ({user,setUser}) => {
     // const [user, setUser] = useState({ username: "", role: "" });
