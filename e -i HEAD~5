@@ -1,0 +1,34 @@
+[33m816c267[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmypage[m[33m)[m feat:git정리중
+[33md591a6a[m Modify application.properties
+[33m61d6f21[m Fix .gitignore
+[33m66b1d0b[m[33m ([m[1;31morigin/tykim[m[33m, [m[1;31morigin/mypage[m[33m)[m feat:폴더명react 폴문자로 수ì 정
+[33m2b1d3d0[m Merge branch 'mypage' of https://github.com/HyejeongSon/FoodieHub into mypage
+[33m40767d2[m feaãt:프로젝트 안쓰는 파일 정리
+[33m562cd86[m feat:관리자마이페이지 버튼 구현
+[33m66d4587[m feat:관리자마이페이지 틀ã 버튼 구현
+[33m2c92658[m feat:react프로젝트 hea-er ë구현,일반로그인êì버그ì이ê³고침
+[33m40fcd71[m feat: 일반로그인오류수정,oauth2권한관련버그
+[33m865041f[m feat:일반회원가입 react, 로그인 트러블슈팅
+[33maa8a6f7[m feat:타임리프에서 react로 변경작업(로그인,로그아웃),메인페이지,마이페이지
+[33m97d2a39[m feat:properties 수정
+[33m575ce1d[m feat:env환경변수설정
+[33m2456ecb[m feat:env환경변수파일만들기
+[33md55baa6[m Remove .env from tracking
+[33m551c683[m feat:로그아웃 httprequest,네이버oauth2구현
+[33m3c82064[m 로그아웃오류 처리, 로그인 오류 확인완료
+[33m7882991[m feat: 일반 회원가입 중복확인 처리
+[33m3e5d923[m feat:관리자 회원가입 추가, 사업자등록API 추가
+[33m8e2d1e3[m feat:관리자 회원가입 추가
+[33m46a93f3[m Ignore application.properties
+[33m9db3f4b[m Ignore application.properties
+[33mac97fc9[m feat : 카카오 oauth2 로그인 구현, 일반 회원가입 기능 추가 및 수정
+[33md58d29b[m feat: 구글oauth2로그인구현, 구글키암호커밋금지
+[33me6cfe12[m 그만...
+[33m1421375[m feat:구글 암호제거작업
+[33mffa1155[m feat:구글로그인구현,키암호제거
+[33m6bbbb1b[m feat:oauth2 구글로그인 구현
+[33m3c85618[m feat:구글로그인구현,키암호제거
+[33m98b9d3f[m feat: 세션로그인,회원가입,로그아웃 구현
+[33mc14aa8d[m feat: good
+[33m7398691[m feat: project setting
+[33m86a94f4[m Initial commit
