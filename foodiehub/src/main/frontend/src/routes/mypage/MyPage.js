@@ -25,15 +25,13 @@ const MyPage = () => {
         fetchUserData();
     }, []);
 
-    const goToEditPage = () => {
-        navigate("/mypage/edit"); // 마이 페이지로 이동
-    };
+
 
     return (
         <div>
             <p>닉네임 <b>{user.nickname}</b></p>
             <p>아이디 <b>{user.email}</b></p>
-            <button type="button" onClick={goToEditPage}>회원정보수정</button>
+            <button type="button" onClick={() =>navigate("/mypage/edit")}>회원정보수정</button>
         </div>
     );
 };

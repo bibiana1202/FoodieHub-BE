@@ -36,9 +36,8 @@ out/
 ### VS Code ###
 .vscode/
 
-# Ignore .env
-.env
-foodiehub/.env
+# Ignore application-secret.properties
+/src/main/resources/application-secret.properties
 
 
 
