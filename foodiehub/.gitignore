@@ -37,7 +37,14 @@ out/
 .vscode/
 
 # Ignore application-secret.properties
-/src/main/resources/application-secret.properties
+.env
+
+# Ignore static files
+src/main/resources/static/asset-manifest.json
+src/main/resources/static/static/css/
+src/main/resources/static/static/js/
+
+
 
 
 
