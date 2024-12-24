@@ -21,14 +21,12 @@ const Header = ({user,setUser}) => {
 
         const fetchUserData = async () => {
             try {
-                console.log("GET /api/user/main 요청 시작");
-                const data = await httpRequest("GET", "/api/user/main");
-                console.log("GET /api/user/main 성공:", data);
-                setUser({ username: data.username, role: data.role });
-                console.log("사용자 상태 업데이트:", { username: data.username, role: data.role }); // 상태 업데이트 확인
+                const data = await httpRequest("GET", "/api/header/user");
+                setUser({ username: data.username, email:data.email, role: data.role });
+                console.log("사용자 상태 업데이트(header):", { username: data.username, role: data.role,email:data.email}); // 상태 업데이트 확인
 
             } catch (error) {
-                console.error("GET /api/user/main 실패:", error);
+                console.error("GET /api/header/user 실패:", error);
             }
         };
 
@@ -45,7 +43,6 @@ const Header = ({user,setUser}) => {
             setUser({ username: "", role: "" }); // 사용자 상태 초기화
             navigate("/main");
         } catch (error) {
-            console.error("로그아웃 실패:", error);
             alert("로그아웃에 실패했습니다.");
         }
     };
@@ -61,24 +58,21 @@ const Header = ({user,setUser}) => {
             </div>
             <nav>
                 <button onClick={() => handleNavigate("/")}>홈</button>
-                {user.username &&
+
+                {user.username && user.role.split("_").pop() === "USER" &&
                     <button onClick={() => handleNavigate("/mypage")}>마이페이지</button>
                 }
 
-                <button onClick={() => handleNavigate("/main")}>메인페이지</button>
+                {user.username && user.role === "ROLE_ADMIN" &&
+                    <button onClick={() => handleNavigate("/mypage")}>관리자마이페이지</button>}
 
-                {/* 인증된 사용자만 볼 수 있는 부분 */}
-                {user.username && <div>인증된 사용자만 볼 수 있습니다.
-                    <button type="button" id="logout-btn" onClick={handleLogout}>로그아웃</button>
-                </div>}
 
-                {/* 특정 권한이 있는 사용자만 볼 수 있는 부분 */}
-                {user.role === "ROLE_ADMIN" && <div>관리자만 볼 수 있습니다.</div>}
+                {user.username &&
+                    <button type="button" id="logout-btn" onClick={handleLogout}>로그아웃</button>}
 
-                {/* 익명 사용자만 볼 수 있는 부분 */}
-                {!user.username && <div>로그인하지 않은 사용자만 볼 수 있습니다.
-                    <button onClick={() => handleNavigate("/login")}>로그인</button>
-                </div>}
+
+                {!user.username &&
+                    <button onClick={() => handleNavigate("/login")}>로그인</button>}
             </nav>
         </header>
     );
