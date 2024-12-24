@@ -28,73 +28,37 @@ const EditProfile = () => {
     };
 
     return (
-        <div style={{ maxWidth: "400px", margin: "0 auto", padding: "20px" }}>
+        <div >
             <h2>회원정보 수정</h2>
             <form onSubmit={handleSubmit}>
-                <div style={{ marginBottom: "15px" }}>
+                <div>
                     <label>닉네임</label>
                     <input
                         type="text"
                         name="nickname"
                         value={profile.nickname}
                         onChange={handleChange}
-                        style={{
-                            display: "block",
-                            width: "100%",
-                            padding: "8px",
-                            margin: "5px 0",
-                            border: "1px solid #ccc",
-                            borderRadius: "4px",
-                        }}
                     />
                 </div>
-                <div style={{ marginBottom: "15px" }}>
+                <div>
                     <label>이메일</label>
                     <input
                         type="email"
                         name="email"
                         value={profile.email}
                         onChange={handleChange}
-                        style={{
-                            display: "block",
-                            width: "100%",
-                            padding: "8px",
-                            margin: "5px 0",
-                            border: "1px solid #ccc",
-                            borderRadius: "4px",
-                        }}
                     />
                 </div>
-                <div style={{ marginBottom: "15px" }}>
+                <div>
                     <label>전화번호</label>
                     <input
                         type="text"
                         name="phone"
                         value={profile.phone}
                         onChange={handleChange}
-                        style={{
-                            display: "block",
-                            width: "100%",
-                            padding: "8px",
-                            margin: "5px 0",
-                            border: "1px solid #ccc",
-                            borderRadius: "4px",
-                        }}
                     />
                 </div>
-                <button
-                    type="submit"
-                    style={{
-                        padding: "10px 15px",
-                        backgroundColor: "#007bff",
-                        color: "white",
-                        border: "none",
-                        borderRadius: "4px",
-                        cursor: "pointer",
-                    }}
-                >
-                    저장
-                </button>
+                <button type="submit">저장</button>
             </form>
         </div>
     );

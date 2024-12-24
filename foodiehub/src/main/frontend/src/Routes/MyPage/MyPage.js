@@ -14,14 +14,11 @@ const MyPage = () => {
 
         const fetchUserData = async () => {
             try {
-                console.log("GET /api/mypage/userinfo 요청 시작");
                 const data = await httpRequest("GET", "/api/mypage/profileinfo");
-                console.log("GET /api/mypage/userinfo 성공:", data);
                 setUser({ nickname: data.nickname, email: data.email });
-                console.log("사용자 상태 업데이트:"+user.nickname+user.email); // 상태 업데이트 확인
 
             } catch (error) {
-                console.error("GET /api/user/main 실패:", error);
+                console.error("GET /api/mypage/profileinfo 실패:", error);
             }
         };
 
