@@ -2,8 +2,6 @@ package com.cherrymango.foodiehub.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
@@ -15,9 +13,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-public class MainController {
+public class HeaderController {
     // 로그인 성공 시 사용자 정보 반환
-    @GetMapping("/api/user/main")
+    @GetMapping("/api/header/user")
     public Map<String, Object> loginsuccess(HttpServletRequest request,Principal principal) {// 세션 정보 출력
         HttpSession session = request.getSession(false);
         if (session != null) {
@@ -55,7 +53,7 @@ public class MainController {
                 role = authToken.getAuthorities().stream()
                         .findFirst()
                         .map(grantedAuthority -> grantedAuthority.getAuthority())
-                        .orElse("NO_ROLE");
+                        .orElse("ROLE_USER");
 
                 // 이름 설정
                 username = (username_kakao != null) ? username_kakao : username_google;
