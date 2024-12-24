@@ -36,8 +36,18 @@ out/
 ### VS Code ###
 .vscode/
 
-# Ignore
+# Ignore .env
 .env
+foodiehub/.env
+# Ignore application-secret.properties
+.env
+
+# Ignore static files
+src/main/resources/static/asset-manifest.json
+src/main/resources/static/static/css/
+src/main/resources/static/static/js/
+
+
 
 
 
