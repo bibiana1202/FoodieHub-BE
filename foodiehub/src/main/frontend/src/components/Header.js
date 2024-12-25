@@ -11,10 +11,6 @@ const Header = ({user,setUser}) => {
         console.log("Header에서 사용자 상태 확인:", user);
     }, [user]);
 
-    // 네비게이션 함수
-    const handleNavigate = (path) => {
-        navigate(path);
-    };
 
     useEffect(() => {
         console.log("useEffect 실행됨");
@@ -52,19 +48,19 @@ const Header = ({user,setUser}) => {
 
     return (
         <header  style ={{background: "grey"}}>
-            <div onClick={() => handleNavigate("/main")}>
+            <div onClick={() => navigate("/main")}>
                 <img src="/img/foodieHub.png" // 로고 이미지 경로
                      alt="foodieHub" width={50} height={50}/>
             </div>
             <nav>
-                <button onClick={() => handleNavigate("/")}>홈</button>
+                <button onClick={() => navigate("/")}>홈</button>
 
                 {user.username && user.role.split("_").pop() === "USER" &&
-                    <button onClick={() => handleNavigate("/mypage")}>마이페이지</button>
+                    <button onClick={() => navigate("/mypage")}>마이페이지</button>
                 }
 
                 {user.username && user.role === "ROLE_ADMIN" &&
-                    <button onClick={() => handleNavigate("/mypage")}>관리자마이페이지</button>}
+                    <button onClick={() => navigate("/mypage")}>관리자마이페이지</button>}
 
 
                 {user.username &&
@@ -72,7 +68,7 @@ const Header = ({user,setUser}) => {
 
 
                 {!user.username &&
-                    <button onClick={() => handleNavigate("/login")}>로그인</button>}
+                    <button onClick={() => navigate("/login")}>로그인</button>}
             </nav>
         </header>
     );
