@@ -31,7 +31,11 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     public static final String REFRESH_TOKEN_COOKIE_NAME = "refresh_token";
     public static final Duration REFRESH_TOKEN_DURATION = Duration.ofDays(14);
     public static final Duration ACCESS_TOKEN_DURATION = Duration.ofDays(1);
-    public static final String REDIRECT_PATH = "/main";
+    public static final String REDIRECT_PATH = "http://localhost:80/main";
+    /*
+        OAuth2 인증 후 클라이언트로 리다이렉트하려면 정확한 URL이 필요합니다.
+        리다이렉트 경로는 클라이언트가 접근 가능한 URL이어야 하므로, Nginx가 설정되어 있어도 http://localhost:80/main과 같은 명시적인 URL이 필요합니다.
+     */
 
     private final TokenProvider tokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
@@ -66,7 +70,6 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         String email;
         String nickname; // 카카오와 구글 모두 닉네임 처리
-
         // 소셜 로그인 제공자별 사용자 정보 추출
         switch (registrationId) {
             case "google":

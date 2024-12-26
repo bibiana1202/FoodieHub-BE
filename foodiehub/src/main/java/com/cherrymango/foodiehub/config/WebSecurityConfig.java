@@ -102,9 +102,10 @@ public class WebSecurityConfig {
                         .requestMatchers(new AntPathRequestMatcher("/api/auth/logout")).permitAll()  // 권한 필요 없음
                         .requestMatchers(new AntPathRequestMatcher("/api/auth/user")).permitAll()  // 권한 필요 없음
                         .requestMatchers(new AntPathRequestMatcher("/api/auth/admin")).permitAll()  // 권한 필요 없음
+                        .requestMatchers(new AntPathRequestMatcher("/api/auth/me")).permitAll()  // 권한 필요 없음
+                        .requestMatchers(new AntPathRequestMatcher("/api/auth/header")).permitAll()  // 권한 필요 없음
                         .requestMatchers(new AntPathRequestMatcher("/api/user/check-nickname")).permitAll()  // 권한 필요 없음
-                        .requestMatchers(new AntPathRequestMatcher("/api/header/user")).permitAll()  // 권한 필요 없음
-                        .requestMatchers("/api/business/status").permitAll()  // 해당 엔드포인트 접근 허용
+//                        .requestMatchers("/api/business/status").permitAll()  // 해당 엔드포인트 접근 허용
                         .requestMatchers(new AntPathRequestMatcher("/api/**")).authenticated() // 권한 필요
                         .anyRequest().permitAll()) // 나머지 권한 필요 없음
 
@@ -205,7 +206,7 @@ public class WebSecurityConfig {
     public UrlBasedCorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true); // 쿠키 허용
-        config.addAllowedOrigin("http://localhost:8080"); // 허용할 도메인
+        config.addAllowedOrigin("http://localhost:80/"); // React 개발 서버 (포트 80)
         config.addAllowedHeader("*"); // 모든 헤더 허용
         config.addAllowedMethod("*"); // 모든 HTTP 메서드 허용
 

@@ -165,7 +165,9 @@ public class CustomJsonUsernamePasswordAuthenticationFilter extends UsernamePass
         // 응답 작성
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-        response.getWriter().write(String.format("{\"message\": \"Authentication successful\", \"user\": \"%s\", \"role\": \"%s\"}", username, roles));
+//        response.getWriter().write(String.format("{\"message\": \"Authentication successful\", \"user\": \"%s\", \"role\": \"%s\"}", username, roles));
+//        response.getWriter().write(String.format("{\"message\": \"Authentication successful\", \"user\": \"%s\", \"role\": \"%s\"}", username, roles));
+        response.getWriter().write("{\"message\": \"Authentication successful\"}");
     }
 
 
