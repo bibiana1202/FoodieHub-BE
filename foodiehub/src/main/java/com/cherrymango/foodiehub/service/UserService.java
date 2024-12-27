@@ -3,10 +3,14 @@ package com.cherrymango.foodiehub.service;
 import com.cherrymango.foodiehub.domain.SiteUser;
 import com.cherrymango.foodiehub.dto.AddAdminRequest;
 import com.cherrymango.foodiehub.dto.AddUserRequest;
+import com.cherrymango.foodiehub.dto.UserProfileRequest;
 import com.cherrymango.foodiehub.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -78,6 +82,35 @@ public class UserService {
         return userRepository.existsByNickname(nickname);
     }
 
+    // 회원정보수정
+    @Transactional // 트랜잭션 활성화
+    public boolean updateUserProfile(UserProfileRequest profileRequest) {
+        try {
+            // 사용자 조회
+            SiteUser user = userRepository.findByEmail(profileRequest.getEmail())
+                    .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
 
+            // 닉네임 및 전화번호 수정
+            user.setNickname(profileRequest.getNickname());
+            user.setCellphone(profileRequest.getPhone());
+
+            // 비밀번호 변경
+            if (profileRequest.getCurrentPassword() != null && !profileRequest.getCurrentPassword().isEmpty()) {
+                BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(); // 인코더 직접 생성
+                if (!encoder.matches(profileRequest.getCurrentPassword(), user.getPassword())) {
+                    throw new IllegalArgumentException("현재 비밀번호가 일치하지 않습니다.");
+                }
+                String encodedPassword = encoder.encode(profileRequest.getNewPassword()); // 새 비밀번호 암호화
+                user.setPassword(encodedPassword); // 비밀번호 변경
+            }
+            // JPA가 자동으로 변경 사항을 데이터베이스에 반영 (save() 호출 불필요)
+            // 성공적으로 수정되면 true 반환
+            return true;
+        } catch (Exception e) {
+            // 예외 발생 시 로그 출력 및 false 반환
+            e.printStackTrace();
+            return false;
+        }
+    }
 
 }

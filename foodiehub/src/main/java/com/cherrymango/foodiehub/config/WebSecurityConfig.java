@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.catalina.filters.CorsFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
@@ -105,6 +106,7 @@ public class WebSecurityConfig {
                         .requestMatchers(new AntPathRequestMatcher("/api/auth/me")).permitAll()  // 권한 필요 없음
                         .requestMatchers(new AntPathRequestMatcher("/api/auth/header")).permitAll()  // 권한 필요 없음
                         .requestMatchers(new AntPathRequestMatcher("/api/user/check-nickname")).permitAll()  // 권한 필요 없음
+                        .requestMatchers(new AntPathRequestMatcher("/api/user/update-profile")).permitAll()  // 권한 필요 없음 (잠시..)
 //                        .requestMatchers("/api/business/status").permitAll()  // 해당 엔드포인트 접근 허용
                         .requestMatchers(new AntPathRequestMatcher("/api/**")).authenticated() // 권한 필요
                         .anyRequest().permitAll()) // 나머지 권한 필요 없음
