@@ -2,14 +2,13 @@ package com.cherrymango.foodiehub.controller;
 
 import com.cherrymango.foodiehub.domain.Role;
 import com.cherrymango.foodiehub.domain.SiteUser;
-import com.cherrymango.foodiehub.dto.AddAdminRequest;
-import com.cherrymango.foodiehub.dto.AddUserRequest;
-import com.cherrymango.foodiehub.dto.UserInfoResponse;
+import com.cherrymango.foodiehub.dto.*;
 import com.cherrymango.foodiehub.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.Response;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -246,6 +245,32 @@ public class UserController {
         return response;
     }
 
+    // 회원정보수정
+    @PostMapping("/api/user/update-profile")
+    public ResponseEntity<?> updateUserProfile(@RequestBody UserProfileRequest profileRequest){
+        try {
+            // 서비스 호출
+            boolean isUpdated = userService.updateUserProfile(profileRequest);
+
+            System.out.println("수정된 사용자 정보: " + profileRequest);
+
+            if (isUpdated) {
+                // 업데이트 성공
+                return ResponseEntity.ok().body(new ApiResponse(true, "회원정보가 성공적으로 저장되었습니다!"));
+            } else {
+                // 업데이트 실패
+                return ResponseEntity.badRequest().body(new ApiResponse(false, "회원정보 저장에 실패했습니다."));
+            }
+
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(new ApiResponse(false, e.getMessage())); //현재 비밀번호가 일치하지 않습니다
+        }
+        catch (Exception e) {
+            // 예외 처리
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(new ApiResponse(false, "회원정보 저장에 실패했습니다."));
+        }
+    }
 
 
 }
