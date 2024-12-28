@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>식당 정보 수정</title>
+    <style>
+        .menu-container {
+            margin-bottom: 20px;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .menu-item input {
+            padding: 5px;
+            font-size: 14px;
+        }
+
+        .menu-item button {
+            padding: 5px 10px;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        /* 수정 버튼 */
+        .menu-item .update-btn {
+            background-color: #2196f3; /* 파란색 */
+        }
+
+        .menu-item .update-btn:hover {
+            background-color: #1976d2; /* 어두운 파란색 */
+        }
+
+        /* 삭제 버튼 */
+        .menu-item .delete-btn {
+            background-color: #ff6b6b; /* 빨간색 */
+        }
+
+        .menu-item .delete-btn:hover {
+            background-color: #ff5252; /* 어두운 빨간색 */
+        }
+
+        /* 등록 버튼 */
+        .menu-item .add-btn {
+            background-color: #4caf50; /* 초록색 */
+        }
+
+        .menu-item .add-btn:hover {
+            background-color: #45a049; /* 어두운 초록색 */
+        }
+
+        /* 이미지 컨테이너 스타일 */
+        #image-container {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap; /* 줄바꿈 처리 */
+        }
+
+        /* 각 이미지 항목 스타일 */
+        .image-item {
+            display: flex;
+            flex-direction: column; /* 삭제 버튼을 아래로 */
+            align-items: center; /* 가운데 정렬 */
+            width: 120px; /* 고정된 너비 */
+        }
+
+        .image-item img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 5px;
+            margin-bottom: 5px;
+        }
+
+        .image-item .delete-btn {
+            background-color: #ff6b6b;
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .image-item .delete-btn:hover {
+            background-color: #ff5252;
+        }
+    </style>
+</head>
+<body>
+<h1>식당 정보 수정</h1>
+<form th:action="@{/store/update/{storeId}(storeId=${storeId})}" method="post">
+    <!-- 단일 필드 -->
+    <label>가게 이름:</label>
+    <input type="text" name="name" placeholder="가게 이름" th:value="${store.name}"><p/>
+
+    <label>가게 한줄 소개:</label>
+    <input type="text" name="intro" placeholder="가게 한줄 소개" th:value="${store.intro}"><p/>
+
+    <label>가게 전화번호:</label>
+    <input type="text" name="phone" placeholder="가게 전화번호" th:value="${store.phone}"><p/>
+
+    <label>가게 주소:</label>
+    <input type="text" name="address" placeholder="가게 주소" th:value="${store.address}"><p/>
+
+    <label>카테고리:</label>
+    <select name="category">
+        <option value="KOREAN" th:selected="${store.category == 'KOREAN'}">한식</option>
+        <option value="CHINESE" th:selected="${store.category == 'CHINESE'}">중식</option>
+        <option value="JAPANESE" th:selected="${store.category == 'JAPANESE'}">일식</option>
+        <option value="WESTERN" th:selected="${store.category == 'WESTERN'}">양식</option>
+        <option value="ITALIAN" th:selected="${store.category == 'ITALIAN'}">이탈리아</option>
+        <option value="FRENCH" th:selected="${store.category == 'FRENCH'}">프랑스</option>
+        <option value="ASIAN" th:selected="${store.category == 'ASIAN'}">아시아</option>
+        <option value="MEXICAN" th:selected="${store.category == 'MEXICAN'}">멕시코</option>
+        <option value="OTHER" th:selected="${store.category == 'OTHER'}">기타</option>
+    </select><p/>
+
+    <label>주차 가능 여부:</label>
+    <input type="radio" name="parking" value="1" th:checked="${store.parking == 1}"> 가능
+    <input type="radio" name="parking" value="0" th:checked="${store.parking == 0}"> 불가<p/>
+
+    <label>영업 시간:</label>
+    <input type="text" name="operationHours" placeholder="영업 시간" th:value="${store.operationHours}"><p/>
+
+    <label>마지막 주문:</label>
+    <input type="text" name="lastOrder" placeholder="마지막 주문" th:value="${store.lastOrder}"><p/>
+
+    <label>가게 상세 내용:</label>
+    <textarea name="content" placeholder="가게 상세 내용" th:text="${store.content}"></textarea><p/>
+
+    <!-- 태그 리스트 -->
+    <label>태그:</label>
+    <div>
+        <input type="checkbox" name="tags" value="혼밥" th:checked="${store.tags.contains('혼밥')}"> 혼밥
+        <input type="checkbox" name="tags" value="모임" th:checked="${store.tags.contains('모임')}"> 모임
+        <input type="checkbox" name="tags" value="회식" th:checked="${store.tags.contains('회식')}"> 회식
+        <input type="checkbox" name="tags" value="데이트" th:checked="${store.tags.contains('데이트')}"> 데이트
+        <input type="checkbox" name="tags" value="감성" th:checked="${store.tags.contains('감성')}"> 감성
+        <input type="checkbox" name="tags" value="노포" th:checked="${store.tags.contains('노포')}"> 노포
+        <input type="checkbox" name="tags" value="부모님" th:checked="${store.tags.contains('부모님')}"> 부모님
+    </div><p/>
+
+    <button type="submit">저장</button>
+</form>
+
+<h1>식당 메뉴 관리</h1>
+
+<!-- 메뉴 리스트 -->
+<div id="menu-container" class="menu-container">
+    <!-- 기존 메뉴 리스트는 JavaScript로 동적 로드 -->
+</div>
+
+<!-- 메뉴 등록 폼 -->
+<div class="menu-item">
+    <input type="text" id="new-menu-name" placeholder="메뉴 이름">
+    <input type="number" id="new-menu-price" placeholder="메뉴 가격">
+    <button id="add-menu-btn" class="add-btn">메뉴 등록</button>
+</div>
+
+<h1>사진 업로드 관리</h1>
+<!-- 사진 리스트 -->
+<div id="image-container" class="menu-container">
+    <!-- 이미지 리스트 동적 로드 -->
+</div>
+<div class="menu-item">
+    <input type="file" id="new-image-file" accept="image/*">
+    <button id="add-image-btn" class="add-btn">사진 등록</button>
+</div>
+
+<script>
+    const storeId = [[${storeId}]]; // Thymeleaf를 통해 전달된 storeId 사용
+    const menuContainer = document.getElementById('menu-container');
+
+    // 메뉴 리스트 로드
+    function loadMenus() {
+        fetch(`/api/store/menu/${storeId}`)
+            .then(response => response.json())
+            .then(menus => {
+                menuContainer.innerHTML = '';
+                menus.forEach(menu => {
+                    const menuItem = document.createElement('div');
+                    menuItem.classList.add('menu-item');
+                    menuItem.innerHTML = `
+                        <input type="hidden" value="${menu.id}">
+                        <input type="text" value="${menu.name}" class="menu-name" data-id="${menu.id}">
+                        <input type="number" value="${menu.price}" class="menu-price" data-id="${menu.id}">
+                        <button class="update-btn" onclick="updateMenu(${menu.id})">수정</button>
+                        <button class="delete-btn" onclick="deleteMenu(${menu.id})">삭제</button>
+                    `;
+                    menuContainer.appendChild(menuItem);
+                });
+            });
+    }
+
+    // 메뉴 등록
+    document.getElementById('add-menu-btn').addEventListener('click', () => {
+        const name = document.getElementById('new-menu-name').value.trim();
+        const price = parseInt(document.getElementById('new-menu-price').value, 10);
+
+        console.log(name, price);
+
+        if (!name || isNaN(price)) {
+            alert('메뉴 이름과 가격을 입력해주세요.');
+            return;
+        }
+
+        fetch(`/api/store/menu/${storeId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ name, price }),
+        })
+            .then(response => {
+                if (response.ok) {
+                    document.getElementById('new-menu-name').value = '';
+                    document.getElementById('new-menu-price').value = '';
+                    loadMenus();
+                } else {
+                    alert('메뉴 등록 실패!');
+                }
+            });
+    });
+
+    // 메뉴 수정
+    function updateMenu(menuId) {
+        const nameInput = document.querySelector(`.menu-name[data-id="${menuId}"]`);
+        const priceInput = document.querySelector(`.menu-price[data-id="${menuId}"]`);
+
+        const updatedMenu = {
+            id: menuId,
+            name: nameInput.value,
+            price: parseInt(priceInput.value, 10),
+        };
+
+        fetch(`/api/store/menu`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(updatedMenu),
+        })
+            .then(response => {
+                if (response.ok) {
+                    alert('메뉴 수정 성공!');
+                } else {
+                    alert('메뉴 수정 실패!');
+                }
+            });
+    }
+
+    // 메뉴 삭제
+    function deleteMenu(menuId) {
+        if (!confirm('메뉴를 삭제하시겠습니까?')) {
+            return;
+        }
+
+        fetch(`/api/store/menu/${menuId}`, {
+            method: 'DELETE',
+        })
+            .then(response => {
+                if (response.ok) {
+                    loadMenus();
+                } else {
+                    alert('메뉴 삭제 실패!');
+                }
+            });
+    }
+
+    // 초기 로드
+    loadMenus();
+</script>
+<script>
+    const imageContainer = document.getElementById('image-container');
+
+    function loadImages() {
+        fetch(`/api/store/images/${storeId}`)
+            .then(response => response.json())
+            .then(images => {
+                imageContainer.innerHTML = '';
+                images.forEach(image => {
+                    const imageItem = document.createElement('div');
+                    imageItem.classList.add('image-item');
+                    imageItem.innerHTML = `
+                        <img src="/api/store/image/${image.storeImageName}" alt="이미지" >
+                        <button class="delete-btn" onclick="deleteImage(${image.id})">삭제</button>
+                    `;
+                    imageContainer.appendChild(imageItem);
+                });
+            });
+    }
+
+    document.getElementById('add-image-btn').addEventListener('click', () => {
+        const fileInput = document.getElementById('new-image-file');
+        const file = fileInput.files[0];
+        if (!file) {
+            alert('이미지를 선택해주세요.');
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('image', file);
+
+        fetch(`/api/store/images/${storeId}`, {
+            method: 'POST',
+            body: formData,
+        })
+            .then(response => {
+                if (response.ok) {
+                    fileInput.value = '';
+                    loadImages();
+                } else {
+                    alert('이미지 등록 실패!');
+                }
+            });
+    });
+
+    function deleteImage(imageId) {
+        if (!confirm('이미지를 삭제하시겠습니까?')) {
+            return;
+        }
+
+        fetch(`/api/store/images/${imageId}`, {
+            method: 'DELETE',
+        })
+            .then(response => {
+                if (response.ok) {
+                    loadImages();
+                } else {
+                    alert('이미지 삭제 실패!');
+                }
+            });
+    }
+
+    loadImages();
+</script>
+</body>
+</html>
