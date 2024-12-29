@@ -84,7 +84,7 @@ public class UserService {
 
     // 회원정보수정
     @Transactional // 트랜잭션 활성화
-    public boolean updateUserProfile(UserProfileRequest profileRequest) {
+    public boolean updateUserProfile(UserProfileRequest profileRequest, String profileImageUrl) {
         try {
             // 사용자 조회
             SiteUser user = userRepository.findByEmail(profileRequest.getEmail())
@@ -92,7 +92,11 @@ public class UserService {
 
             // 닉네임 및 전화번호 수정
             user.setNickname(profileRequest.getNickname());
-            user.setCellphone(profileRequest.getPhone());
+            user.setCellphone(profileRequest.getCellphone());
+            // 프로필 이미지 경로 수정
+            if (profileImageUrl != null && !profileImageUrl.isEmpty()) {
+                user.setProfileImageUrl(profileImageUrl); // 새로 업로드된 이미지 경로 설정
+            }
 
             // 비밀번호 변경
             if (profileRequest.getCurrentPassword() != null && !profileRequest.getCurrentPassword().isEmpty()) {

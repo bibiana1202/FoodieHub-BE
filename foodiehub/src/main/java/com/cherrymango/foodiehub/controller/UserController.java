@@ -3,12 +3,14 @@ package com.cherrymango.foodiehub.controller;
 import com.cherrymango.foodiehub.domain.Role;
 import com.cherrymango.foodiehub.domain.SiteUser;
 import com.cherrymango.foodiehub.dto.*;
+import com.cherrymango.foodiehub.service.FileUploadService;
 import com.cherrymango.foodiehub.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.Response;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +21,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
@@ -30,6 +33,8 @@ import java.util.stream.Collectors;
 @RestController
 public class UserController {
     private final UserService userService;
+    @Autowired
+    private FileUploadService fileUploadService; // 파일 저장 서비스 주입
 
     // 닉네임 중복 확인
     @GetMapping("/api/user/check-nickname")
@@ -155,6 +160,7 @@ public class UserController {
             String provider = user.getProvider();
             Role role = user.getRole();
             String businessNo = user.getBusinessno();
+            String getProfileImageUrl =user.getProfileImageUrl();
 
 
             // DTO를 사용해 응답 반환
@@ -168,6 +174,7 @@ public class UserController {
                     .provider(provider)
                     .role(role)
                     .businessno(businessNo) // 필요 없으면 null 처리
+                    .profileimageurl(getProfileImageUrl)
                     .build();
 
             return ResponseEntity.ok(response);
@@ -247,29 +254,78 @@ public class UserController {
 
     // 회원정보수정
     @PostMapping("/api/user/update-profile")
-    public ResponseEntity<?> updateUserProfile(@RequestBody UserProfileRequest profileRequest){
+    public ResponseEntity<?> updateUserProfile(@Valid @ModelAttribute UserProfileRequest profileRequest, BindingResult bindingResult){
+        System.out.println("프로필 요청 데이터: " + profileRequest);
+        System.out.println("업로드된 파일: " + profileRequest.getProfileImage().getOriginalFilename());
+        String profileImageUrl = null;
+
+        // 입력값 검증 에러 처리
+        if (bindingResult.hasErrors()) {
+            System.out.println("입력값 검증 에러 처리");
+            List<String> errorMessages = bindingResult.getAllErrors().stream()
+                    .map(error -> error.getDefaultMessage())
+                    .collect(Collectors.toList());
+            return ResponseEntity.badRequest().body(Map.of("errors", errorMessages));
+        }
+
+        // 파일 업로드 처리
         try {
+            System.out.println("파일 업로드 처리"+profileRequest.getProfileImage());
+            System.out.println("파일 업로드 처리"+profileRequest.getProfileImage().isEmpty());
+            if (profileRequest.getProfileImage() != null && !profileRequest.getProfileImage().isEmpty()) {
+                // 파일 저장
+                String savedFilePath = fileUploadService.saveFile(profileRequest.getProfileImage());
+                profileImageUrl = "/uploads/" + savedFilePath; // 파일 URL 생성
+                System.out.println("저장된 파일 경로: " + profileImageUrl);
+            }
+        } catch (IOException e) {
+            return ResponseEntity.status(500).body(Map.of("errors", List.of("파일 업로드 실패: " + e.getMessage())));
+        }
+
+        // 회원 저장 시도
+        try {
+            // 닉네임 중복 검사
+//            System.out.println("닉네임 중복 검사");
+//            System.out.println(profileRequest.getNickname());
+//            if(userService.isNicknameDuplicated(profileRequest.getNickname())){
+//                System.out.println("닉네임 중복검사 여기는 들어옵니까?");
+//                bindingResult.rejectValue("nickname","nicknameDuplicated","이미 사용 중인 닉네임 입니다.");
+//                return ResponseEntity.badRequest().body(Map.of("errors", List.of("이미 사용 중인 닉네임 입니다.")));
+//            }
+
+            // 사용자 저장
+            System.out.println("사용자 저장");
             // 서비스 호출
-            boolean isUpdated = userService.updateUserProfile(profileRequest);
-
-            System.out.println("수정된 사용자 정보: " + profileRequest);
-
+            boolean isUpdated = userService.updateUserProfile(profileRequest, profileImageUrl);
             if (isUpdated) {
-                // 업데이트 성공
-                return ResponseEntity.ok().body(new ApiResponse(true, "회원정보가 성공적으로 저장되었습니다!"));
+
+                System.out.println("업데이트 성공");
+                return ResponseEntity.ok(Map.of(
+                        "success", true,
+                        "message", "회원 수정 성공",
+                        "profileimageurl", profileImageUrl
+                ));
             } else {
                 // 업데이트 실패
-                return ResponseEntity.badRequest().body(new ApiResponse(false, "회원정보 저장에 실패했습니다."));
+                System.out.println("업데이트 실패");
+                return ResponseEntity.badRequest().body(Map.of("errors", List.of("회원 수정 실패")));
             }
 
+        } catch (DataIntegrityViolationException e) {
+            System.out.println("이미 등록된 사용자입니다.");
+            bindingResult.reject("updateFailed", "이미 등록된 사용자입니다.");
+            return ResponseEntity.badRequest().body(Map.of("errors", List.of("이미 등록된 사용자입니다.")));
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(new ApiResponse(false, e.getMessage())); //현재 비밀번호가 일치하지 않습니다
+            System.out.println("현재 비밀번호가 일치하지 않습니다");
+            return ResponseEntity.badRequest().body(Map.of("errors", List.of("현재 비밀번호가 일치하지 않습니다")));
+
         }
         catch (Exception e) {
-            // 예외 처리
-            e.printStackTrace();
-            return ResponseEntity.status(500).body(new ApiResponse(false, "회원정보 저장에 실패했습니다."));
+            System.out.println("updateFailed");
+            bindingResult.reject("updateFailed", e.getMessage());
+            return ResponseEntity.status(500).body(Map.of("errors", List.of(e.getMessage())));
         }
+
     }
 
 

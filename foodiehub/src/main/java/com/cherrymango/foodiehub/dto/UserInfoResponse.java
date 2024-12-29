@@ -21,4 +21,5 @@ public class UserInfoResponse {
     private String provider;
     private Role role;
     private String businessno;
+    private String profileimageurl;
 }

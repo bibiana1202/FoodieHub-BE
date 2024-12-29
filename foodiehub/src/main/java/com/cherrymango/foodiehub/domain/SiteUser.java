@@ -58,6 +58,9 @@ public class SiteUser implements UserDetails { // UserDetails를 상속받아 �
     @Column(name="businessno", nullable=true, unique = true)
     private String businessno;
 
+    @Column(nullable = true) // 프로필 이미지 경로는 필수 값이 아니므로 nullable=true
+    private String profileImageUrl;
+
 
 
     @Builder
