@@ -17,10 +17,10 @@ public class InitDb { // 카테고리, 태그
 
     @PostConstruct
     private void init() {
-//        initService.dbInit1();
-//        initService.dbInit2();
-//        initService.dbInit3();
-//        initService.dbInit4();
+        initService.dbInit1();
+        initService.dbInit2();
+        initService.dbInit3();
+        initService.dbInit4();
     }
 
     @Component
@@ -35,6 +35,7 @@ public class InitDb { // 카테고리, 태그
             SiteUser user = new SiteUser();
             user.setEmail("thswjd0609@gmail.com");
             user.setPassword("1234");
+            user.setNickname("sson1");
             em.persist(user);
         }
 
@@ -78,6 +79,7 @@ public class InitDb { // 카테고리, 태그
             SiteUser user = new SiteUser();
             user.setEmail("aksen0609@naver.com");
             user.setPassword("123");
+            user.setNickname("sson2");
             em.persist(user);
         }
 

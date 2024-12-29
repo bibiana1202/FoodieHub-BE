@@ -22,6 +22,11 @@ public class SiteUser {
     @Column(name = "password")
     private String password;
 
+    @Column(name="nickname")
+    private String nickname;
+
+    private String profileImageUrl;
+
     @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
     private Store store;
 
@@ -31,10 +36,8 @@ public class SiteUser {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<StoreLike> storeLikes = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Review> reviews = new ArrayList<>();
-
-    // private List<ReviewLike> reviewLikes = new ArrayList<>();
 
     //==연관관계 메소드==//
     // favorite 연관 메소드, 토글 메소드에서 save하고 따로 사용하지 않으면 필요 없음

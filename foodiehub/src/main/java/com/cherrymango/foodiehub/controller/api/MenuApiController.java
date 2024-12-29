@@ -51,8 +51,7 @@ public class MenuApiController {
     @DeleteMapping("/menu/{id}")
     public ResponseEntity<Void> deleteMenu(@PathVariable("id") Long id) {
         menuService.delete(id);
-        return ResponseEntity.ok()
-                .build();
+        return ResponseEntity.ok().build();
     }
 
 }

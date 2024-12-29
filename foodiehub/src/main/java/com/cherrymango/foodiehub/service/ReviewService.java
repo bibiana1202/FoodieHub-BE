@@ -1,0 +1,188 @@
+package com.cherrymango.foodiehub.service;
+
+import com.cherrymango.foodiehub.domain.Review;
+import com.cherrymango.foodiehub.domain.SiteUser;
+import com.cherrymango.foodiehub.domain.Store;
+import com.cherrymango.foodiehub.dto.*;
+import com.cherrymango.foodiehub.file.FileStore;
+import com.cherrymango.foodiehub.repository.ReviewRepository;
+import com.cherrymango.foodiehub.repository.SiteUserRepository;
+import com.cherrymango.foodiehub.repository.StoreRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+@Service
+@RequiredArgsConstructor
+public class ReviewService {
+    private final ReviewRepository reviewRepository;
+    private final StoreRepository storeRepository;
+    private final SiteUserRepository siteUserRepository;
+    private final FileStore fileStore;
+
+    public Long save(Long userId, Long storeId, AddReviewRequestDto addReviewRequestDto) {
+        SiteUser user = siteUserRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));
+        Store store = storeRepository.findById(storeId)
+                .orElseThrow(() -> new IllegalArgumentException("Store not found with id: " + storeId));
+
+        Optional<String> storeImageName = Optional.ofNullable(addReviewRequestDto.getImage())
+                .map(fileStore::storeFile)
+                .map(UploadImageDto::getStoreFileName);
+
+        Review review = Review.createReview(store, user, addReviewRequestDto.getContent(), LocalDateTime.now(),
+                addReviewRequestDto.getTasteRating(), addReviewRequestDto.getPriceRating(),
+                addReviewRequestDto.getCleanRating(), addReviewRequestDto.getFriendlyRating(), storeImageName.orElse(null));
+
+        reviewRepository.save(review);
+
+        return review.getId();
+    }
+
+    // 스토어 리뷰, 사용자 정보(닉네임, 프로필) 포함 반환
+    public List<StoreReviewResponseDto> findReviewsByStoreId(Long storeId) {
+        Store store = storeRepository.findById(storeId)
+                .orElseThrow(() -> new IllegalArgumentException("Store not found with id: " + storeId));
+
+        return reviewRepository.findByStore(store).stream()
+                .map(review -> new StoreReviewResponseDto(
+                        review.getUser().getNickname(),
+                        review.getUser().getProfileImageUrl(),
+                        review.getId(),
+                        roundToFirstDecimal(review.getAvgRating()), // 평균 별점 소수점 첫째 자리로 반환
+                        review.getTasteRating(),
+                        review.getPriceRating(),
+                        review.getCleanRating(),
+                        review.getFriendlyRating(),
+                        review.getCreateDate(),
+                        review.getContent(),
+                        review.getStoreImageName(),
+                        review.getReviewLikes().size() // 좋아요 수
+                ))
+                .toList();
+    }
+
+    // 페이징 처리된 스토어 리뷰
+    public PagedResponseDto<StoreReviewResponseDto> findReviewsByStoreId(Long storeId, int page) {
+        Store store = storeRepository.findById(storeId)
+                .orElseThrow(() -> new IllegalArgumentException("Store not found with id: " + storeId));
+
+        List<Sort.Order> sorts = new ArrayList<>();
+        sorts.add(Sort.Order.desc("createDate"));
+        Pageable pageable = PageRequest.of(page, 4, Sort.by(sorts)); // 4개씩, 최신순
+        Page<Review> reviewsPage = reviewRepository.findByStore(store, pageable);
+
+        return new PagedResponseDto<>(reviewsPage.map(review -> new StoreReviewResponseDto(
+                review.getUser().getNickname(),
+                review.getUser().getProfileImageUrl(),
+                review.getId(),
+                roundToFirstDecimal(review.getAvgRating()),
+                review.getTasteRating(),
+                review.getPriceRating(),
+                review.getCleanRating(),
+                review.getFriendlyRating(),
+                review.getCreateDate(),
+                review.getContent(),
+                review.getStoreImageName(),
+                review.getReviewLikes().size())));
+    }
+
+    // 프로필 없으면 기본 이미지 -> 컨트롤러에서 null이면 기본이미지 반환하도록
+    /*
+    @RestController
+    @RequestMapping("/api/images")
+    public class ImageController {
+
+        @GetMapping("/default")
+        public ResponseEntity<Resource> getDefaultImage() throws MalformedURLException {
+            Resource resource = new UrlResource("classpath:/static/images/default-image.jpg");
+            return ResponseEntity.ok()
+                    .contentType(MediaType.IMAGE_JPEG)
+                    .body(resource);
+        }
+    }
+     */
+
+    // 마이페이지 리뷰, 식당 이름 포함 반환
+    public List<MyPageReviewResponseDto> findReviewsByUserId(Long userId) {
+        SiteUser user = siteUserRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));
+
+        return reviewRepository.findByUser(user).stream()
+                .map(review -> new MyPageReviewResponseDto(
+                        review.getStore().getName(), // Store 이름
+                        review.getId(),
+                        roundToFirstDecimal(review.getAvgRating()), // 평균 별점 소수점 첫째 자리로 반환
+                        review.getTasteRating(),
+                        review.getPriceRating(),
+                        review.getCleanRating(),
+                        review.getFriendlyRating(),
+                        review.getCreateDate(),
+                        review.getContent(),
+                        review.getStoreImageName() // 리뷰 이미지 URL
+                ))
+                .toList();
+    }
+
+    private Double roundToFirstDecimal(Double value) {
+        return value != null ? Math.round(value * 10) / 10.0 : null; // 소수점 첫 번째 자리로 반올림
+    }
+
+    // 마이페이지 리뷰 상세 조회
+    @Transactional(readOnly = true)
+    public MyPageReviewResponseDto findReviewById(Long reviewId) {
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new IllegalArgumentException("Review not found with id: " + reviewId));
+
+        return new MyPageReviewResponseDto(
+                review.getStore().getName(),
+                review.getId(),
+                roundToFirstDecimal(review.getAvgRating()),
+                review.getTasteRating(),
+                review.getPriceRating(),
+                review.getCleanRating(),
+                review.getFriendlyRating(),
+                review.getCreateDate(),
+                review.getContent(),
+                review.getStoreImageName()
+        );
+    }
+
+    // 리뷰 수정
+    @Transactional
+    public void updateReview(Long reviewId, UpdateReviewRequestDto request) {
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new IllegalArgumentException("Review not found with id: " + reviewId));
+
+        review.setTasteRating(request.getTasteRating());
+        review.setPriceRating(request.getPriceRating());
+        review.setCleanRating(request.getCleanRating());
+        review.setFriendlyRating(request.getFriendlyRating());
+        review.setContent(request.getContent());
+        review.setModifyDate(LocalDateTime.now());
+
+        // 이미지 처리
+        if (request.isDeleteImage()) { // boolean의 경우 isDeleteImage(), Boolean의 경우 getDeleteImage()
+            if (review.getStoreImageName() != null) { // 기존 이미지 삭제
+                fileStore.deleteFile(review.getStoreImageName());
+                review.setStoreImageName(null);
+            }
+        } else if (request.getImage() != null && !request.getImage().isEmpty()) { // 새 이미지 저장
+            String newImageName = fileStore.storeFile(request.getImage()).getStoreFileName();
+            if (review.getStoreImageName() != null) { // 기존 이미지 삭제
+                fileStore.deleteFile(review.getStoreImageName());
+            }
+            review.setStoreImageName(newImageName);
+        }
+    }
+
+}

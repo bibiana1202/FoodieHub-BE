@@ -23,9 +23,8 @@ public class StoreImageApiController {
     private final StoreRepository storeRepository;
     private final StoreImageService storeImageService;
 
-    @ResponseBody
     @GetMapping("/image/{filename}")
-    public Resource downloadImage(@PathVariable(value = "filename") String filename) throws MalformedURLException {
+    public Resource downloadImage(@PathVariable("filename") String filename) throws MalformedURLException {
         // 파일명이 왔을 때 UrlResource로 실제 파일에 접근해서 리소스를 가져온 다음 바이너리 데이터를 웹브라우저로 전송
         return new UrlResource("file:" + fileStore.getFullPath(filename));
     }

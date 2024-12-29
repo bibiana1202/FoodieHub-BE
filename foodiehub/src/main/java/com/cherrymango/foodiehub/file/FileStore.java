@@ -7,8 +7,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.UUID;
 
 @Component
@@ -19,16 +20,6 @@ public class FileStore {
 
     public String getFullPath(String filename) {
         return fileDir + filename;
-    }
-
-    public List<UploadImageDto> storeFiles(List<MultipartFile> multipartFiles) throws IOException {
-        List<UploadImageDto> storeFileResult = new ArrayList<>();
-        for (MultipartFile multipartFile : multipartFiles) {
-            if (!multipartFile.isEmpty()) {
-                storeFileResult.add(storeFile(multipartFile));
-            }
-        }
-        return storeFileResult;
     }
 
     public UploadImageDto storeFile(MultipartFile multipartFile) {
@@ -69,12 +60,13 @@ public class FileStore {
         }
     }
 
-    public boolean deleteFile(String storeFileName) {
-        String fullPath = getFullPath(storeFileName);
-        File file = new File(fullPath);
-        if (file.exists()) {
-            return file.delete();
+    public void deleteFile(String storeFileName) {
+        Path filePath = Paths.get(getFullPath(storeFileName));
+        try {
+            Files.deleteIfExists(filePath);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to delete file", e);
         }
-        return false;
     }
+
 }

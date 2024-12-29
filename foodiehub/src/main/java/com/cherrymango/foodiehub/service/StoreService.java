@@ -82,7 +82,11 @@ public class StoreService {
                 store.addStoreTag(StoreTag.createStoreTag(tag.get()));
             }
         }
+
         for (MultipartFile image : images) {
+            if (image.isEmpty()) {
+                continue;
+            }
             UploadImageDto uploadImageDto = fileStore.storeFile(image);
             store.addStoreImage(StoreImage.createStoreImage(uploadImageDto.getUploadFileName(), uploadImageDto.getStoreFileName()));
         }

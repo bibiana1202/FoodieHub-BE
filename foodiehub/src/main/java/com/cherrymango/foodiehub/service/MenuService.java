@@ -40,8 +40,6 @@ public class MenuService {
         Menu menu = menuRepository.findById(request.getId()).get();
         menu.setName(request.getName());
         menu.setPrice(request.getPrice());
-        System.out.println("request = " + request);
-        System.out.println("menu = " + menu);
         return menu.getId();
     }
 

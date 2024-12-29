@@ -23,7 +23,7 @@ public class StoreController {
     }
 
     @PostMapping("/save/{userId}")
-    public String saveStore(@ModelAttribute @Valid AddStoreRequestDto addStoreRequestDto, @PathVariable("userId") Long userId) {
+    public String postSaveStore(@ModelAttribute @Valid AddStoreRequestDto addStoreRequestDto, @PathVariable("userId") Long userId) {
         storeService.register(userId, addStoreRequestDto);
         return "redirect:/";
     }
@@ -37,8 +37,14 @@ public class StoreController {
     }
 
     @PostMapping("/update/{storeId}")
-    public String updateStore(@ModelAttribute @Valid UpdateStoreRequestDto updateStoreRequestDto, @PathVariable("storeId") Long storeId) {
+    public String postUpdateStore(@ModelAttribute @Valid UpdateStoreRequestDto updateStoreRequestDto, @PathVariable("storeId") Long storeId) {
         storeService.update(storeId, updateStoreRequestDto);
         return "redirect:/store/update/" + storeId;
+    }
+
+    // test mapping
+    @GetMapping("/review/update")
+    public String review() {
+        return "/review/update";
     }
 }
