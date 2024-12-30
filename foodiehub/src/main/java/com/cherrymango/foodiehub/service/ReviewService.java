@@ -185,4 +185,12 @@ public class ReviewService {
         }
     }
 
+    public void deleteReview(Long reviewId) {
+        Review review = reviewRepository.findById(reviewId).get();
+        if (review.getStoreImageName() != null) {
+            fileStore.deleteFile(review.getStoreImageName());
+        }
+        reviewRepository.deleteById(reviewId);
+    }
+
 }

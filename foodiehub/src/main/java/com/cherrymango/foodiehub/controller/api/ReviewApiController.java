@@ -117,4 +117,10 @@ public class ReviewApiController {
         return ResponseEntity.ok().build();
     }
 
+    @DeleteMapping("/{reviewId}")
+    public ResponseEntity<Void> deleteReview(@PathVariable("reviewId") Long reviewId) {
+        reviewService.deleteReview(reviewId);
+        return ResponseEntity.ok().build();
+    }
+
 }

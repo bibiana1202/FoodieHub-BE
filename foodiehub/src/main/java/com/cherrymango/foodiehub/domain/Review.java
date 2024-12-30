@@ -27,8 +27,7 @@ public class Review {
 
     private String content;
 
-    // 리뷰 reviewLikes.size만 필요
-    @OneToMany(mappedBy = "review", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "review", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ReviewLike> reviewLikes = new ArrayList<>();
 
     @Column(nullable = false)
