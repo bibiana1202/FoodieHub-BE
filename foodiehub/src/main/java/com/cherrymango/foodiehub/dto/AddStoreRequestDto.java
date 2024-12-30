@@ -30,7 +30,6 @@ public class AddStoreRequestDto { // StoreForm, vaildation
     private String lastOrder;
     @NotEmpty
     private String content;
-    // private LocalDateTime registerDate;
     @Valid // 내부 객체의 유효성 검사 활성화
     private List<AddMenuRequestDto> menus;
     private List<MultipartFile> images;

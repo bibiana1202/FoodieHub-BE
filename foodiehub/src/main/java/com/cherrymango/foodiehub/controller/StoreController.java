@@ -30,7 +30,7 @@ public class StoreController {
 
     @GetMapping("/update/{storeId}")
     public String getUpdateStore(@PathVariable("storeId") Long storeId, Model model) {
-        UpdateStoreDetailDto store = storeService.detail(storeId);
+        UpdateStoreDetailDto store = storeService.getUpdateDetails(storeId);
         model.addAttribute("store", store);
         model.addAttribute("storeId", storeId);
         return "store/update";

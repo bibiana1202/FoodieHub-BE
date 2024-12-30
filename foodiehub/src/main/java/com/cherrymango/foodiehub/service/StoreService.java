@@ -4,9 +4,7 @@ package com.cherrymango.foodiehub.service;
 import com.cherrymango.foodiehub.domain.*;
 import com.cherrymango.foodiehub.dto.*;
 import com.cherrymango.foodiehub.file.FileStore;
-import com.cherrymango.foodiehub.repository.SiteUserRepository;
-import com.cherrymango.foodiehub.repository.StoreRepository;
-import com.cherrymango.foodiehub.repository.TagRepository;
+import com.cherrymango.foodiehub.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +24,8 @@ public class StoreService {
     private final SiteUserRepository siteUserRepository;
     private final TagRepository tagRepository;
     private final FileStore fileStore;
+    private final StoreLikeRepository storeLikeRepository;
+    private final StoreFavoriteRepository storeFavoriteRepository;
 
     public Long register(Long userId, AddStoreRequestDto addStoreRequestDto) {
         SiteUser user = siteUserRepository.findById(userId)
@@ -94,7 +94,7 @@ public class StoreService {
         return store;
     }
 
-    public UpdateStoreDetailDto detail(Long id) {
+    public UpdateStoreDetailDto getUpdateDetails(Long id) {
         Store store = storeRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Store not found with id: " + id));
 
@@ -165,4 +165,56 @@ public class StoreService {
         }
     }
 
+    public StoreDetailResponseDto getStoreDetails(Long id, Long userId) {
+        Store store = storeRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Store not found with id: " + id));
+
+        SiteUser user;
+        if (userId != null) {
+            user = siteUserRepository.findById(userId)
+                    .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        } else {
+            user = null;
+        }
+
+        Boolean isLiked = user != null && storeLikeRepository.existsByStoreAndUser(store, user);
+        Boolean isFavorite = user != null && storeFavoriteRepository.existsByStoreAndUser(store, user);
+
+        List<String> tags = store.getStoreTags().stream()
+                .map(storeTag -> storeTag.getTag().getName())
+                .toList();
+
+        List<String> imageNames = store.getStoreImageList().stream()
+                .map(StoreImage::getStoreImageName)
+                .toList();
+
+        Double avgRating = store.getReviews().stream()
+                .mapToDouble(Review::getAvgRating)
+                .average()
+                .orElse(0.0);
+
+        // DTO 매핑
+        return StoreDetailResponseDto.builder()
+                .id(store.getId())
+                .name(store.getName())
+                .intro(store.getIntro())
+                .phone(store.getPhone())
+                .address(store.getAddress())
+                .category(store.getCategory())
+                .parking(store.getParking())
+                .operationHours(store.getOperationHours())
+                .lastOrder(store.getLastOrder())
+                .content(store.getContent())
+                .registerDate(store.getRegisterDate())
+                .menus(store.getMenus().stream()
+                        .map(menu -> new MenuResponseDto(null, menu.getName(), menu.getPrice()))
+                        .toList())
+                .images(imageNames)
+                .tags(tags)
+                .avgRating(avgRating)
+                .likes(store.getStoreLikes().size())
+                .isLiked(isLiked)
+                .isFavorite(isFavorite)
+                .build();
+    }
 }

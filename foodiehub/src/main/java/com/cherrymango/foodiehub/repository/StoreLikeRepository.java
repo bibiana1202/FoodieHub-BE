@@ -12,4 +12,6 @@ public interface StoreLikeRepository extends JpaRepository<StoreLike, Long> {
     Optional<StoreLike> findByStoreAndUser(Store store, SiteUser user);
     // 특정 Store에 대한 좋아요 개수 조회
     long countByStore(Store store);
+    // 특정 Store에 User의 좋아요 여부 반환
+    boolean existsByStoreAndUser(Store store, SiteUser user);
 }
