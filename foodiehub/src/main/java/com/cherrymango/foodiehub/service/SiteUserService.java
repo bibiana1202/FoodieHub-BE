@@ -3,12 +3,10 @@ package com.cherrymango.foodiehub.service;
 import com.cherrymango.foodiehub.domain.SiteUser;
 import com.cherrymango.foodiehub.dto.AddAdminRequest;
 import com.cherrymango.foodiehub.dto.AddUserRequest;
-import com.cherrymango.foodiehub.dto.UserProfileRequest;
-import com.cherrymango.foodiehub.repository.UserRepository;
+import com.cherrymango.foodiehub.dto.SiteUserProfileRequest;
+import com.cherrymango.foodiehub.repository.SiteUserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,8 +14,8 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
-public class UserService {
-    private final UserRepository userRepository;
+public class SiteUserService {
+    private final SiteUserRepository siteUserRepository;
 
     // 회원 저장
     public Long save(AddUserRequest dto){
@@ -25,7 +23,7 @@ public class UserService {
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         System.out.println("저장 권한: " + dto.getRole());
 
-        return userRepository.save(SiteUser.builder()
+        return siteUserRepository.save(SiteUser.builder()
                 .email(dto.getEmail())
                 .password(encoder.encode(dto.getPassword1()))// 패스워드 암호화 , 패스워드를 저장할때 시큐리티를 설정하며 패스워드 인코딩용으로 등록한 빈을 사용해서 암호화후에 저장
                 .nickname(dto.getNickname())
@@ -40,7 +38,7 @@ public class UserService {
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         System.out.println("저장 권한: " + dto.getRole());
 
-        return userRepository.save(SiteUser.builder()
+        return siteUserRepository.save(SiteUser.builder()
                 .email(dto.getEmail())
                 .password(encoder.encode(dto.getPassword1()))// 패스워드 암호화 , 패스워드를 저장할때 시큐리티를 설정하며 패스워드 인코딩용으로 등록한 빈을 사용해서 암호화후에 저장
                 .nickname(dto.getNickname())
@@ -53,13 +51,13 @@ public class UserService {
 
     // 전달 받은 유저 ID 로 유저를 검색해서 전달하는 메서드
     public SiteUser findById (Long userId){
-        return userRepository.findById(userId)
+        return siteUserRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User with id " + userId + " not found"));
     }
 
     // 이메일을 입력받아 SiteUser 테이블에서 유저를 찾고, 없으면 예외 처리
     public Optional<SiteUser> findByEmail (String email){
-        return userRepository.findByEmail(email);
+        return siteUserRepository.findByEmail(email);
     }
 
     // onAuthenticationSuccess 메서드에서 OAuth2 인증후 초기에 사용자 정보가 없을때 사용자 생성
@@ -74,20 +72,20 @@ public class UserService {
                 .role("ROLE_USER") // 기본 역할 설정
                 .provider(provider) // OAuth2 제공자 설정
                 .build();
-        return userRepository.save(user);
+        return siteUserRepository.save(user);
     }
 
     // 닉네임 중복 검사를 수행하는 메서드
     public boolean isNicknameDuplicated(String nickname){
-        return userRepository.existsByNickname(nickname);
+        return siteUserRepository.existsByNickname(nickname);
     }
 
     // 회원정보수정
     @Transactional // 트랜잭션 활성화
-    public boolean updateUserProfile(UserProfileRequest profileRequest, String profileImageUrl) {
+    public boolean updateUserProfile(SiteUserProfileRequest profileRequest, String profileImageUrl) {
         try {
             // 사용자 조회
-            SiteUser user = userRepository.findByEmail(profileRequest.getEmail())
+            SiteUser user = siteUserRepository.findByEmail(profileRequest.getEmail())
                     .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
 
             // 닉네임 및 전화번호 수정

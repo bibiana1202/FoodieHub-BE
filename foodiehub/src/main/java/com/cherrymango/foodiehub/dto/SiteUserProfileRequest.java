@@ -3,14 +3,13 @@ package com.cherrymango.foodiehub.dto;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @Setter
-public class UserProfileRequest {
+public class SiteUserProfileRequest {
 
     @NotBlank(message = "닉네임 은 필수 입력 항목입니다.")
     @Size(min = 2, max = 20, message = "닉네임은 2자 이상 20자 이하로 입력해주세요.")
@@ -26,6 +25,8 @@ public class UserProfileRequest {
 
     private String newPassword; // 새 비밀번호
 
-    private MultipartFile profileImage; // 파일 필드
+    private MultipartFile profileImage; // 업로드된 이미지
+
+    private String existingImageUrl; // 기존 이미지 URL
 
 }

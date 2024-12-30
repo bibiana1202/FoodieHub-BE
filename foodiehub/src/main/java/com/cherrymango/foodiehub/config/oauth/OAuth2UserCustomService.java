@@ -1,7 +1,7 @@
 package com.cherrymango.foodiehub.config.oauth;
 
 import com.cherrymango.foodiehub.domain.SiteUser;
-import com.cherrymango.foodiehub.repository.UserRepository;
+import com.cherrymango.foodiehub.repository.SiteUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -23,7 +23,7 @@ import java.util.Set;
 // OAuth2 인증후 사용자 정보를 불러오는 기본 서비스 : DefaultOAuth2UserService
 public class OAuth2UserCustomService extends DefaultOAuth2UserService {
 
-    private final UserRepository userRepository;
+    private final SiteUserRepository siteUserRepository;
 
     @Override
     // Spring Security 에서 OAuth2 인증이 성공하면 호출되는 메서드~!!!
@@ -67,9 +67,9 @@ public class OAuth2UserCustomService extends DefaultOAuth2UserService {
 
         String customizedNickname = name + "@google";
 
-        return userRepository.findByEmail(email)
+        return siteUserRepository.findByEmail(email)
                 .map(user -> user.update(name))
-                .orElseGet(() -> userRepository.save(
+                .orElseGet(() -> siteUserRepository.save(
                         SiteUser.builder()
                                 .email(email)
                                 .nickname(customizedNickname)
@@ -103,9 +103,9 @@ public class OAuth2UserCustomService extends DefaultOAuth2UserService {
 
         String customizedNickname = nickname + "@kakao";
 
-        return userRepository.findByEmail(email)
+        return siteUserRepository.findByEmail(email)
                 .map(user -> user.update(name))
-                .orElseGet(() -> userRepository.save(
+                .orElseGet(() -> siteUserRepository.save(
                         SiteUser.builder()
                                 .email(email)
                                 .nickname(customizedNickname)
@@ -155,9 +155,9 @@ public class OAuth2UserCustomService extends DefaultOAuth2UserService {
         String customizedNickname = name + "@naver";
 
         // 기존 유저가 있다면 업데이트, 없으면 생성
-        return userRepository.findByEmail(email)
+        return siteUserRepository.findByEmail(email)
                 .map(user -> user.update(name)) // 이름 업데이트
-                .orElseGet(() -> userRepository.save(
+                .orElseGet(() -> siteUserRepository.save(
                         SiteUser.builder()
                                 .email(email)
                                 .nickname(customizedNickname)

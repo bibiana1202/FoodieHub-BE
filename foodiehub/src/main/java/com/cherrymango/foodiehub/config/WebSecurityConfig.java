@@ -6,13 +6,10 @@ import com.cherrymango.foodiehub.config.oauth.OAuth2SuccessHandler;
 import com.cherrymango.foodiehub.config.oauth.OAuth2UserCustomService;
 import com.cherrymango.foodiehub.repository.RefreshTokenRepository;
 import com.cherrymango.foodiehub.service.UserDetailService;
-import com.cherrymango.foodiehub.service.UserService;
-import jakarta.servlet.http.HttpServletResponse;
+import com.cherrymango.foodiehub.service.SiteUserService;
 import lombok.RequiredArgsConstructor;
-import org.apache.catalina.filters.CorsFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
@@ -21,7 +18,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter;
 import org.springframework.security.web.SecurityFilterChain;
@@ -41,7 +37,7 @@ public class WebSecurityConfig {
     private final OAuth2UserCustomService oAuth2UserCustomService;
     private final TokenProvider tokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
-    private final UserService userService;
+    private final SiteUserService siteUserService;
     private final CustomLogoutSuccessHandler customLogoutSuccessHandler;
 
 
@@ -176,7 +172,7 @@ public class WebSecurityConfig {
     // OAuth2 인증 성공후 수행되는 작업 정의
     @Bean
     public OAuth2SuccessHandler oAuth2SuccessHandler() {
-        return new OAuth2SuccessHandler(tokenProvider, refreshTokenRepository, oAuth2AuthorizationRequestBasedOnCookieRepository(), userService);
+        return new OAuth2SuccessHandler(tokenProvider, refreshTokenRepository, oAuth2AuthorizationRequestBasedOnCookieRepository(), siteUserService);
     }
 
     // JWT 토큰을 이용한 인증 필터를 구현하는 클래스

@@ -4,7 +4,7 @@ import com.cherrymango.foodiehub.config.jwt.TokenProvider;
 import com.cherrymango.foodiehub.domain.RefreshToken;
 import com.cherrymango.foodiehub.domain.SiteUser;
 import com.cherrymango.foodiehub.repository.RefreshTokenRepository;
-import com.cherrymango.foodiehub.service.UserService;
+import com.cherrymango.foodiehub.service.SiteUserService;
 import com.cherrymango.foodiehub.util.CookieUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -40,7 +40,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     private final TokenProvider tokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
     private final OAuth2AuthorizationRequestBasedOnCookieRepository authorizationRequestRepository;
-    private final UserService userService;
+    private final SiteUserService siteUserService;
 
     // OAuth2 인증이 성공한 후 호출되는 메서드!!
     @Override
@@ -70,25 +70,36 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         String email;
         String nickname; // 카카오와 구글 모두 닉네임 처리
+        String profileimageurl;
         // 소셜 로그인 제공자별 사용자 정보 추출
         switch (registrationId) {
             case "google":
                 email = (String) attributes.get("email");
                 nickname = (String) attributes.get("name");
+                profileimageurl = (String) attributes.get("picture");
                 break;
 
             case "kakao":
                 // 카카오 계정의 사용자 정보 추출
                 email = (String) oAuth2User.getAttributes().get("email");
                 nickname = (String) oAuth2User.getAttributes().get("nickname");
+                profileimageurl = (String) oAuth2User.getAttributes().get("profileimage");
                 break;
 
             case "naver":
                 // 네이버는 attributes에 바로 데이터가 포함되어 있음
                 email = (String) attributes.get("email");
                 nickname = (String) attributes.get("nickname");
+                // response 객체 가져오기
+                // 사용자 속성 가져오기
+                OAuth2User principal1 = (OAuth2User) authentication.getPrincipal();
+                Map<String, Object> attributes1 = principal1.getAttributes();
+                // 'response' 객체 가져오기
+                Map<String, Object> response1 = (Map<String, Object>) attributes1.get("response");
+                // 'profile_image' URL 추출
+                String profileImage1 = (String) response1.get("profile_image");
+                profileimageurl = profileImage1;
                 break;
-
             default:
                 throw new IllegalArgumentException("지원하지 않는 소셜 로그인 제공자: " + registrationId);
         }
@@ -105,10 +116,10 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         String customizedNickname = nickname + "@" + registrationId;
         System.out.println("사용자 닉네임: " + customizedNickname);
         System.out.println("사용자 닉네임 email: " + email);
-
+        System.out.println("사용자 프로필 이미지 " + profileimageurl);
         // 2. 사용자 확인 또는 생성
-        SiteUser siteUser = userService.findByEmail(email)
-                .orElseGet(() -> userService.saveOAuth2User(email, customizedNickname, registrationId));
+        SiteUser siteUser = siteUserService.findByEmail(email)
+                .orElseGet(() -> siteUserService.saveOAuth2User(email, customizedNickname, registrationId));
         System.out.println("사용자 닉네임 siteUser: " + siteUser.getEmail());
 
         // 1. 리프레시 토큰 생성 -> 저장 -> 쿠키에 저장
@@ -166,5 +177,8 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
                 .queryParam("token", token)
                 .build().toUriString();
     }
+
+
+
 
 }

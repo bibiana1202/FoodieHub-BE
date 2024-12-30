@@ -4,12 +4,11 @@ import com.cherrymango.foodiehub.domain.Role;
 import com.cherrymango.foodiehub.domain.SiteUser;
 import com.cherrymango.foodiehub.dto.*;
 import com.cherrymango.foodiehub.service.FileUploadService;
-import com.cherrymango.foodiehub.service.UserService;
+import com.cherrymango.foodiehub.service.SiteUserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -17,7 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
-import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,8 +29,8 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @RestController
-public class UserController {
-    private final UserService userService;
+public class SiteUserController {
+    private final SiteUserService siteUserService;
     @Autowired
     private FileUploadService fileUploadService; // 파일 저장 서비스 주입
 
@@ -40,7 +38,7 @@ public class UserController {
     @GetMapping("/api/user/check-nickname")
     public ResponseEntity<?> checkNickname(@RequestParam("nickname") String nickname) {
         System.out.println("닉네임 중복확인" + nickname);
-        boolean isDuplicated = userService.isNicknameDuplicated(nickname);
+        boolean isDuplicated = siteUserService.isNicknameDuplicated(nickname);
         return ResponseEntity.ok().body(Map.of("isDuplicated", isDuplicated));
     }
 
@@ -64,14 +62,14 @@ public class UserController {
         // 회원 저장 시도
         try {
             // 닉네임 중복 검사
-            if(userService.isNicknameDuplicated(addUserRequest.getNickname())){
+            if(siteUserService.isNicknameDuplicated(addUserRequest.getNickname())){
                 bindingResult.rejectValue("nickname","nicknameDuplicated","이미 사용 중인 닉네임 입니다.");
                 return ResponseEntity.badRequest().body(Map.of("errors", List.of("이미 사용 중인 닉네임 입니다.")));
             }
             // 사용자 저장
             System.out.println("저장 권한 singup : "+addUserRequest.getRole());
             System.out.println("Email singup : "+addUserRequest.getEmail());
-            userService.save(addUserRequest);
+            siteUserService.save(addUserRequest);
         } catch (DataIntegrityViolationException e) {
             bindingResult.reject("signupFailed", "이미 등록된 사용자입니다.");
             return ResponseEntity.badRequest().body(Map.of("errors", List.of("이미 등록된 사용자입니다.")));
@@ -104,14 +102,14 @@ public class UserController {
         // 회원 저장 시도
         try {
             // 닉네임 중복 검사
-            if(userService.isNicknameDuplicated(addAdminRequest.getNickname())){
+            if(siteUserService.isNicknameDuplicated(addAdminRequest.getNickname())){
                 bindingResult.rejectValue("nickname","nicknameDuplicated","이미 사용 중인 닉네임 입니다.");
                 return ResponseEntity.badRequest().body(Map.of("errors", List.of("이미 사용 중인 닉네임 입니다.")));
             }
             addAdminRequest.setRole("ROLE_ADMIN");
             System.out.println("저장 권한 singup : "+addAdminRequest.getRole());
             System.out.println("Email singup : "+addAdminRequest.getEmail());
-            userService.save_admin(addAdminRequest);
+            siteUserService.save_admin(addAdminRequest);
         } catch (DataIntegrityViolationException e) {
             bindingResult.reject("signupFailed", "이미 등록된 사용자입니다. 회원정보를 다시 확인해주세요.");
             return ResponseEntity.badRequest().body(Map.of("errors", List.of("이미 등록된 사용자입니다.")));
@@ -133,7 +131,6 @@ public class UserController {
             OAuth2AuthenticationToken authToken = (OAuth2AuthenticationToken) principal;
             Map<String, Object> attributes = authToken.getPrincipal().getAttributes();
             email = (String) attributes.get("email");
-            System.out.println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^"+email);
         } else {
             // 폼 로그인 처리
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -141,7 +138,6 @@ public class UserController {
                 email = authentication.getName();//authentication.getName(); // 사용자 이름 가져오기
             }
         }
-        System.out.println("**************************\t" + email);
 
         // 이메일이 없을 경우 에러 반환
         if (email == null || email.isEmpty() || email.equals("anonymousUser")) {
@@ -150,7 +146,7 @@ public class UserController {
 
 
         // 사용자 데이터 조회
-        Optional<SiteUser> siteUser = userService.findByEmail(email);
+        Optional<SiteUser> siteUser = siteUserService.findByEmail(email);
         if (siteUser.isPresent()) {
             SiteUser user = siteUser.get();
             Long userId = user.getId();
@@ -165,7 +161,7 @@ public class UserController {
 
             // DTO를 사용해 응답 반환
             // DTO 생성
-            UserInfoResponse response = UserInfoResponse.builder()
+            SiteUserInfoResponse response = SiteUserInfoResponse.builder()
                     .userid(userId)
                     .cellphone(cellPhone)
                     .email(email)
@@ -254,9 +250,8 @@ public class UserController {
 
     // 회원정보수정
     @PostMapping("/api/user/update-profile")
-    public ResponseEntity<?> updateUserProfile(@Valid @ModelAttribute UserProfileRequest profileRequest, BindingResult bindingResult){
-        System.out.println("프로필 요청 데이터: " + profileRequest);
-        System.out.println("업로드된 파일: " + profileRequest.getProfileImage().getOriginalFilename());
+    public ResponseEntity<?> updateUserProfile(@Valid @ModelAttribute SiteUserProfileRequest profileRequest, BindingResult bindingResult){
+        System.out.println("updateUserProfile!!!");
         String profileImageUrl = null;
 
         // 입력값 검증 에러 처리
@@ -271,13 +266,17 @@ public class UserController {
         // 파일 업로드 처리
         try {
             System.out.println("파일 업로드 처리"+profileRequest.getProfileImage());
-            System.out.println("파일 업로드 처리"+profileRequest.getProfileImage().isEmpty());
             if (profileRequest.getProfileImage() != null && !profileRequest.getProfileImage().isEmpty()) {
-                // 파일 저장
+                // 새로운 이미지가 업로드된 경우
                 String savedFilePath = fileUploadService.saveFile(profileRequest.getProfileImage());
                 profileImageUrl = "/uploads/" + savedFilePath; // 파일 URL 생성
                 System.out.println("저장된 파일 경로: " + profileImageUrl);
+            } else {
+                // 이미지 수정이 없을 경우 기존 이미지 URL 유지
+                profileImageUrl = profileRequest.getExistingImageUrl();
+                System.out.println("기존 이미지 유지: " + profileImageUrl);
             }
+
         } catch (IOException e) {
             return ResponseEntity.status(500).body(Map.of("errors", List.of("파일 업로드 실패: " + e.getMessage())));
         }
@@ -296,7 +295,7 @@ public class UserController {
             // 사용자 저장
             System.out.println("사용자 저장");
             // 서비스 호출
-            boolean isUpdated = userService.updateUserProfile(profileRequest, profileImageUrl);
+            boolean isUpdated = siteUserService.updateUserProfile(profileRequest, profileImageUrl);
             if (isUpdated) {
 
                 System.out.println("업데이트 성공");

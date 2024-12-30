@@ -12,7 +12,7 @@ import lombok.Builder;
 @Getter
 @Setter
 @Builder
-public class UserInfoResponse {
+public class SiteUserInfoResponse {
     private Long userid;
     private String cellphone;
     private String email;
