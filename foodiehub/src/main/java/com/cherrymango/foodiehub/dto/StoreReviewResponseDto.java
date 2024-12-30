@@ -25,4 +25,5 @@ public class StoreReviewResponseDto {
     private String reviewImage;
     private Integer likes;
 
+    private Boolean isLiked; // 로그인 상태일 때만 반환
 }

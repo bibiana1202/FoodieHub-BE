@@ -21,4 +21,5 @@ public class PagedResponseDto<T> {
         this.totalElements = page.getTotalElements();
         this.totalPages = page.getTotalPages();
     }
+
 }

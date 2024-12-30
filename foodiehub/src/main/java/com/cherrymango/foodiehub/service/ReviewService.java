@@ -5,6 +5,7 @@ import com.cherrymango.foodiehub.domain.SiteUser;
 import com.cherrymango.foodiehub.domain.Store;
 import com.cherrymango.foodiehub.dto.*;
 import com.cherrymango.foodiehub.file.FileStore;
+import com.cherrymango.foodiehub.repository.ReviewLikeRepository;
 import com.cherrymango.foodiehub.repository.ReviewRepository;
 import com.cherrymango.foodiehub.repository.SiteUserRepository;
 import com.cherrymango.foodiehub.repository.StoreRepository;
@@ -28,6 +29,7 @@ public class ReviewService {
     private final StoreRepository storeRepository;
     private final SiteUserRepository siteUserRepository;
     private final FileStore fileStore;
+    private final ReviewLikeRepository reviewLikeRepository;
 
     public Long save(Long userId, Long storeId, AddReviewRequestDto addReviewRequestDto) {
         SiteUser user = siteUserRepository.findById(userId)
@@ -49,68 +51,66 @@ public class ReviewService {
     }
 
     // 스토어 리뷰, 사용자 정보(닉네임, 프로필) 포함 반환
-    public List<StoreReviewResponseDto> findReviewsByStoreId(Long storeId) {
-        Store store = storeRepository.findById(storeId)
-                .orElseThrow(() -> new IllegalArgumentException("Store not found with id: " + storeId));
-
-        return reviewRepository.findByStore(store).stream()
-                .map(review -> new StoreReviewResponseDto(
-                        review.getUser().getNickname(),
-                        review.getUser().getProfileImageUrl(),
-                        review.getId(),
-                        roundToFirstDecimal(review.getAvgRating()), // 평균 별점 소수점 첫째 자리로 반환
-                        review.getTasteRating(),
-                        review.getPriceRating(),
-                        review.getCleanRating(),
-                        review.getFriendlyRating(),
-                        review.getCreateDate(),
-                        review.getContent(),
-                        review.getStoreImageName(),
-                        review.getReviewLikes().size() // 좋아요 수
-                ))
-                .toList();
-    }
+//    public List<StoreReviewResponseDto> findReviewsByStoreId(Long storeId) {
+//        Store store = storeRepository.findById(storeId)
+//                .orElseThrow(() -> new IllegalArgumentException("Store not found with id: " + storeId));
+//
+//        return reviewRepository.findByStore(store).stream()
+//                .map(review -> new StoreReviewResponseDto(
+//                        review.getUser().getNickname(),
+//                        review.getUser().getProfileImageUrl(),
+//                        review.getId(),
+//                        roundToFirstDecimal(review.getAvgRating()), // 평균 별점 소수점 첫째 자리로 반환
+//                        review.getTasteRating(),
+//                        review.getPriceRating(),
+//                        review.getCleanRating(),
+//                        review.getFriendlyRating(),
+//                        review.getCreateDate(),
+//                        review.getContent(),
+//                        review.getStoreImageName(),
+//                        review.getReviewLikes().size() // 좋아요 수
+//                ))
+//                .toList();
+//    }
 
     // 페이징 처리된 스토어 리뷰
-    public PagedResponseDto<StoreReviewResponseDto> findReviewsByStoreId(Long storeId, int page) {
+    public PagedResponseDto<StoreReviewResponseDto> findReviewsByStoreId(Long storeId, int page, Long userId) {
         Store store = storeRepository.findById(storeId)
                 .orElseThrow(() -> new IllegalArgumentException("Store not found with id: " + storeId));
+
+        // userId가 null이 아니면 사용자 객체 조회
+        SiteUser user;
+        if (userId != null) {
+            user = siteUserRepository.findById(userId)
+                    .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        } else {
+            user = null;
+        }
 
         List<Sort.Order> sorts = new ArrayList<>();
         sorts.add(Sort.Order.desc("createDate"));
         Pageable pageable = PageRequest.of(page, 4, Sort.by(sorts)); // 4개씩, 최신순
         Page<Review> reviewsPage = reviewRepository.findByStore(store, pageable);
 
-        return new PagedResponseDto<>(reviewsPage.map(review -> new StoreReviewResponseDto(
-                review.getUser().getNickname(),
-                review.getUser().getProfileImageUrl(),
-                review.getId(),
-                roundToFirstDecimal(review.getAvgRating()),
-                review.getTasteRating(),
-                review.getPriceRating(),
-                review.getCleanRating(),
-                review.getFriendlyRating(),
-                review.getCreateDate(),
-                review.getContent(),
-                review.getStoreImageName(),
-                review.getReviewLikes().size())));
+        return new PagedResponseDto<>(reviewsPage
+                .map(review -> {
+                    boolean isLiked = user != null && reviewLikeRepository.existsByReviewAndUser(review, user);
+                    return new StoreReviewResponseDto(
+                            review.getUser().getNickname(),
+                            review.getUser().getProfileImageUrl(),
+                            review.getId(),
+                            roundToFirstDecimal(review.getAvgRating()),
+                            review.getTasteRating(),
+                            review.getPriceRating(),
+                            review.getCleanRating(),
+                            review.getFriendlyRating(),
+                            review.getCreateDate(),
+                            review.getContent(),
+                            review.getStoreImageName(),
+                            review.getReviewLikes().size(),
+                            isLiked);
+                }));
     }
-
-    // 프로필 없으면 기본 이미지 -> 컨트롤러에서 null이면 기본이미지 반환하도록
-    /*
-    @RestController
-    @RequestMapping("/api/images")
-    public class ImageController {
-
-        @GetMapping("/default")
-        public ResponseEntity<Resource> getDefaultImage() throws MalformedURLException {
-            Resource resource = new UrlResource("classpath:/static/images/default-image.jpg");
-            return ResponseEntity.ok()
-                    .contentType(MediaType.IMAGE_JPEG)
-                    .body(resource);
-        }
-    }
-     */
 
     // 마이페이지 리뷰, 식당 이름 포함 반환
     public List<MyPageReviewResponseDto> findReviewsByUserId(Long userId) {
