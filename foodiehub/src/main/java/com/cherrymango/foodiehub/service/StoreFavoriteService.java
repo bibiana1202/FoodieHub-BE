@@ -22,7 +22,7 @@ public class StoreFavoriteService {
 
     // 즐겨찾기 토글
     @Transactional
-    public boolean toggleFavorite(Long storeId, Long userId) {
+    public Boolean toggleFavorite(Long storeId, Long userId) {
         Store store = storeRepository.findById(storeId).orElseThrow(() -> new IllegalArgumentException("Store not found"));
         SiteUser user = siteUserRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
 
