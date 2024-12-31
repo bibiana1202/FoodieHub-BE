@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.ToDoubleFunction;
 import java.util.stream.Collectors;
 
 @Service
@@ -177,7 +178,7 @@ public class StoreService {
 
         List<String> tags = extractTags(store.getStoreTags());
         List<String> imageNames = extractImageNames(store.getStoreImageList());
-        Double avgRating = roundToFirstDecimal(calculateAverageRating(store));
+        Double avgRating = roundToFirstDecimal(calculateAverageRating(store, Review::getAvgRating));
 
         return mapToStoreDetailResponseDto(store, tags, imageNames, avgRating, isLiked, isFavorite);
     }
@@ -194,9 +195,9 @@ public class StoreService {
                 .toList();
     }
 
-    private Double calculateAverageRating(Store store) {
+    private Double calculateAverageRating(Store store, ToDoubleFunction<Review> ratingExtractor) {
         return store.getReviews().stream()
-                .mapToDouble(Review::getAvgRating)
+                .mapToDouble(ratingExtractor)
                 .average()
                 .orElse(0.0);
     }
@@ -282,6 +283,33 @@ public class StoreService {
                             .build();
                 })
                 .collect(Collectors.toList());
+    }
+
+    public MyStoreResponseDto getMyStoreDetails(Long userId) {
+        SiteUser user = siteUserRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        Optional<Store> storeOptional = storeRepository.findByUser(user);
+        if (storeOptional.isEmpty()) {
+            return null; // Store 없을 시 null 반환
+        }
+
+        Store store = storeOptional.get();
+
+        Double averageTotalRating = roundToFirstDecimal(calculateAverageRating(store, Review::getAvgRating));
+        Double averageTasteRating = roundToFirstDecimal(calculateAverageRating(store, Review::getTasteRating));
+        Double averagePriceRating = roundToFirstDecimal(calculateAverageRating(store, Review::getPriceRating));
+        Double averageCleanRating = roundToFirstDecimal(calculateAverageRating(store, Review::getCleanRating));
+        Double averageFriendlyRating = roundToFirstDecimal(calculateAverageRating(store, Review::getFriendlyRating));
+
+        return MyStoreResponseDto.builder()
+                .id(store.getId())
+                .name(store.getName())
+                .averageTotalRating(averageTotalRating)
+                .averageTasteRating(averageTasteRating)
+                .averagePriceRating(averagePriceRating)
+                .averageCleanRating(averageCleanRating)
+                .averageFriendlyRating(averageFriendlyRating)
+                .build();
     }
 
 }
