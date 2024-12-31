@@ -38,10 +38,6 @@ public class SiteUser implements UserDetails { // UserDetails를 상속받아 �
     private String nickname;
 
     // 권한
-//    @Column(name = "role", nullable = false)
-//    private String role; // ROLE_USER, ROLE_ADMIN, ROLE_OAUTH 등
-//
-    // 권한
     @Column(name = "role", nullable = false)
     @Enumerated(EnumType.STRING)
     private Role role;
@@ -58,7 +54,8 @@ public class SiteUser implements UserDetails { // UserDetails를 상속받아 �
     @Column(name="businessno", nullable=true, unique = true)
     private String businessno;
 
-    @Column(nullable = true) // 프로필 이미지 경로는 필수 값이 아니므로 nullable=true
+    // 프로필 사진
+    @Column(name = "profileimageurl", nullable = true) // 프로필 이미지 경로는 필수 값이 아니므로 nullable=true
     private String profileImageUrl;
 
 
@@ -72,7 +69,6 @@ public class SiteUser implements UserDetails { // UserDetails를 상속받아 �
         this.nickname = nickname;
         this.name = name;
         this.cellphone = cellphone;
-//        this.role = role != null ? Role.valueOf(role) : Role.ROLE_USER; // 문자열을 Enum으로 변환
         this.role = Role.fromString(role); // 안전한 변환
         this.provider = provider != null ? provider : "local";
         this.businessno =businessno;

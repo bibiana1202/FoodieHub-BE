@@ -5,12 +5,14 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 
+import java.security.Key;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.Date;
@@ -32,6 +34,9 @@ public class TokenProvider {
 
     public String makeToken(Date expiry, SiteUser siteUser) {
         Date now = new Date();
+        System.out.println("JWT 생성 시 SECRET_KEY: " + jwtProperties.getSecretKey());
+        // Keys.hmacShaKeyFor()를 사용해 Key 객체 생성
+        Key signingKey = Keys.hmacShaKeyFor(jwtProperties.getSecretKey().getBytes());
 
         return Jwts.builder()
                 .setHeaderParam(Header.TYPE, Header.JWT_TYPE) // 헤더 typ : JWT
@@ -42,8 +47,8 @@ public class TokenProvider {
 
                 .claim("id", siteUser.getId()) // 클레임 id : 유저 ID
                 .claim("role", siteUser.getRole()) // 사용자 역할 추가
-
-                .signWith(SignatureAlgorithm.HS256, jwtProperties.getSecretKey()) // 서명 : 비밀값과 함께 해시값을 HS256 방식으로 암호화
+                .signWith(signingKey) // Key 객체 사용
+//                .signWith(SignatureAlgorithm.HS256, jwtProperties.getSecretKey()) // 서명 : 비밀값과 함께 해시값을 HS256 방식으로 암호화
                 .compact(); // JWT(Java Web Token) 의 최종 문자열 형태로의 인코딩 수행(JWT 토큰 문자열)
 
     }
@@ -51,9 +56,15 @@ public class TokenProvider {
     // 2.JWT 토큰 유효성 검증 메서드
     public boolean validToken(String token) {
         try {
-            Jwts.parser()
-                    .setSigningKey(jwtProperties.getSecretKey()) // 비밀값으로 복호화, 복호화 과정에서 에러가 발생하면 유효하지 않은 토큰
+//            Jwts.parser()
+//                    .setSigningKey(jwtProperties.getSecretKey()) // 비밀값으로 복호화, 복호화 과정에서 에러가 발생하면 유효하지 않은 토큰
+//                    .parseClaimsJws(token); // 주어진 토큰을 파싱하고 서명을 검증함.
+            Key signingKey = Keys.hmacShaKeyFor(jwtProperties.getSecretKey().getBytes()); // 동일한 방식으로 Key 생성
+            Jwts.parserBuilder()
+                    .setSigningKey(signingKey) // 생성 시 사용한 Key와 동일한 방식
+                    .build()
                     .parseClaimsJws(token); // 주어진 토큰을 파싱하고 서명을 검증함.
+
             return true; // 예외가 발생하지 않으면 유효한 토큰
         } catch (Exception e) {
             return false;
@@ -70,10 +81,17 @@ public class TokenProvider {
     }
 
     private Claims getClaims(String token) {
-        return Jwts.parser() // 클레임 조회
-                .setSigningKey(jwtProperties.getSecretKey())// 비밀 키를 이용해 토큰을 복호화
+//        return Jwts.parser() // 클레임 조회
+//                .setSigningKey(jwtProperties.getSecretKey())// 비밀 키를 이용해 토큰을 복호화
+//                .parseClaimsJws(token) // 토큰 파싱 및 서명 검증
+//                .getBody(); // 클레임(Claims) 정보를 반환
+        Key signingKey = Keys.hmacShaKeyFor(jwtProperties.getSecretKey().getBytes()); // 동일한 방식으로 Key 생성
+        return Jwts.parserBuilder() // parserBuilder로 변경
+                .setSigningKey(signingKey) // 동일한 Key 사용
+                .build()
                 .parseClaimsJws(token) // 토큰 파싱 및 서명 검증
                 .getBody(); // 클레임(Claims) 정보를 반환
+
     }
 
     // 4. 토큰 기반으로 유저 ID 를 가져오는 메서드

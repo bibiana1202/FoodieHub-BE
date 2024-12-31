@@ -20,6 +20,7 @@ public class TokenService {
         // 전달받은 리프레시 토큰으로 토큰 유효성 검사를 진행
         // 토큰 유효성 검사에 실패하면 예외 발생
         if(!tokenProvider.validToken(refreshToken)){
+            System.out.println("Invalid refresh token: " + refreshToken);
             throw new IllegalArgumentException("Invalid refresh token");
         }
 

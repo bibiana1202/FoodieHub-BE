@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("http://localhost:3000")
 public class TokenApiController {
 
     private final TokenService tokenService;

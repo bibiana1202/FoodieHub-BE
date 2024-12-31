@@ -13,13 +13,13 @@ import lombok.Builder;
 @Setter
 @Builder
 public class SiteUserInfoResponse {
-    private Long userid;
+//    private Long userid;
     private String cellphone;
     private String email;
-    private String name;
+//    private String name;
     private String nickname;
-    private String provider;
+//    private String provider;
     private Role role;
-    private String businessno;
+//    private String businessno;
     private String profileimageurl;
 }

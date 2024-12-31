@@ -68,7 +68,6 @@ public class SiteUserService {
                 .email(email)
                 .password("") // OAuth2 사용자는 비밀번호가 필요하지 않음
                 .nickname(nickname) // 이메일의 로컬 부분을 닉네임으로 사용
-//                .nickname(email.split("@")[0]) // 이메일의 로컬 부분을 닉네임으로 사용
                 .role("ROLE_USER") // 기본 역할 설정
                 .provider(provider) // OAuth2 제공자 설정
                 .build();
