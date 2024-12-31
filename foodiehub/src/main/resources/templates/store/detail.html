@@ -21,7 +21,7 @@
     <div class="store-info">
         <p><strong>Phone:</strong> <span th:text="${store.phone}"></span></p>
         <p><strong>Address:</strong> <span th:text="${store.address}"></span></p>
-        <p><strong>Category:</strong> <span th:text="${store.category.name}"></span></p>
+        <p><strong>Category:</strong> <span th:text="${store.category}"></span></p>
         <p><strong>Parking:</strong> <span th:text="${store.parking != null ? (store.parking == 1 ? 'Available' : 'Not Available') : 'N/A'}"></span></p>
         <p><strong>Operation Hours:</strong> <span th:text="${store.operationHours}"></span></p>
         <p><strong>Last Order:</strong> <span th:text="${store.lastOrder}"></span></p>
@@ -36,7 +36,7 @@
         <h2>Gallery</h2>
         <div class="images">
             <img th:each="image : ${store.images}"
-                 th:src="@{/store/store-image/{filename}(filename=${image})}"
+                 th:src="@{/api/store/store-image/{filename}(filename=${image})}"
                  alt="Store Image"
                  class="store-image">
         </div>

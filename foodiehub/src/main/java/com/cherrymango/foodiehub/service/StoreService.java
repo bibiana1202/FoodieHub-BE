@@ -98,27 +98,24 @@ public class StoreService {
         Store store = storeRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Store not found with id: " + id));
 
-        // Store 정보를 UpdateStoreDetailDto로 변환
-        UpdateStoreDetailDto dto = new UpdateStoreDetailDto();
-        dto.setId(store.getId());
-        dto.setName(store.getName());
-        dto.setIntro(store.getIntro());
-        dto.setPhone(store.getPhone());
-        dto.setAddress(store.getAddress());
-        dto.setCategory(store.getCategory());
-        dto.setParking(store.getParking());
-        dto.setOperationHours(store.getOperationHours());
-        dto.setLastOrder(store.getLastOrder());
-        dto.setContent(store.getContent());
-        dto.setRegisterDate(store.getRegisterDate());
-
-        // Store의 태그 리스트를 DTO로 변환
         List<String> tags = store.getStoreTags().stream()
                 .map(storeTag -> storeTag.getTag().getName())
                 .toList();
-        dto.setTags(tags);
 
-        return dto;
+        return UpdateStoreDetailDto.builder()
+                .id(store.getId())
+                .name(store.getName())
+                .intro(store.getIntro())
+                .phone(store.getPhone())
+                .address(store.getAddress())
+                .category(store.getCategory())
+                .parking(store.getParking())
+                .operationHours(store.getOperationHours())
+                .lastOrder(store.getLastOrder())
+                .content(store.getContent())
+                .registerDate(store.getRegisterDate())
+                .tags(tags)
+                .build();
     }
 
     @Transactional
@@ -166,6 +163,7 @@ public class StoreService {
         }
     }
 
+    // 가게 상세 페이지 정보 제공
     public StoreDetailResponseDto getStoreDetails(Long id, Long userId) {
         Store store = storeRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Store not found with id: " + id));
@@ -215,7 +213,7 @@ public class StoreService {
                 .intro(store.getIntro())
                 .phone(store.getPhone())
                 .address(store.getAddress())
-                .category(store.getCategory())
+                .category(store.getCategory().getDescription())
                 .parking(store.getParking())
                 .operationHours(store.getOperationHours())
                 .lastOrder(store.getLastOrder())
@@ -232,4 +230,58 @@ public class StoreService {
                 .isFavorite(isFavorite)
                 .build();
     }
+
+    public List<MyPageStoreResponseDto> getStoreLikeList(Long userId) {
+
+        SiteUser user = siteUserRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        List<StoreLike> storeLikes = storeLikeRepository.findByUserOrderByLikeTimeDesc(user); // 최신순으로 정렬된 StoreLike 리스트
+
+        return storeLikes.stream()
+                .map(storeLike -> {
+                    Store store = storeLike.getStore();
+
+                    String imagePath = store.getStoreImageList() != null && !store.getStoreImageList().isEmpty()
+                            ? store.getStoreImageList().get(0).getStoreImageName()
+                            : null; // 첫 번째 이미지 사용
+
+                    return MyPageStoreResponseDto.builder()
+                            .id(store.getId())
+                            .name(store.getName())
+                            .intro(store.getIntro())
+                            .category(store.getCategory().getDescription())
+                            .content(store.getContent())
+                            .image(imagePath)
+                            .build();
+                })
+                .collect(Collectors.toList());
+
+    }
+
+    public List<MyPageStoreResponseDto> getStoreFavoriteList(Long userId) {
+
+        SiteUser user = siteUserRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        List<StoreFavorite> storeFavorites = storeFavoriteRepository.findByUserOrderByFavoriteTimeDesc(user); // 최신순으로 정렬된 StoreFavorite 리스트
+
+        return storeFavorites.stream()
+                .map(storeFavorite -> {
+                    Store store = storeFavorite.getStore();
+
+                    String imagePath = store.getStoreImageList() != null && !store.getStoreImageList().isEmpty()
+                            ? store.getStoreImageList().get(0).getStoreImageName()
+                            : null; // 첫 번째 이미지 사용
+
+                    return MyPageStoreResponseDto.builder()
+                            .id(store.getId())
+                            .name(store.getName())
+                            .intro(store.getIntro())
+                            .category(store.getCategory().getDescription())
+                            .content(store.getContent())
+                            .image(imagePath)
+                            .build();
+                })
+                .collect(Collectors.toList());
+    }
+
 }

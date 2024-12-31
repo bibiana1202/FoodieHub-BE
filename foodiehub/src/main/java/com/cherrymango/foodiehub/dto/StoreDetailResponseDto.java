@@ -1,18 +1,13 @@
 package com.cherrymango.foodiehub.dto;
 
-import com.cherrymango.foodiehub.domain.Category;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
-@Setter
 @Builder
-@ToString
 public class StoreDetailResponseDto {
 
     private Long id;
@@ -20,13 +15,13 @@ public class StoreDetailResponseDto {
     private String intro;
     private String phone;
     private String address;
-    private Category category;
+    private String category;
     private Integer parking;
     private String operationHours;
     private String lastOrder;
     private String content;
     private LocalDateTime registerDate;
-    private List<MenuResponseDto> menus; // new MenuResponseDto(null, , ) 와 같이 사용
+    private List<MenuResponseDto> menus; // new MenuResponseDto(null, , )
     private List<String> images;
     private List<String> tags;
 

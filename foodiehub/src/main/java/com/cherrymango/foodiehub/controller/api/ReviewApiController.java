@@ -56,15 +56,15 @@ public class ReviewApiController {
         return ResponseEntity.ok(reviewId);
     }
 
-//    @GetMapping("/store/{storeId}")
-//    public ResponseEntity<List<StoreReviewResponseDto>> findAllStoreReviews(@PathVariable("storeId") Long storeId) {
-//        List<StoreReviewResponseDto> storeReviews = reviewService.findReviewsByStoreId(storeId);
-//        return ResponseEntity.ok(storeReviews);
-//    }
+    @GetMapping("/admin/store/{storeId}")
+    public ResponseEntity<List<StoreReviewResponseDto>> findStoreReviews(@PathVariable("storeId") Long storeId) {
+        List<StoreReviewResponseDto> storeReviews = reviewService.getStoreReviews(storeId);
+        return ResponseEntity.ok(storeReviews);
+    }
 
-    // 가게 리뷰 목록
+    // 가게 상세 리뷰 목록
     @GetMapping("/store/{storeId}")
-    public ResponseEntity<PagedResponseDto<StoreReviewResponseDto>> findStoreReviews(@PathVariable("storeId") Long storeId,
+    public ResponseEntity<PagedResponseDto<StoreReviewResponseDto>> findPagedStoreReviews(@PathVariable("storeId") Long storeId,
                                                                                      @RequestParam(value = "page", defaultValue = "0") int page,
                                                                                      Principal principal) {
         // Principal에서 사용자 정보 가져오기
@@ -90,15 +90,15 @@ public class ReviewApiController {
 //            }
 //        }
 
-        PagedResponseDto<StoreReviewResponseDto> storeReviews = reviewService.findReviewsByStoreId(storeId, page, userId);
-        // PagedResponseDto<StoreReviewResponseDto> storeReviews = reviewService.findReviewsByStoreId(storeId, page, 1L);
+        PagedResponseDto<StoreReviewResponseDto> storeReviews = reviewService.getPagedStoreReviews(storeId, page, userId);
+        // PagedResponseDto<StoreReviewResponseDto> storeReviews = reviewService.getPagedStoreReviews(storeId, page, 1L);
         return ResponseEntity.ok(storeReviews);
     }
 
     // 마이페이지 리뷰 목록
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<MyPageReviewResponseDto>> findAllMyPageReviews(@PathVariable("userId") Long userId) {
-        List<MyPageReviewResponseDto> userReviews = reviewService.findReviewsByUserId(userId);
+        List<MyPageReviewResponseDto> userReviews = reviewService.findReviewsByUser(userId);
         return ResponseEntity.ok(userReviews);
     }
 

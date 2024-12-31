@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+
 @Component
 @RequiredArgsConstructor
 public class InitDb { // 카테고리, 태그
@@ -21,6 +23,9 @@ public class InitDb { // 카테고리, 태그
         initService.dbInit2();
         initService.dbInit3();
         initService.dbInit4();
+        initService.dbInit5();
+        initService.dbInit6();
+        initService.dbInit7();
     }
 
     @Component
@@ -67,6 +72,7 @@ public class InitDb { // 카테고리, 태그
             store.setCategory(Category.KOREAN);
             store.setParking(0);
             store.setContent("청마루 가게 소개");
+            store.setRegisterDate(LocalDateTime.now());
             store.addStoreTag(StoreTag.createStoreTag(tagRepository.findByName("혼밥").get()));
             store.addStoreTag(StoreTag.createStoreTag(tagRepository.findByName("부모님").get()));
             store.addMenu(Menu.createMenu("육회비빔밥", 13000));
@@ -81,6 +87,56 @@ public class InitDb { // 카테고리, 태그
             user.setPassword("123");
             user.setNickname("sson2");
             em.persist(user);
+        }
+
+        public void dbInit5() {
+            SiteUser siteUser = siteUserRepository.findByEmail("aksen0609@naver.com").get();
+
+            Store store = new Store();
+            store.setUser(siteUser);
+            store.setName("온밀담");
+            store.setIntro("고기국수 맛집");
+            store.setPhone("010-2093-6947");
+            store.setAddress("서울시 용두동");
+            store.setCategory(Category.ITALIAN);
+            store.setParking(0);
+            store.setContent("온밀담 가게 소개");
+            store.setRegisterDate(LocalDateTime.now());
+            store.addStoreTag(StoreTag.createStoreTag(tagRepository.findByName("감성").get()));
+            store.addStoreTag(StoreTag.createStoreTag(tagRepository.findByName("모임").get()));
+            store.addMenu(Menu.createMenu("고기국수", 13000));
+            store.addMenu(Menu.createMenu("비빔국수", 8000));
+
+            em.persist(store);
+        }
+
+        public void dbInit6() {
+            SiteUser user = new SiteUser();
+            user.setEmail("aksen069@gmail.com");
+            user.setPassword("123");
+            user.setNickname("sson3");
+            em.persist(user);
+        }
+
+        public void dbInit7() {
+            SiteUser siteUser = siteUserRepository.findByEmail("aksen069@gmail.com").get();
+
+            Store store = new Store();
+            store.setUser(siteUser);
+            store.setName("버거베어");
+            store.setIntro("수제버거 맛집");
+            store.setPhone("010-2093-6947");
+            store.setAddress("서울시 용두동");
+            store.setCategory(Category.ASIAN);
+            store.setParking(0);
+            store.setContent("버거베어 가게 소개");
+            store.setRegisterDate(LocalDateTime.now());
+            store.addStoreTag(StoreTag.createStoreTag(tagRepository.findByName("혼밥").get()));
+            store.addStoreTag(StoreTag.createStoreTag(tagRepository.findByName("데이트").get()));
+            store.addMenu(Menu.createMenu("더블치즈버거", 13000));
+            store.addMenu(Menu.createMenu("클래식버거", 8000));
+
+            em.persist(store);
         }
 
     }

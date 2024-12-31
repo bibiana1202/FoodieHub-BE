@@ -9,6 +9,8 @@ import java.util.Optional;
 
 public interface ReviewLikeRepository extends JpaRepository<ReviewLike, Long> {
     Optional<ReviewLike> findByReviewAndUser(Review review, SiteUser user);
+
     long countByReview(Review review);
+
     boolean existsByReviewAndUser(Review review, SiteUser user);
 }

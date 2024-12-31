@@ -5,18 +5,14 @@ import com.cherrymango.foodiehub.dto.AddStoreRequestDto;
 import com.cherrymango.foodiehub.dto.StoreDetailResponseDto;
 import com.cherrymango.foodiehub.dto.UpdateStoreDetailDto;
 import com.cherrymango.foodiehub.dto.UpdateStoreRequestDto;
-import com.cherrymango.foodiehub.file.FileStore;
 import com.cherrymango.foodiehub.repository.SiteUserRepository;
 import com.cherrymango.foodiehub.service.StoreService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.MalformedURLException;
 import java.security.Principal;
 
 @Controller
@@ -25,14 +21,6 @@ import java.security.Principal;
 public class StoreController {
     final private StoreService storeService;
     final private SiteUserRepository siteUserRepository;
-    final private FileStore fileStore;
-
-    @ResponseBody
-    @GetMapping("/store-image/{filename}")
-    public Resource downloadStoreImage(@PathVariable("filename") String filename) throws MalformedURLException {
-        System.out.println("fileStore.getFullPath(filename)");
-        return new UrlResource("file:" + fileStore.getFullPath(filename));
-    }
 
     @GetMapping("/save/{userId}")
     public String getSaveStore(@PathVariable("userId") Long userId, Model model) {
@@ -72,6 +60,7 @@ public class StoreController {
         }
 
         StoreDetailResponseDto storeDetails = storeService.getStoreDetails(storeId, userId);
+        // StoreDetailResponseDto storeDetails = storeService.getStoreDetails(storeId, 1L);
         model.addAttribute("store", storeDetails);
 
         return "store/detail";

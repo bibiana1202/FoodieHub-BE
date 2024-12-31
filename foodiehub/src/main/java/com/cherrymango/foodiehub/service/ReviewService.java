@@ -51,30 +51,31 @@ public class ReviewService {
     }
 
     // 스토어 리뷰, 사용자 정보(닉네임, 프로필) 포함 반환
-//    public List<StoreReviewResponseDto> findReviewsByStoreId(Long storeId) {
-//        Store store = storeRepository.findById(storeId)
-//                .orElseThrow(() -> new IllegalArgumentException("Store not found with id: " + storeId));
-//
-//        return reviewRepository.findByStore(store).stream()
-//                .map(review -> new StoreReviewResponseDto(
-//                        review.getUser().getNickname(),
-//                        review.getUser().getProfileImageUrl(),
-//                        review.getId(),
-//                        roundToFirstDecimal(review.getAvgRating()), // 평균 별점 소수점 첫째 자리로 반환
-//                        review.getTasteRating(),
-//                        review.getPriceRating(),
-//                        review.getCleanRating(),
-//                        review.getFriendlyRating(),
-//                        review.getCreateDate(),
-//                        review.getContent(),
-//                        review.getStoreImageName(),
-//                        review.getReviewLikes().size() // 좋아요 수
-//                ))
-//                .toList();
-//    }
+    public List<StoreReviewResponseDto> getStoreReviews(Long storeId) {
+        Store store = storeRepository.findById(storeId)
+                .orElseThrow(() -> new IllegalArgumentException("Store not found with id: " + storeId));
+
+        return reviewRepository.findByStoreOrderByCreateDateDesc(store).stream()
+                .map(review -> new StoreReviewResponseDto(
+                        review.getUser().getNickname(),
+                        review.getUser().getProfileImageUrl(),
+                        review.getId(),
+                        roundToFirstDecimal(review.getAvgRating()),
+                        review.getTasteRating(),
+                        review.getPriceRating(),
+                        review.getCleanRating(),
+                        review.getFriendlyRating(),
+                        review.getCreateDate(),
+                        review.getContent(),
+                        review.getStoreImageName(),
+                        review.getReviewLikes().size(),
+                        null
+                ))
+                .toList();
+    }
 
     // 페이징 처리된 스토어 리뷰
-    public PagedResponseDto<StoreReviewResponseDto> findReviewsByStoreId(Long storeId, int page, Long userId) {
+    public PagedResponseDto<StoreReviewResponseDto> getPagedStoreReviews(Long storeId, int page, Long userId) {
         Store store = storeRepository.findById(storeId)
                 .orElseThrow(() -> new IllegalArgumentException("Store not found with id: " + storeId));
 
@@ -113,11 +114,11 @@ public class ReviewService {
     }
 
     // 마이페이지 리뷰, 식당 이름 포함 반환
-    public List<MyPageReviewResponseDto> findReviewsByUserId(Long userId) {
+    public List<MyPageReviewResponseDto> findReviewsByUser(Long userId) {
         SiteUser user = siteUserRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));
 
-        return reviewRepository.findByUser(user).stream()
+        return reviewRepository.findByUserOrderByCreateDateDesc(user).stream()
                 .map(review -> new MyPageReviewResponseDto(
                         review.getStore().getName(), // Store 이름
                         review.getId(),
