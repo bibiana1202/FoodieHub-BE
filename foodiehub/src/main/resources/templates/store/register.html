@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>가게 저장</title>
+    <style>
+        .upload-container {
+            display: flex;
+            align-items: center; /* 수직 정렬 */
+            justify-content: flex-start; /* 가로 정렬 (필요에 따라 center로 변경 가능) */
+            gap: 10px; /* 이미지와 버튼 사이 간격 */
+            flex-wrap: wrap; /* 이미지가 넘치면 다음 줄로 배치 */
+        }
+
+        .preview-container {
+            display: flex;
+            align-items: center; /* 이미지 수직 정렬 */
+            justify-content: center; /* 가로 정렬 */
+            gap: 10px; /* 간격 추가 */
+            flex-wrap: wrap; /* 넘칠 경우 줄바꿈 */
+        }
+
+        .upload-label {
+            width: 120px; /* 동일한 너비 */
+            height: 120px; /* 동일한 높이 */
+            border: 2px dashed #00b894;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center; /* 버튼 가로 중앙 정렬 */
+            align-items: center; /* 버튼 세로 중앙 정렬 */
+            cursor: pointer;
+            font-size: 24px;
+            color: #00b894;
+            box-sizing: border-box; /* 테두리를 포함한 크기 계산 */
+        }
+
+        .upload-label:hover {
+            background-color: #eafaf1;
+        }
+
+        #file-input {
+            display: none;
+        }
+
+        .preview-container img {
+            width: 120px; /* 동일한 너비 */
+            height: 120px; /* 동일한 높이 */
+            object-fit: cover; /* 비율 유지하면서 크기 맞춤 */
+            display: flex;
+            justify-content: center; /* 이미지 가로 중앙 정렬 */
+            align-items: center; /* 이미지 세로 중앙 정렬 */
+            box-sizing: border-box; /* 테두리를 포함한 크기 계산 */
+            border: none; /* 테두리 제거 */
+            vertical-align: middle; /* 수직 위치 보정 */
+        }
+        #menu-container {
+            margin-bottom: 20px;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            gap: 10px;
+        }
+
+        .menu-item input {
+            padding: 5px;
+            font-size: 14px;
+        }
+
+        .menu-item button {
+            background-color: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .menu-item button:hover {
+            background-color: #ff5252;
+        }
+
+        #add-menu-btn {
+            margin-top: 10px;
+            padding: 5px 10px;
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        #add-menu-btn:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+<h1>가게 정보 저장</h1>
+<form th:action="@{/store/save/{userId}(userId=${userId})}" method="post" enctype="multipart/form-data">
+    <!-- 단일 필드 -->
+    <label>가게 이름:</label>
+    <input type="text" name="name" placeholder="가게 이름"><p/>
+
+    <label>가게 한줄 소개:</label>
+    <input type="text" name="intro" placeholder="가게 한줄 소개"><p/>
+
+    <label>가게 전화번호:</label>
+    <input type="text" name="phone" placeholder="가게 전화번호"><p/>
+
+    <label>가게 주소:</label>
+    <input type="text" name="address" placeholder="가게 주소"><p/>
+
+    <label>카테고리:</label>
+    <select name="category">
+        <option value="KOREAN">한식</option>
+        <option value="CHINESE">중식</option>
+        <option value="JAPANESE">일식</option>
+        <option value="WESTERN">양식</option>
+        <option value="ITALIAN">이탈리아</option>
+        <option value="FRENCH">프랑스</option>
+        <option value="ASIAN">아시아</option>
+        <option value="MEXICAN">멕시코</option>
+        <option value="OTHER">기타</option>
+    </select><p/>
+
+    <label>주차 가능 여부:</label>
+    <input type="radio" name="parking" value="1"> 가능
+    <input type="radio" name="parking" value="0"> 불가<p/>
+
+    <label>영업 시간:</label>
+    <input type="text" name="operationHours" placeholder="영업 시간"><p/>
+
+    <label>마지막 주문:</label>
+    <input type="text" name="lastOrder" placeholder="마지막 주문"><p/>
+
+    <label>가게 상세 내용:</label>
+    <textarea name="content" placeholder="가게 상세 내용"></textarea><p/>
+
+    <!-- 태그 리스트 -->
+    <label>태그:</label>
+    <div>
+        <input type="checkbox" name="tags" value="혼밥"> 혼밥
+        <input type="checkbox" name="tags" value="모임"> 모임
+        <input type="checkbox" name="tags" value="회식"> 회식
+        <input type="checkbox" name="tags" value="데이트"> 데이트
+        <input type="checkbox" name="tags" value="감성"> 감성
+        <input type="checkbox" name="tags" value="노포"> 노포
+        <input type="checkbox" name="tags" value="부모님"> 부모님
+    </div><p/>
+
+    <!-- 메뉴 리스트 -->
+    <label>메뉴 리스트:</label>
+    <div id="menu-container">
+        <div class="menu-item">
+            <input type="text" name="menus[0].name" placeholder="메뉴 이름">
+            <input type="number" name="menus[0].price" placeholder="메뉴 가격">
+            <button type="button" onclick="removeMenuItem(this)">삭제</button>
+        </div>
+    </div>
+    <button type="button" id="add-menu-btn">메뉴 추가</button><p/>
+
+    <label>사진 업로드</label>
+    <div class="upload-container">
+        <!-- 업로드 버튼 -->
+        <div id="preview-container" class="preview-container"></div>
+        <label for="file-input" class="upload-label">+</label>
+        <input type="file" id="file-input" name="images" multiple onchange="previewImages()">
+    </div><p/>
+    <button type="submit">저장</button>
+</form>
+
+<script>
+    function previewImages() {
+        const previewContainer = document.getElementById("preview-container");
+        const files = document.getElementById("file-input").files;
+
+        // 기존 미리보기 제거
+        previewContainer.innerHTML = "";
+
+        Array.from(files).forEach(file => {
+            if (file.type.startsWith("image/")) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const img = document.createElement("img");
+                    img.src = e.target.result;
+                    previewContainer.appendChild(img);
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+</script>
+<script>
+    let menuIndex = 1; // 메뉴 인덱스 초기값
+
+    // 메뉴 항목 추가
+    document.getElementById('add-menu-btn').addEventListener('click', () => {
+        const menuContainer = document.getElementById('menu-container');
+
+        // 새 메뉴 항목 생성
+        const newMenuItem = document.createElement('div');
+        newMenuItem.classList.add('menu-item');
+        newMenuItem.innerHTML = `
+            <input type="text" name="menus[${menuIndex}].name" placeholder="메뉴 이름">
+            <input type="number" name="menus[${menuIndex}].price" placeholder="메뉴 가격">
+            <button type="button" onclick="removeMenuItem(this)">삭제</button>
+        `;
+
+        // 메뉴 항목 추가
+        menuContainer.appendChild(newMenuItem);
+        menuIndex++;
+    });
+
+    // 메뉴 항목 삭제
+    function removeMenuItem(button) {
+        const menuContainer = document.getElementById('menu-container');
+        const menuItem = button.parentElement; // 버튼의 부모 요소인 메뉴 항목
+        menuItem.remove(); // 해당 항목 삭제
+
+        // 남은 항목의 인덱스를 다시 정렬
+        const menuItems = menuContainer.querySelectorAll('.menu-item');
+        menuItems.forEach((item, index) => {
+            const nameInput = item.querySelector('input[name^="menus["][name$="].name"]');
+            const priceInput = item.querySelector('input[name^="menus["][name$="].price"]');
+
+            if (nameInput) {
+                nameInput.name = `menus[${index}].name`;
+            }
+            if (priceInput) {
+                priceInput.name = `menus[${index}].price`;
+            }
+        });
+
+        // 메뉴 인덱스 업데이트
+        menuIndex = menuItems.length;
+    }
+</script>
+</body>
+</html>

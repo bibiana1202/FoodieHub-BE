@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>식당 정보</title>
+    <style>
+        img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 5px;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+<div class="store-details">
+    <h1 th:text="${store.name}"></h1>
+    <p th:text="${store.intro}"></p>
+
+    <div class="store-info">
+        <p><strong>Phone:</strong> <span th:text="${store.phone}"></span></p>
+        <p><strong>Address:</strong> <span th:text="${store.address}"></span></p>
+        <p><strong>Category:</strong> <span th:text="${store.category}"></span></p>
+        <p><strong>Parking:</strong> <span th:text="${store.parking != null ? (store.parking == 1 ? 'Available' : 'Not Available') : 'N/A'}"></span></p>
+        <p><strong>Operation Hours:</strong> <span th:text="${store.operationHours}"></span></p>
+        <p><strong>Last Order:</strong> <span th:text="${store.lastOrder}"></span></p>
+    </div>
+
+    <div class="store-content">
+        <h2>About</h2>
+        <p th:text="${store.content}"></p>
+    </div>
+
+    <div class="store-images">
+        <h2>Gallery</h2>
+        <div class="images">
+            <img th:each="image : ${store.images}"
+                 th:src="@{/api/store/store-image/{filename}(filename=${image})}"
+                 alt="Store Image"
+                 class="store-image">
+        </div>
+    </div>
+
+    <div class="store-tags">
+        <h2>Tags</h2>
+        <ul>
+            <li th:each="tag : ${store.tags}" th:text="${tag}"></li>
+        </ul>
+    </div>
+
+    <div class="store-rating">
+        <h2>Ratings</h2>
+        <p><strong>Average Rating:</strong> <span th:text="${store.avgRating != null ? store.avgRating : 'N/A'}"></span></p>
+    </div>
+
+    <div class="store-likes">
+        <p><strong>Likes:</strong> <span th:text="${store.likes}"></span></p>
+        <p><strong>Liked by User:</strong> <span th:text="${store.isLiked ? 'Yes' : 'No'}"></span></p>
+        <p><strong>Favorited by User:</strong> <span th:text="${store.isFavorite ? 'Yes' : 'No'}"></span></p>
+    </div>
+
+    <div class="store-menu">
+        <h2>Menu</h2>
+        <ul>
+            <li th:each="menu : ${store.menus}">
+                <p><strong>Name:</strong> <span th:text="${menu.name}"></span></p>
+                <p><strong>Price:</strong> <span th:text="${menu.price}"></span></p>
+            </li>
+        </ul>
+    </div>
+
+    <p><strong>Registered Date:</strong> <span th:text="${#dates.format(store.registerDate, 'yyyy-MM-dd HH:mm:ss')}"></span></p>
+</div>
+</body>
+</html>
