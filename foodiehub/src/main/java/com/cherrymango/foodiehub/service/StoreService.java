@@ -100,6 +100,7 @@ public class StoreService {
 
         // Store 정보를 UpdateStoreDetailDto로 변환
         UpdateStoreDetailDto dto = new UpdateStoreDetailDto();
+        dto.setId(store.getId());
         dto.setName(store.getName());
         dto.setIntro(store.getIntro());
         dto.setPhone(store.getPhone());
@@ -169,31 +170,45 @@ public class StoreService {
         Store store = storeRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Store not found with id: " + id));
 
-        SiteUser user;
-        if (userId != null) {
-            user = siteUserRepository.findById(userId)
-                    .orElseThrow(() -> new IllegalArgumentException("User not found"));
-        } else {
-            user = null;
-        }
+        SiteUser user = (userId != null)
+                ? siteUserRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"))
+                : null;
 
         Boolean isLiked = user != null && storeLikeRepository.existsByStoreAndUser(store, user);
         Boolean isFavorite = user != null && storeFavoriteRepository.existsByStoreAndUser(store, user);
 
-        List<String> tags = store.getStoreTags().stream()
+        List<String> tags = extractTags(store.getStoreTags());
+        List<String> imageNames = extractImageNames(store.getStoreImageList());
+        Double avgRating = roundToFirstDecimal(calculateAverageRating(store));
+
+        return mapToStoreDetailResponseDto(store, tags, imageNames, avgRating, isLiked, isFavorite);
+    }
+
+    private List<String> extractTags(List<StoreTag> storeTags) {
+        return storeTags.stream()
                 .map(storeTag -> storeTag.getTag().getName())
                 .toList();
+    }
 
-        List<String> imageNames = store.getStoreImageList().stream()
+    private List<String> extractImageNames(List<StoreImage> storeImages) {
+        return storeImages.stream()
                 .map(StoreImage::getStoreImageName)
                 .toList();
+    }
 
-        Double avgRating = store.getReviews().stream()
+    private Double calculateAverageRating(Store store) {
+        return store.getReviews().stream()
                 .mapToDouble(Review::getAvgRating)
                 .average()
                 .orElse(0.0);
+    }
 
-        // DTO 매핑
+    private Double roundToFirstDecimal(Double value) {
+        return value != null ? Math.round(value * 10) / 10.0 : null;
+    }
+
+    private StoreDetailResponseDto mapToStoreDetailResponseDto(Store store, List<String> tags, List<String> imageNames,
+                                                               Double avgRating, Boolean isLiked, Boolean isFavorite) {
         return StoreDetailResponseDto.builder()
                 .id(store.getId())
                 .name(store.getName())

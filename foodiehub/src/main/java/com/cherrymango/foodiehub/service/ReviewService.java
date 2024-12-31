@@ -167,6 +167,7 @@ public class ReviewService {
         review.setPriceRating(request.getPriceRating());
         review.setCleanRating(request.getCleanRating());
         review.setFriendlyRating(request.getFriendlyRating());
+        review.setAvgRating((request.getTasteRating() + request.getPriceRating() + request.getCleanRating() + request.getFriendlyRating()) / 4.0);
         review.setContent(request.getContent());
         review.setModifyDate(LocalDateTime.now());
 

@@ -94,7 +94,7 @@
 </head>
 <body>
 <h1>식당 정보 수정</h1>
-<form th:action="@{/store/update/{storeId}(storeId=${storeId})}" method="post">
+<form th:action="@{/store/update/{storeId}(storeId=${store.id})}" method="post">
     <!-- 단일 필드 -->
     <label>가게 이름:</label>
     <input type="text" name="name" placeholder="가게 이름" th:value="${store.name}"><p/>

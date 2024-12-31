@@ -11,6 +11,7 @@ import java.util.List;
 @Setter
 public class UpdateStoreDetailDto {
 
+    private Long id;
     private String name;
     private String intro;
     private String phone;
