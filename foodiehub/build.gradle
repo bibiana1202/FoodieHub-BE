@@ -53,8 +53,26 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 
 	// spring security
-	implementation 'org.springframework.boot:spring-boot-starter-security'
-	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
+	implementation 'org.springframework.boot:spring-boot-starter-security'     // 1. 스프링 시큐리티 사용하기 위한 스타터 추가
+	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6' 	   // 2. 타임리프에서 스프링 시큐리티를 사용하기 위한 의존성 추가
+	testImplementation 'org.springframework.security:spring-security-test'     // 3. 스프링 시큐리티를 테스트하기 위한 의존성 추가
+
+	testAnnotationProcessor 'org.projectlombok:lombok'
+	testImplementation 'org.projectlombok:lombok'
+
+// JJWT 최신 버전 사용
+	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+
+// JAXB 의존성
+	implementation 'javax.xml.bind:jaxb-api:2.3.1'
+
+
+	// OAuth2
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+	implementation 'com.fasterxml.jackson.core:jackson-databind' // 네이버에 필요
+
 
 	// markdown
 	implementation 'org.commonmark:commonmark:0.21.0'
