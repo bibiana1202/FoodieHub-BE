@@ -1,7 +1,9 @@
 package com.cherrymango.foodiehub.controller.api;
 
+import com.cherrymango.foodiehub.domain.SiteUser;
 import com.cherrymango.foodiehub.dto.*;
 import com.cherrymango.foodiehub.file.FileStore;
+import com.cherrymango.foodiehub.repository.SiteUserRepository;
 import com.cherrymango.foodiehub.service.ReviewService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

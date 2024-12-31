@@ -1,11 +1,13 @@
 package com.cherrymango.foodiehub.service;
 
 import com.cherrymango.foodiehub.domain.Review;
+import com.cherrymango.foodiehub.domain.SiteUser;
 import com.cherrymango.foodiehub.domain.Store;
 import com.cherrymango.foodiehub.dto.*;
 import com.cherrymango.foodiehub.file.FileStore;
 import com.cherrymango.foodiehub.repository.ReviewLikeRepository;
 import com.cherrymango.foodiehub.repository.ReviewRepository;
+import com.cherrymango.foodiehub.repository.SiteUserRepository;
 import com.cherrymango.foodiehub.repository.StoreRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
