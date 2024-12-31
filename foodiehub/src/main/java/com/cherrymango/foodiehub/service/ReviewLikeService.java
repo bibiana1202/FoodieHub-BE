@@ -2,11 +2,9 @@ package com.cherrymango.foodiehub.service;
 
 import com.cherrymango.foodiehub.domain.Review;
 import com.cherrymango.foodiehub.domain.ReviewLike;
-import com.cherrymango.foodiehub.domain.SiteUser;
 import com.cherrymango.foodiehub.dto.LikeResponseDto;
 import com.cherrymango.foodiehub.repository.ReviewLikeRepository;
 import com.cherrymango.foodiehub.repository.ReviewRepository;
-import com.cherrymango.foodiehub.repository.SiteUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

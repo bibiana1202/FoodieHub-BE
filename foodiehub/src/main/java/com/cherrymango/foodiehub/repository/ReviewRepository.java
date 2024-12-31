@@ -1,7 +1,6 @@
 package com.cherrymango.foodiehub.repository;
 
 import com.cherrymango.foodiehub.domain.Review;
-import com.cherrymango.foodiehub.domain.SiteUser;
 import com.cherrymango.foodiehub.domain.Store;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

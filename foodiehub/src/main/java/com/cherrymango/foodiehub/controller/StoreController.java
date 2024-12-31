@@ -1,11 +1,9 @@
 package com.cherrymango.foodiehub.controller;
 
-import com.cherrymango.foodiehub.domain.SiteUser;
 import com.cherrymango.foodiehub.dto.AddStoreRequestDto;
 import com.cherrymango.foodiehub.dto.StoreDetailResponseDto;
 import com.cherrymango.foodiehub.dto.UpdateStoreDetailDto;
 import com.cherrymango.foodiehub.dto.UpdateStoreRequestDto;
-import com.cherrymango.foodiehub.repository.SiteUserRepository;
 import com.cherrymango.foodiehub.service.StoreService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
