@@ -98,5 +98,39 @@ public class Store {
     }
 
     //==생성 메소드==//
+    public static Store createStore(
+            SiteUser user, String name, String intro, String phone, String address, Category category,
+            Integer parking, String operationHours, String lastOrder, String content,
+            List<Menu> menus, List<StoreTag> storeTags, List<StoreImage> storeImages
+    ) {
+        Store store = new Store();
+        store.setUser(user);
+        store.setName(name);
+        store.setIntro(intro);
+        store.setPhone(phone);
+        store.setAddress(address);
+        store.setCategory(category);
+        store.setParking(parking);
+        store.setOperationHours(operationHours);
+        store.setLastOrder(lastOrder);
+        store.setContent(content);
+        store.setRegisterDate(LocalDateTime.now());
 
+        // 메뉴 추가
+        for (Menu menu : menus) {
+            store.addMenu(menu);
+        }
+
+        // 태그 추가
+        for (StoreTag storeTag : storeTags) {
+            store.addStoreTag(storeTag);
+        }
+
+        // 이미지 추가
+        for (StoreImage storeImage : storeImages) {
+            store.addStoreImage(storeImage);
+        }
+
+        return store;
+    }
 }

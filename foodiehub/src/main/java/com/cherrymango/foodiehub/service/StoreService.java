@@ -10,9 +10,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -20,7 +19,7 @@ import java.util.function.ToDoubleFunction;
 import java.util.stream.Collectors;
 
 @Service
-// @Transactional(readOnly = true)
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class StoreService {
     private final StoreRepository storeRepository;
@@ -30,11 +29,32 @@ public class StoreService {
     private final StoreLikeRepository storeLikeRepository;
     private final StoreFavoriteRepository storeFavoriteRepository;
 
+    @Transactional
     public Long register(Long userId, AddStoreRequestDto addStoreRequestDto) {
         SiteUser user = siteUserRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));
 
-        Store store = createStore(
+        List<Menu> menus = Optional.ofNullable(addStoreRequestDto.getMenus())
+                .orElseGet(Collections::emptyList)
+                .stream()
+                .map(menu -> Menu.createMenu(menu.getName(), menu.getPrice()))
+                .toList();
+
+        List<StoreTag> storeTags = Optional.ofNullable(addStoreRequestDto.getTags())
+                .orElseGet(Collections::emptyList)
+                .stream()
+                .map(tagName -> tagRepository.findByName(tagName)
+                        .orElseThrow(() -> new IllegalArgumentException("Tag not found with name: " + tagName)))
+                .map(StoreTag::createStoreTag)
+                .toList();
+
+        List<StoreImage> storeImages = addStoreRequestDto.getImages().stream()
+                .filter(image -> !image.isEmpty())
+                .map(fileStore::storeFile)
+                .map(uploadImageDto -> StoreImage.createStoreImage(uploadImageDto.getUploadFileName(), uploadImageDto.getStoreFileName()))
+                .toList();
+
+        Store store = Store.createStore(
                 user,
                 addStoreRequestDto.getName(),
                 addStoreRequestDto.getIntro(),
@@ -45,56 +65,14 @@ public class StoreService {
                 addStoreRequestDto.getOperationHours(),
                 addStoreRequestDto.getLastOrder(),
                 addStoreRequestDto.getContent(),
-                addStoreRequestDto.getMenus(),
-                addStoreRequestDto.getTags(),
-                addStoreRequestDto.getImages()
+                menus,
+                storeTags,
+                storeImages
         );
 
         storeRepository.save(store);
 
         return store.getId();
-    }
-
-    public Store createStore(SiteUser user, String name, String intro, String phone, String address, Category category,
-                             Integer parking, String operationHours, String lastOrder, String content,
-                             List<AddMenuRequestDto> menus, List<String> tags, List<MultipartFile> images) {
-        Store store = new Store();
-        store.setUser(user);
-        store.setName(name);
-        store.setIntro(intro);
-        store.setPhone(phone);
-        store.setAddress(address);
-        store.setCategory(category);
-        store.setParking(parking);
-        store.setOperationHours(operationHours);
-        store.setLastOrder(lastOrder);
-        store.setContent(content);
-        store.setRegisterDate(LocalDateTime.now());
-
-        if (menus != null) {
-            for (AddMenuRequestDto menu : menus) {
-                if (menu.getName() == null || menu.getPrice() == null) {
-                    continue;
-                }
-                store.addMenu(Menu.createMenu(menu.getName(), menu.getPrice()));
-            }
-        }
-        if (tags != null) {
-            for (String tagName : tags) {
-                Optional<Tag> tag = tagRepository.findByName(tagName);
-                store.addStoreTag(StoreTag.createStoreTag(tag.get()));
-            }
-        }
-
-        for (MultipartFile image : images) {
-            if (image.isEmpty()) {
-                continue;
-            }
-            UploadImageDto uploadImageDto = fileStore.storeFile(image);
-            store.addStoreImage(StoreImage.createStoreImage(uploadImageDto.getUploadFileName(), uploadImageDto.getStoreFileName()));
-        }
-
-        return store;
     }
 
     public UpdateStoreDetailDto getUpdateDetails(Long id) {
@@ -138,21 +116,23 @@ public class StoreService {
     }
 
     private void updateTags(Store store, List<String> tags) {
+        List<String> safeTags = tags != null ? tags : Collections.emptyList(); // null 방지
+
         // 기존 태그 이름 리스트
         Set<String> existingTagNames = store.getStoreTags().stream()
                 .map(storeTag -> storeTag.getTag().getName())
                 .collect(Collectors.toSet());
 
         // 추가할 태그 식별
-        List<Tag> tagsToAdd = tags.stream()
-                .filter(tagName -> !existingTagNames.contains(tagName)) // 기존에 없는 태그
+        List<Tag> tagsToAdd = safeTags.stream()
+                .filter(tagName -> !existingTagNames.contains(tagName)) // 기존 태그에 없는 태그 필터링
                 .map(tagName -> tagRepository.findByName(tagName)
                         .orElseGet(() -> tagRepository.save(Tag.createTag(tagName)))) // 없는 태그는 생성
                 .toList();
 
-        // 삭제할 태그 식별
+        // 삭제할 태그 식별 (새 태그에 없는 기존 태그)
         List<StoreTag> storeTagsToRemove = store.getStoreTags().stream()
-                .filter(storeTag -> !tags.contains(storeTag.getTag().getName())) // 새 태그에 없는 기존 태그
+                .filter(storeTag -> !safeTags.contains(storeTag.getTag().getName())) // 새 태그 리스트에 없는 기존 태그 필터링
                 .toList();
 
         // StoreTag 추가
