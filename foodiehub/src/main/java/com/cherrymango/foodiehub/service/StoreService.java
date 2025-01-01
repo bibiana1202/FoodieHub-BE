@@ -6,6 +6,8 @@ import com.cherrymango.foodiehub.dto.*;
 import com.cherrymango.foodiehub.file.FileStore;
 import com.cherrymango.foodiehub.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -312,4 +314,36 @@ public class StoreService {
                 .build();
     }
 
+    public List<StoreListItemResponseDto> getStoresByCategory(Category category, int limit) {
+        // Pageable 생성: limit이 0이면 Pageable.unpaged(), 그렇지 않으면 PageRequest 생성
+        Pageable pageable = limit > 0 ? PageRequest.of(0, limit) : Pageable.unpaged();
+        List<Store> stores = storeRepository.findByCategoryOrderByRegisterDateDesc(category, pageable);
+
+        return stores.stream()
+                .map(store -> StoreListItemResponseDto.builder()
+                        .id(store.getId())
+                        .name(store.getName())
+                        .intro(store.getIntro())
+                        .content(store.getContent())
+                        .image(store.getStoreImageList().isEmpty() ? null : store.getStoreImageList().get(0).getStoreImageName()) // 첫 번째 이미지 URL 사용
+                        .avgRating(roundToFirstDecimal(calculateAverageRating(store, Review::getAvgRating))) // 평균 평점 계산 후 반올림
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    public List<StoreListItemResponseDto> getStoresByTag(String tagName, int limit) {
+        Pageable pageable = limit > 0 ? PageRequest.of(0, limit) : Pageable.unpaged();
+        List<Store> stores = storeRepository.findByTagNameOrderByRegisterDateDesc(tagName, pageable);
+
+        return stores.stream()
+                .map(store -> StoreListItemResponseDto.builder()
+                        .id(store.getId())
+                        .name(store.getName())
+                        .intro(store.getIntro())
+                        .content(store.getContent())
+                        .image(store.getStoreImageList().isEmpty() ? null : store.getStoreImageList().get(0).getStoreImageName())
+                        .avgRating(roundToFirstDecimal(calculateAverageRating(store, Review::getAvgRating)))
+                        .build())
+                .collect(Collectors.toList());
+    }
 }

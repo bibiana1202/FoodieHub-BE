@@ -1,5 +1,7 @@
 package com.cherrymango.foodiehub.controller.api;
 
+import com.cherrymango.foodiehub.domain.Category;
+import com.cherrymango.foodiehub.dto.StoreListItemResponseDto;
 import com.cherrymango.foodiehub.dto.MyPageStoreResponseDto;
 import com.cherrymango.foodiehub.dto.MyStoreResponseDto;
 import com.cherrymango.foodiehub.file.FileStore;
@@ -9,10 +11,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.net.MalformedURLException;
 import java.util.List;
@@ -51,6 +50,20 @@ public class StoreApiController {
         }
 
         return ResponseEntity.ok(myStoreDetails);
+    }
+
+    @GetMapping("/store/category/{category}")
+    public ResponseEntity<List<StoreListItemResponseDto>> getStoreByCategory(@PathVariable("category") Category category,
+                                                                             @RequestParam(value = "limit", required = false, defaultValue = "0") int limit) {
+        List<StoreListItemResponseDto> stores = storeService.getStoresByCategory(category, limit);
+        return ResponseEntity.ok(stores);
+    }
+
+    @GetMapping("/store/tag/{tag}")
+    public ResponseEntity<List<StoreListItemResponseDto>> getStoreByTag(@PathVariable("tag") String tag,
+                                                                             @RequestParam(value = "limit", required = false, defaultValue = "0") int limit) {
+        List<StoreListItemResponseDto> stores = storeService.getStoresByTag(tag, limit);
+        return ResponseEntity.ok(stores);
     }
 
 }

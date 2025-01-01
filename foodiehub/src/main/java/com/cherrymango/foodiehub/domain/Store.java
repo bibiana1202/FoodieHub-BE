@@ -63,8 +63,7 @@ public class Store {
     @OneToMany(mappedBy = "store", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<StoreLike> storeLikes = new ArrayList<>();
 
-    // @OneToMany(mappedBy = "store", cascade = CascadeType.REMOVE)
-    @OneToMany(mappedBy = "store")
+    @OneToMany(mappedBy = "store", cascade = CascadeType.REMOVE)
     private List<Review> reviews = new ArrayList<>();
 
     @OneToMany(mappedBy = "store", cascade = CascadeType.ALL, orphanRemoval = true)

@@ -36,7 +36,7 @@
         <h2>Gallery</h2>
         <div class="images">
             <img th:each="image : ${store.images}"
-                 th:src="@{/api/store/store-image/{filename}(filename=${image})}"
+                 th:src="@{/api/store-image/{filename}(filename=${image})}"
                  alt="Store Image"
                  class="store-image">
         </div>
@@ -69,8 +69,6 @@
             </li>
         </ul>
     </div>
-
-    <p><strong>Registered Date:</strong> <span th:text="${#dates.format(store.registerDate, 'yyyy-MM-dd HH:mm:ss')}"></span></p>
 </div>
 </body>
 </html>
