@@ -25,26 +25,12 @@ public class ReviewApiController {
     private final SiteUserRepository siteUserRepository;
 
     // 디폴트 이미지
-//    @GetMapping("/image/default")
-//    public ResponseEntity<Resource> getDefaultImage() throws MalformedURLException {
-//        Resource resource = new UrlResource("classpath:/static/images/default-image.jpg");
-//        return ResponseEntity.ok()
-//                .contentType(MediaType.IMAGE_JPEG)
-//                .body(resource);
-//    }
-
-    // 이미지 없는 경우 처리는 화면에서 하거나 컨트롤러에서 하도록 선택 가능
-    @GetMapping({"/profile-image", "/profile-image/{filename}"})
-    public Resource downloadProfileImage(@PathVariable(value = "filename", required = false) String filename) throws MalformedURLException {
-        String defaultImagePath = "classpath:/static/images/profile.png";
-        System.out.println("filename = " + filename);
-        if (filename == null || filename.trim().isEmpty()) {
-            return new UrlResource(defaultImagePath);
-        }
-        return new UrlResource("file:" + fileStore.getFullPath(filename));
+    @GetMapping("/image/default")
+    public Resource getDefaultImage() throws MalformedURLException {
+        return new UrlResource("classpath:/static/images/profile.png");
     }
 
-    @GetMapping("/review-image/{filename}")
+    @GetMapping("/image/{filename}")
     public Resource downloadReviewImage(@PathVariable("filename") String filename) throws MalformedURLException {
         return new UrlResource("file:" + fileStore.getFullPath(filename));
     }

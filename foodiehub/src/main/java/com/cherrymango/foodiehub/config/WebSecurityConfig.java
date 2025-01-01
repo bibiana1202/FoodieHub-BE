@@ -103,7 +103,7 @@ public class WebSecurityConfig {
                         .requestMatchers(new AntPathRequestMatcher("/api/auth/header")).permitAll()  // 권한 필요 없음
                         .requestMatchers(new AntPathRequestMatcher("/api/user/check-nickname")).permitAll()  // 권한 필요 없음
 //                        .requestMatchers(new AntPathRequestMatcher("/api/user/update-profile")).permitAll()  // 권한 필요 없음 (잠시..)
-                        //.requestMatchers(new AntPathRequestMatcher("/api/**")).authenticated() // 권한 필요
+                        .requestMatchers(new AntPathRequestMatcher("/api/**")).authenticated() // 권한 필요
                         .anyRequest().permitAll()) // 나머지 권한 필요 없음
 
 

@@ -164,10 +164,9 @@
         document.getElementById('storeName').textContent = data.storeName;
         // 리뷰 이미지 설정 (이미지가 없으면 기본 이미지)
         if (data.reviewImage) {
-            document.getElementById('reviewImage').src = `/api/review/review-image/${data.reviewImage}`;
+            document.getElementById('reviewImage').src = `/api/review/image/${data.reviewImage}`;
         } else {
-            // document.getElementById('reviewImage').src = 'http://localhost:8080/images/profile.png';
-            document.getElementById('reviewImage').src = `/api/review/profile-image`;
+            document.getElementById('reviewImage').src = `/api/review/image/default`;
         }
 
         setRating('taste', data.tasteRating);

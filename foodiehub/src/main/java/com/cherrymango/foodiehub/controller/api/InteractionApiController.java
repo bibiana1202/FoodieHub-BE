@@ -30,4 +30,16 @@ public class InteractionApiController {
     public ResponseEntity<LikeResponseDto> toggleReviewLike(@PathVariable("reviewId") Long reviewId, @RequestParam(value = "userId") Long userId) {
         return ResponseEntity.ok(reviewLikeService.toggleLike(reviewId, userId));
     }
+
+    @DeleteMapping("/store/{storeId}/favorite")
+    public ResponseEntity<Boolean> removeStoreFavorite(@PathVariable("storeId") Long storeId, @RequestParam("userId") Long userId) {
+        boolean result = storeFavoriteService.removeFavorite(storeId, userId);
+        return ResponseEntity.ok(result);
+    }
+
+    @DeleteMapping("/store/{storeId}/like")
+    public ResponseEntity<Boolean> removeStoreLike(@PathVariable("storeId") Long storeId, @RequestParam("userId") Long userId) {
+        boolean result = storeLikeService.removeFavorite(storeId, userId);
+        return ResponseEntity.ok(result);
+    }
 }

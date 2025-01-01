@@ -42,4 +42,14 @@ public class StoreFavoriteService {
             return true;
         }
     }
+
+    // 즐겨찾기 제거
+    public boolean removeFavorite(Long storeId, Long userId) {
+        Optional<StoreFavorite> favorite = storeFavoriteRepository.findByStoreIdAndUserId(storeId, userId);
+        if (favorite.isPresent()) {
+            storeFavoriteRepository.delete(favorite.get());
+            return true;
+        }
+        return false;
+    }
 }

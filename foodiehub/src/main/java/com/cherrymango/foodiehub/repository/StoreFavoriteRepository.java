@@ -11,9 +11,10 @@ import java.util.Optional;
 public interface StoreFavoriteRepository extends JpaRepository<StoreFavorite, Long> {
     Optional<StoreFavorite> findByStoreAndUser(Store store, SiteUser user);
 
-    boolean existsByStoreAndUser(Store store, SiteUser user);
+    // Id 기반 조회
+    Optional<StoreFavorite> findByStoreIdAndUserId(Long storeId, Long userId);
 
-    List<StoreFavorite> findByUser(SiteUser user);
+    boolean existsByStoreAndUser(Store store, SiteUser user);
 
     List<StoreFavorite> findByUserOrderByFavoriteTimeDesc(SiteUser user);
 }

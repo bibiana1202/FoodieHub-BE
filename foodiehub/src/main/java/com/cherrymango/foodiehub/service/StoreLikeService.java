@@ -45,4 +45,13 @@ public class StoreLikeService {
 
         return new LikeResponseDto(likeCount, isLiked);
     }
+
+    public boolean removeFavorite(Long storeId, Long userId) {
+        Optional<StoreLike> like = storeLikeRepository.findByStoreIdAndUserId(storeId, userId);
+        if (like.isPresent()) {
+            storeLikeRepository.delete(like.get());
+            return true;
+        }
+        return false;
+    }
 }

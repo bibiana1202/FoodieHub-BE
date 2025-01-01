@@ -14,8 +14,6 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
 
     Page<Review> findByStore(Store store, Pageable pageable);
 
-    List<Review> findByUser(SiteUser User);
-
     List<Review> findByUserOrderByCreateDateDesc(SiteUser user);
 
     List<Review> findByStoreOrderByCreateDateDesc(Store store);
