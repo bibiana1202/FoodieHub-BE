@@ -7,6 +7,7 @@ import com.cherrymango.foodiehub.repository.SiteUserRepository;
 import com.cherrymango.foodiehub.service.FileUploadService;
 import com.cherrymango.foodiehub.service.SiteUserService;
 import com.cherrymango.foodiehub.util.JwtUtil;
+import com.cherrymango.foodiehub.util.LoginUtil;
 import com.cherrymango.foodiehub.util.TokenUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -37,6 +38,7 @@ public class SiteUserController {
     @Autowired
     private FileUploadService fileUploadService; // 파일 저장 서비스 주입
     private final TokenUtil tokenUtil;
+    private final LoginUtil loginUtil;
     @Autowired
     private SiteUserRepository siteUserRepository;
 
@@ -49,44 +51,44 @@ public class SiteUserController {
     }
 
     // 회원가입_회원
-    @PostMapping("/api/auth/user")
-    public ResponseEntity<?> signup(@Valid @RequestBody AddUserRequest addUserRequest, BindingResult bindingResult) {
-        // 입력값 검증 에러 처리
-        if (bindingResult.hasErrors()) {
-            List<String> errorMessages = bindingResult.getAllErrors().stream()
-                    .map(error -> error.getDefaultMessage())
-                    .collect(Collectors.toList());
-            return ResponseEntity.badRequest().body(Map.of("errors", errorMessages));
-        }
-
-        // 패스워드 불일치 검증
-        if (!addUserRequest.getPassword1().equals(addUserRequest.getPassword2())) {
-            bindingResult.rejectValue("password2", "passwordIncorrect", "2개의 패스워드가 일치하지 않습니다.");
-            return ResponseEntity.badRequest().body(Map.of("errors", List.of("2개의 패스워드가 일치하지 않습니다.")));
-        }
-
-        // 회원 저장 시도
-        try {
-            // 닉네임 중복 검사
-            if(siteUserService.isNicknameDuplicated(addUserRequest.getNickname())){
-                bindingResult.rejectValue("nickname","nicknameDuplicated","이미 사용 중인 닉네임 입니다.");
-                return ResponseEntity.badRequest().body(Map.of("errors", List.of("이미 사용 중인 닉네임 입니다.")));
-            }
-            // 사용자 저장
-            System.out.println("저장 권한 singup : "+addUserRequest.getRole());
-            System.out.println("Email singup : "+addUserRequest.getEmail());
-            siteUserService.save(addUserRequest);
-        } catch (DataIntegrityViolationException e) {
-            bindingResult.reject("signupFailed", "이미 등록된 사용자입니다.");
-            return ResponseEntity.badRequest().body(Map.of("errors", List.of("이미 등록된 사용자입니다.")));
-        } catch (Exception e) {
-            bindingResult.reject("signupFailed", e.getMessage());
-            return ResponseEntity.status(500).body(Map.of("errors", List.of(e.getMessage())));
-        }
-
-        // 성공 응답 반환
-        return ResponseEntity.ok(Map.of("message", "회원 가입 성공"));
-    }
+//    @PostMapping("/api/auth/user")
+//    public ResponseEntity<?> signup(@Valid @RequestBody AddUserRequest addUserRequest, BindingResult bindingResult) {
+//        // 입력값 검증 에러 처리
+//        if (bindingResult.hasErrors()) {
+//            List<String> errorMessages = bindingResult.getAllErrors().stream()
+//                    .map(error -> error.getDefaultMessage())
+//                    .collect(Collectors.toList());
+//            return ResponseEntity.badRequest().body(Map.of("errors", errorMessages));
+//        }
+//
+//        // 패스워드 불일치 검증
+//        if (!addUserRequest.getPassword1().equals(addUserRequest.getPassword2())) {
+//            bindingResult.rejectValue("password2", "passwordIncorrect", "2개의 패스워드가 일치하지 않습니다.");
+//            return ResponseEntity.badRequest().body(Map.of("errors", List.of("2개의 패스워드가 일치하지 않습니다.")));
+//        }
+//
+//        // 회원 저장 시도
+//        try {
+//            // 닉네임 중복 검사
+//            if(siteUserService.isNicknameDuplicated(addUserRequest.getNickname())){
+//                bindingResult.rejectValue("nickname","nicknameDuplicated","이미 사용 중인 닉네임 입니다.");
+//                return ResponseEntity.badRequest().body(Map.of("errors", List.of("이미 사용 중인 닉네임 입니다.")));
+//            }
+//            // 사용자 저장
+//            System.out.println("저장 권한 singup : "+addUserRequest.getRole());
+//            System.out.println("Email singup : "+addUserRequest.getEmail());
+//            siteUserService.save(addUserRequest);
+//        } catch (DataIntegrityViolationException e) {
+//            bindingResult.reject("signupFailed", "이미 등록된 사용자입니다.");
+//            return ResponseEntity.badRequest().body(Map.of("errors", List.of("이미 등록된 사용자입니다.")));
+//        } catch (Exception e) {
+//            bindingResult.reject("signupFailed", e.getMessage());
+//            return ResponseEntity.status(500).body(Map.of("errors", List.of(e.getMessage())));
+//        }
+//
+//        // 성공 응답 반환
+//        return ResponseEntity.ok(Map.of("message", "회원 가입 성공"));
+//    }
 
     // 회원가입_관리자
     @PostMapping("/api/auth/admin")
@@ -216,163 +218,125 @@ public class SiteUserController {
 
         }
     }
-    // 사용자 정보 반환
 //    @GetMapping("/api/auth/me")
-//    public ResponseEntity<?> getUserInfo(Principal principal) {
-//        String email ="";
+//    public ResponseEntity<?> getUserInfo(Principal principal,HttpServletRequest request){
 //
-//        // OAuth2 로그인 처리
-//        if (principal != null && principal instanceof OAuth2AuthenticationToken) {
-//            OAuth2AuthenticationToken authToken = (OAuth2AuthenticationToken) principal;
-//            Map<String, Object> attributes = authToken.getPrincipal().getAttributes();
-//            email = (String) attributes.get("email");
+//        SiteUser siteUser = loginUtil.getSiteUserFromLogin(request,principal);
+//
+//        if(siteUser != null){
+//            try {
+//                // 사용자 정보 추출
+//                Long userId = siteUser.getId();
+//                String email = siteUser.getEmail();
+//                String cellPhone = siteUser.getCellphone();
+//                String nickName = siteUser.getNickname();
+//                Role role = siteUser.getRole();
+//                String provider = siteUser.getProvider();
+//                String businessNo = siteUser.getBusinessno();
+//                String getProfileImageUrl = siteUser.getProfileImageUrl();
+//
+//                // 응답 생성
+//                SiteUserInfoResponse response = SiteUserInfoResponse.builder()
+////                        .userid(userId)
+////                        .email(email)
+////                        .cellphone(cellPhone)
+//                        .nickname(nickName)
+//                        .role(role)
+////                        .provider(provider)
+////                        .businessno(businessNo)
+//                        .profileimageurl(getProfileImageUrl)
+//                        .build();
+//
+//                return ResponseEntity.ok(response);
+//            } catch (Exception e) {
+//                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+//                        .body(Map.of("message", "Invalid or expired token"));
+//            }
+//        }
+//        else{
+//            return ResponseEntity
+//                    .status(HttpStatus.UNAUTHORIZED)
+//                    .body(Map.of("message", "User not authenticated"));
+//        }
+//
+//
+//    }
+
+
+    // 로그인 성공 시 사용자 정보 반환
+//    @GetMapping("/api/auth/header")
+//    public Map<String, Object> loginsuccess(HttpServletRequest request,Principal principal) {// 세션 정보 출력
+//        HttpSession session = request.getSession(false);
+//        if (session != null) {
+//            System.out.println("ls세션 ID: " + session.getId());
+//            System.out.println("ls세션 속성:");
+//            session.getAttributeNames().asIterator().forEachRemaining(attr -> System.out.println(attr + ": " + session.getAttribute(attr)));
 //        } else {
-//            // 폼 로그인 처리
-//            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//            if (authentication != null) {
-//                email = authentication.getName();//authentication.getName(); // 사용자 이름 가져오기
+//            System.out.println("ls세션이 존재하지 않습니다.");
+//        }
+//
+//
+//        Map<String, Object> response = new HashMap<>();
+//        System.out.println("principal 권한: " + principal);
+//
+//        String username = "";
+//        String username_google = "";
+//        String username_kakao = "";
+//        String email = "";
+//        String role = "";
+//
+//        if (principal != null) {
+//            // OAuth2 로그인 처리
+//            if (principal instanceof OAuth2AuthenticationToken) {
+//                OAuth2AuthenticationToken authToken = (OAuth2AuthenticationToken) principal;
+//
+//                // 사용자 속성 가져오기
+//                Map<String, Object> attributes = authToken.getPrincipal().getAttributes();
+//                System.out.println("oauth2 권한: " + attributes);
+//
+//                username_google = (String) attributes.get("name"); // Google 로그인 이름
+//                username_kakao = (String) attributes.get("nickname"); // Kakao 로그인 이름
+//                email = (String) attributes.get("email");
+//
+//                // 권한 정보 가져오기
+//                role = authToken.getAuthorities().stream()
+//                        .findFirst()
+//                        .map(grantedAuthority -> grantedAuthority.getAuthority())
+//                        .orElse("ROLE_USER");
+//
+//                // 이름 설정
+//                username = (username_kakao != null) ? username_kakao : username_google;
+//
+//            } else {
+//                // 폼 로그인 처리
+//                Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//                System.out.println("권한: " + authentication);
+//
+//                if (authentication != null) {
+//                    username = authentication.getName();//authentication.getName(); // 사용자 이름 가져오기
+//
+//                    // 권한 정보 설정 (첫 번째 권한만 가져오기)
+//                    role = authentication.getAuthorities().stream()
+//                            .findFirst()
+//                            .map(grantedAuthority -> grantedAuthority.getAuthority())
+//                            .orElse("ROLE_USER");
+//                }
 //            }
 //        }
 //
-//        // 이메일이 없을 경우 에러 반환
-//        if (email == null || email.isEmpty() || email.equals("anonymousUser")) {
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email is missing");
-//        }
+//        // JSON 응답 데이터 구성
+//        response.put("username", username);
+//        response.put("email", email);
+//        response.put("role", role);
 //
-//
-//        // 사용자 데이터 조회
-//        Optional<SiteUser> siteUser = siteUserService.findByEmail(email);
-//        if (siteUser.isPresent()) {
-//            SiteUser user = siteUser.get();
-//            Long userId = user.getId();
-//            String cellPhone = user.getCellphone();
-//            String name = user.getName();
-//            String nickName= user.getNickname();
-//            String provider = user.getProvider();
-//            Role role = user.getRole();
-//            String businessNo = user.getBusinessno();
-//            String getProfileImageUrl =user.getProfileImageUrl();
-//
-//
-//            // DTO를 사용해 응답 반환
-//            // DTO 생성
-//            SiteUserInfoResponse response = SiteUserInfoResponse.builder()
-//                    .userid(userId)
-//                    .cellphone(cellPhone)
-//                    .email(email)
-//                    .name(name)
-//                    .nickname(nickName)
-//                    .provider(provider)
-//                    .role(role)
-//                    .businessno(businessNo) // 필요 없으면 null 처리
-//                    .profileimageurl(getProfileImageUrl)
-//                    .build();
-//
-//            return ResponseEntity.ok(response);
-//        } else {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
-//        }
+//        return response;
 //    }
 
-    // 로그인 성공 시 사용자 정보 반환
-    @GetMapping("/api/auth/header")
-    public Map<String, Object> loginsuccess(HttpServletRequest request,Principal principal) {// 세션 정보 출력
-        HttpSession session = request.getSession(false);
-        if (session != null) {
-            System.out.println("ls세션 ID: " + session.getId());
-            System.out.println("ls세션 속성:");
-            session.getAttributeNames().asIterator().forEachRemaining(attr -> System.out.println(attr + ": " + session.getAttribute(attr)));
-        } else {
-            System.out.println("ls세션이 존재하지 않습니다.");
-        }
-
-
-        Map<String, Object> response = new HashMap<>();
-        System.out.println("principal 권한: " + principal);
-
-        String username = "";
-        String username_google = "";
-        String username_kakao = "";
-        String email = "";
-        String role = "";
-
-        if (principal != null) {
-            // OAuth2 로그인 처리
-            if (principal instanceof OAuth2AuthenticationToken) {
-                OAuth2AuthenticationToken authToken = (OAuth2AuthenticationToken) principal;
-
-                // 사용자 속성 가져오기
-                Map<String, Object> attributes = authToken.getPrincipal().getAttributes();
-                System.out.println("oauth2 권한: " + attributes);
-
-                username_google = (String) attributes.get("name"); // Google 로그인 이름
-                username_kakao = (String) attributes.get("nickname"); // Kakao 로그인 이름
-                email = (String) attributes.get("email");
-
-                // 권한 정보 가져오기
-                role = authToken.getAuthorities().stream()
-                        .findFirst()
-                        .map(grantedAuthority -> grantedAuthority.getAuthority())
-                        .orElse("ROLE_USER");
-
-                // 이름 설정
-                username = (username_kakao != null) ? username_kakao : username_google;
-
-            } else {
-                // 폼 로그인 처리
-                Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-                System.out.println("권한: " + authentication);
-
-                if (authentication != null) {
-                    username = authentication.getName();//authentication.getName(); // 사용자 이름 가져오기
-
-                    // 권한 정보 설정 (첫 번째 권한만 가져오기)
-                    role = authentication.getAuthorities().stream()
-                            .findFirst()
-                            .map(grantedAuthority -> grantedAuthority.getAuthority())
-                            .orElse("ROLE_USER");
-                }
-            }
-        }
-
-        // JSON 응답 데이터 구성
-        response.put("username", username);
-        response.put("email", email);
-        response.put("role", role);
-
-        return response;
-    }
-
-    // 회원정보수정
+    // 회원정보수정 POST
     @PostMapping("/api/user/update-profile")
-    public ResponseEntity<?> updateUserProfile(@Valid @ModelAttribute SiteUserProfileRequest profileRequest, HttpServletRequest request,BindingResult bindingResult){
+    public ResponseEntity<?> updateUserProfile(@Valid @ModelAttribute SiteUserProfileRequest profileRequest, BindingResult bindingResult, HttpServletRequest request,Principal principal){
         System.out.println("updateUserProfile!!!");
         String profileImageUrl = null;
-
-//        SiteUser siteUser;
-//        String authHeader = request.getHeader("Authorization");
-//        System.out.println(authHeader);
-//        // JWT 검증 및 사용자 정보 추출
-//        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-//            return ResponseEntity.status(401).body("Authorization header missing or invalid");
-//        }
-//        String token = authHeader.substring(7); // "Bearer " 이후의 토큰 값
-//        try {
-//            String email = jwtUtil.extractEmail(token); // 이메일 추출
-//            Long userId = jwtUtil.extractUserId(token); // 유저 ID 추출
-//            String role = jwtUtil.extractUserRole(token); // 역할(Role) 추출
-//            siteUser = siteUserService.findById(userId);
-//            System.out.println(siteUser);
-//            System.out.println(siteUser.getEmail());
-//
-//        } catch (Exception e) {
-//            return ResponseEntity.status(401).body(Map.of("errors", List.of("Invalid or expired token")));
-//        }
-        SiteUser siteUser =  tokenUtil.getSiteUserFromRequest(request);
-        System.out.println("라라라"+siteUser.getEmail());
-
-
-
 
         // 입력값 검증 에러 처리
         if (bindingResult.hasErrors()) {
@@ -403,14 +367,17 @@ public class SiteUserController {
 
         // 회원 저장 시도
         try {
-            // 닉네임 중복 검사
-//            System.out.println("닉네임 중복 검사");
-//            System.out.println(profileRequest.getNickname());
-//            if(userService.isNicknameDuplicated(profileRequest.getNickname())){
-//                System.out.println("닉네임 중복검사 여기는 들어옵니까?");
-//                bindingResult.rejectValue("nickname","nicknameDuplicated","이미 사용 중인 닉네임 입니다.");
-//                return ResponseEntity.badRequest().body(Map.of("errors", List.of("이미 사용 중인 닉네임 입니다.")));
-//            }
+            //닉네임 중복 검사
+            System.out.println("닉네임 중복 검사");
+            SiteUser siteUser =loginUtil.getSiteUserFromLogin(request,principal);
+            // 본인 닉네임인지 확인해서 같지 않으면 중복검사함.
+            if(!siteUser.getNickname().equals(profileRequest.getNickname())){
+                if(siteUserService.isNicknameDuplicated(profileRequest.getNickname())){
+                    bindingResult.rejectValue("nickname","nicknameDuplicated","이미 사용 중인 닉네임 입니다.");
+                    return ResponseEntity.badRequest().body(Map.of("errors", List.of("이미 사용 중인 닉네임 입니다.")));
+                }
+            }
+
 
             // 사용자 저장
             System.out.println("사용자 저장");
@@ -447,7 +414,7 @@ public class SiteUserController {
 
     }
 
-
+    // 회원정보수정 GET
     @GetMapping("/api/user/profile")
     public ResponseEntity<?> getProfile(Principal principal,HttpServletRequest request){
         System.out.println("유저프로필겟!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");

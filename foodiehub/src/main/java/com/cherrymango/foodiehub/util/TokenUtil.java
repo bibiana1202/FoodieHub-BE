@@ -3,22 +3,24 @@ package com.cherrymango.foodiehub.util;
 import com.cherrymango.foodiehub.domain.SiteUser;
 import com.cherrymango.foodiehub.service.SiteUserService;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
 @Component
+@RequiredArgsConstructor
 public class TokenUtil {
 
     private final JwtUtil jwtUtil;
     private final SiteUserService siteUserService;
 
-    @Autowired
-    public TokenUtil(JwtUtil jwtUtil, SiteUserService siteUserService) {
-        this.jwtUtil = jwtUtil;
-        this.siteUserService = siteUserService;
-    }
+//    @Autowired
+//    public TokenUtil(JwtUtil jwtUtil, SiteUserService siteUserService) {
+//        this.jwtUtil = jwtUtil;
+//        this.siteUserService = siteUserService;
+//    }
 
     /**
      * HttpServletRequest를 받아 JWT를 검증하고 SiteUser를 반환하는 메서드

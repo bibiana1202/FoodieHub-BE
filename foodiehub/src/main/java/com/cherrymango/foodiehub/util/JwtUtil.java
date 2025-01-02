@@ -11,8 +11,6 @@ import java.security.Key;
 @Component
 public class JwtUtil {
 
-//    private final String SECRET_KEY = "2W45ktqymEDq8zZmE0HPYEL96Xj3rsIxgQ9vuNrzo60="; // 32바이트 이상
-
     private final JwtProperties jwtProperties;
 
     public JwtUtil(JwtProperties jwtProperties) {
