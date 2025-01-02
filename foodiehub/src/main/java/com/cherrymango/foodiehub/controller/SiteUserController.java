@@ -469,7 +469,7 @@ public class SiteUserController {
                 String getProfileImageUrl = user.getProfileImageUrl();
 
                 // 응답 생성
-                SiteUserInfoResponse response = SiteUserInfoResponse.builder()
+                SiteUserProfileResponse response = SiteUserProfileResponse.builder()
 //                        .userid(userId)
                         .email(email)
                         .cellphone(cellPhone)
@@ -516,7 +516,7 @@ public class SiteUserController {
 
                 // DTO를 사용해 응답 반환
                 // DTO 생성
-                SiteUserInfoResponse response = SiteUserInfoResponse.builder()
+                SiteUserProfileResponse response = SiteUserProfileResponse.builder()
 //                        .userid(userId)
                         .cellphone(cellPhone)
                         .email(email)

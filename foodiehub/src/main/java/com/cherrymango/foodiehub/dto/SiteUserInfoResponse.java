@@ -14,8 +14,8 @@ import lombok.Builder;
 @Builder
 public class SiteUserInfoResponse {
 //    private Long userid;
-    private String cellphone;
-    private String email;
+//    private String cellphone;
+//    private String email;
 //    private String name;
     private String nickname;
 //    private String provider;
