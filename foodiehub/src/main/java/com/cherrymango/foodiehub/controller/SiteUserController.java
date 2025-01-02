@@ -92,7 +92,7 @@ public class SiteUserController {
 
     // 회원가입_관리자
     @PostMapping("/api/auth/admin")
-    public ResponseEntity<?> signup(@Valid @RequestBody AddAdminRequest addAdminRequest, BindingResult bindingResult) {
+    public ResponseEntity<?> signup(@RequestBody @Valid AddAdminRequest addAdminRequest, BindingResult bindingResult) {
         // 입력값 검증 에러 처리
         if (bindingResult.hasErrors()) {
             List<String> errorMessages = bindingResult.getAllErrors().stream()
@@ -334,7 +334,7 @@ public class SiteUserController {
 
     // 회원정보수정 POST
     @PostMapping("/api/user/update-profile")
-    public ResponseEntity<?> updateUserProfile(@Valid @ModelAttribute SiteUserProfileRequest profileRequest, BindingResult bindingResult, HttpServletRequest request,Principal principal){
+    public ResponseEntity<?> updateUserProfile(@ModelAttribute @Valid  SiteUserProfileRequest profileRequest, BindingResult bindingResult, HttpServletRequest request,Principal principal){
         System.out.println("updateUserProfile!!!");
         String profileImageUrl = null;
 
