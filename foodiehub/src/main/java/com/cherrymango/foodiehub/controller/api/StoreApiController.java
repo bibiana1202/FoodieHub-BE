@@ -1,9 +1,9 @@
 package com.cherrymango.foodiehub.controller.api;
 
 import com.cherrymango.foodiehub.domain.Category;
-import com.cherrymango.foodiehub.dto.StoreListItemResponseDto;
 import com.cherrymango.foodiehub.dto.MyPageStoreResponseDto;
 import com.cherrymango.foodiehub.dto.MyStoreResponseDto;
+import com.cherrymango.foodiehub.dto.StoreListItemResponseDto;
 import com.cherrymango.foodiehub.file.FileStore;
 import com.cherrymango.foodiehub.service.StoreService;
 import lombok.RequiredArgsConstructor;
