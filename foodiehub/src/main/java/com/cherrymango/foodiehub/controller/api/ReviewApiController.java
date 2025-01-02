@@ -5,10 +5,13 @@ import com.cherrymango.foodiehub.dto.*;
 import com.cherrymango.foodiehub.file.FileStore;
 import com.cherrymango.foodiehub.repository.SiteUserRepository;
 import com.cherrymango.foodiehub.service.ReviewService;
+import com.cherrymango.foodiehub.util.TokenUtil;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,6 +26,7 @@ public class ReviewApiController {
     private final ReviewService reviewService;
     private final FileStore fileStore;
     private final SiteUserRepository siteUserRepository;
+    private final TokenUtil tokenUtil;
 
     // 디폴트 이미지
     @GetMapping("/image/default")
@@ -35,6 +39,7 @@ public class ReviewApiController {
         return new UrlResource("file:" + fileStore.getFullPath(filename));
     }
 
+    //@PostMapping("/user/{userId}/store/{storeId}")
     @PostMapping("/{userId}/{storeId}")
     public ResponseEntity<Long> addReview(@PathVariable("userId") Long userId, @PathVariable("storeId") Long storeId,
                                           @ModelAttribute @Valid AddReviewRequestDto addReviewRequestDto) {
@@ -62,30 +67,21 @@ public class ReviewApiController {
             userId = user.getId(); // 사용자 ID 가져오기
         }
 
-        // OAuth2 로그인 처리
-//        if (principal != null && principal instanceof OAuth2AuthenticationToken) {
-//            OAuth2AuthenticationToken authToken = (OAuth2AuthenticationToken) principal;
-//            Map<String, Object> attributes = authToken.getPrincipal().getAttributes();
-//            email = (String) attributes.get("email");
-//            System.out.println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^"+email);
-//        } else {
-//            // 폼 로그인 처리
-//            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//            if (authentication != null) {
-//                email = authentication.getName();//authentication.getName(); // 사용자 이름 가져오기
-//            }
-//        }
-
         PagedResponseDto<StoreReviewResponseDto> storeReviews = reviewService.getPagedStoreReviews(storeId, page, userId);
         // PagedResponseDto<StoreReviewResponseDto> storeReviews = reviewService.getPagedStoreReviews(storeId, page, 1L);
         return ResponseEntity.ok(storeReviews);
     }
 
     // 마이페이지 리뷰 목록
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<List<MyPageReviewResponseDto>> findAllMyPageReviews(@PathVariable("userId") Long userId) {
-        List<MyPageReviewResponseDto> userReviews = reviewService.findReviewsByUser(userId);
-        return ResponseEntity.ok(userReviews);
+    @GetMapping("/user")
+    public ResponseEntity<List<MyPageReviewResponseDto>> findAllMyPageReviews(Principal principal, HttpServletRequest request) {
+        try {
+            Long userId = tokenUtil.getSiteUserIdOrThrow(principal, request);
+            List<MyPageReviewResponseDto> userReviews = reviewService.findReviewsByUser(userId);
+            return ResponseEntity.ok(userReviews);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
     }
 
     // 리뷰 상세 정보 조회
@@ -99,6 +95,7 @@ public class ReviewApiController {
     @PutMapping("/{reviewId}")
     public ResponseEntity<Void> updateReview(@PathVariable("reviewId") Long reviewId,
                                              @ModelAttribute @Valid UpdateReviewRequestDto updateReviewRequestDto) {
+        System.out.println("updateReviewRequestDto = " + updateReviewRequestDto);
         reviewService.updateReview(reviewId, updateReviewRequestDto);
         return ResponseEntity.ok().build();
     }

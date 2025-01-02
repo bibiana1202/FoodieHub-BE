@@ -5,9 +5,12 @@ import com.cherrymango.foodiehub.service.SiteUserService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Component;
 
-import java.util.Optional;
+import java.security.Principal;
 
 @Component
 @RequiredArgsConstructor
@@ -56,6 +59,68 @@ public class TokenUtil {
             return siteUser;
         } catch (Exception e) {
             throw new IllegalArgumentException("Invalid or expired token", e);
+        }
+    }
+
+    public SiteUser getSiteUser(Principal principal, HttpServletRequest request) {
+        if (principal instanceof OAuth2AuthenticationToken) {
+            // OAuth2 인증 방식 처리
+            return getSiteUserFromRequest(request);
+        } else if (principal != null) {
+            // 일반 인증 방식 처리
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            if (authentication == null) {
+                throw new IllegalArgumentException("Authentication object is null");
+            }
+            String email = authentication.getName();
+            return siteUserService.findByEmail(email)
+                    .orElseThrow(() -> new IllegalArgumentException("User not found with email: " + email));
+        } else {
+            throw new IllegalArgumentException("Principal is null or invalid");
+        }
+    }
+
+    public Long getSiteUserIdOrThrow(Principal principal, HttpServletRequest request) {
+        if (principal instanceof OAuth2AuthenticationToken) {
+            // OAuth2 인증 방식 처리
+            SiteUser user = getSiteUserFromRequest(request);
+            return user.getId();
+        } else if (principal != null) {
+            // 일반 인증 방식 처리
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            if (authentication == null) {
+                throw new IllegalArgumentException("Authentication object is null");
+            }
+            String email = authentication.getName();
+            return siteUserService.findByEmail(email)
+                    .map(SiteUser::getId)
+                    .orElseThrow(() -> new IllegalArgumentException("User not found with email: " + email));
+        } else {
+            throw new IllegalArgumentException("Principal is null or invalid");
+        }
+    }
+
+    public Long getSiteUserIdOrNull(Principal principal, HttpServletRequest request) {
+        if (principal instanceof OAuth2AuthenticationToken) {
+            // OAuth2 인증 방식 처리
+            try {
+                SiteUser user = getSiteUserFromRequest(request);
+                return user.getId();
+            } catch (Exception e) {
+                return null; // 유저가 없는 경우 null 반환
+            }
+        } else if (principal != null) {
+            // 일반 인증 방식 처리
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            if (authentication != null) {
+                String email = authentication.getName();
+                return siteUserService.findByEmail(email)
+                        .map(SiteUser::getId)
+                        .orElse(null); // 유저가 없는 경우 null 반환
+            }
+            return null;
+        } else {
+            return null; // Principal이 null인 경우 null 반환
         }
     }
 }
