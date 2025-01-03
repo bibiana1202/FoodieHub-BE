@@ -32,7 +32,7 @@ public class MenuService {
     }
 
     public List<Menu> findMenus(Store store) {
-        return menuRepository.findByStore(store);
+        return menuRepository.findByStoreOrderById(store);
     }
 
     @Transactional
