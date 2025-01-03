@@ -11,7 +11,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -75,13 +74,9 @@ public class ReviewApiController {
     // 마이페이지 리뷰 목록
     @GetMapping("/user")
     public ResponseEntity<List<MyPageReviewResponseDto>> findAllMyPageReviews(Principal principal, HttpServletRequest request) {
-        try {
-            Long userId = tokenUtil.getSiteUserIdOrThrow(principal, request);
-            List<MyPageReviewResponseDto> userReviews = reviewService.findReviewsByUser(userId);
-            return ResponseEntity.ok(userReviews);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
-        }
+        Long userId = tokenUtil.getSiteUserIdOrThrow(principal, request);
+        List<MyPageReviewResponseDto> userReviews = reviewService.findReviewsByUser(userId);
+        return ResponseEntity.ok(userReviews);
     }
 
     // 리뷰 상세 정보 조회
@@ -101,9 +96,9 @@ public class ReviewApiController {
     }
 
     @DeleteMapping("/{reviewId}")
-    public ResponseEntity<Void> deleteReview(@PathVariable("reviewId") Long reviewId) {
-        reviewService.deleteReview(reviewId);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<Boolean> deleteReview(@PathVariable("reviewId") Long reviewId) {
+        boolean isDeleted = reviewService.deleteReview(reviewId);
+        return ResponseEntity.ok(isDeleted);
     }
 
 }

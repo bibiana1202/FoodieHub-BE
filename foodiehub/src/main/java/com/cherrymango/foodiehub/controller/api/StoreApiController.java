@@ -6,17 +6,16 @@ import com.cherrymango.foodiehub.file.FileStore;
 import com.cherrymango.foodiehub.service.StoreService;
 import com.cherrymango.foodiehub.util.TokenUtil;
 import jakarta.servlet.http.HttpServletRequest;
+
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
+
 import org.springframework.web.bind.annotation.*;
 
-import java.net.MalformedURLException;
 import java.security.Principal;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -27,24 +26,39 @@ import java.util.Map;
 public class StoreApiController {
     final private FileStore fileStore;
     final private StoreService storeService;
-    private final TokenUtil tokenUtil;
+    final private TokenUtil tokenUtil;
 
-    @GetMapping("/store-image/{filename}")
-    public Resource downloadStoreImage(@PathVariable("filename") String filename) throws MalformedURLException {
-        System.out.println("fileStore.getFullPath(filename)");
-        return new UrlResource("file:" + fileStore.getFullPath(filename));
+    @GetMapping("/store/like")
+    public ResponseEntity<List<MyPageStoreResponseDto>> getMyPageStoreLikeList(Principal principal, HttpServletRequest request) {
+        try {
+            Long userId = tokenUtil.getSiteUserIdOrThrow(principal, request);
+            List<MyPageStoreResponseDto> storeLikeList = storeService.getStoreLikeList(userId);
+            return ResponseEntity.ok(storeLikeList);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
     }
 
-    @GetMapping("/store/like/{userId}")
-    public ResponseEntity<List<MyPageStoreResponseDto>> getMyPageStoreLikeList(@PathVariable("userId") Long userId) {
-        List<MyPageStoreResponseDto> storeLikeList = storeService.getStoreLikeList(userId);
-        return ResponseEntity.ok(storeLikeList);
+    @GetMapping("/store/favorite")
+    public ResponseEntity<List<MyPageStoreResponseDto>> getMyPageStoreFavoriteList(Principal principal, HttpServletRequest request) {
+        try {
+            Long userId = tokenUtil.getSiteUserIdOrThrow(principal, request);
+            List<MyPageStoreResponseDto> storeFavoriteList = storeService.getStoreFavoriteList(userId);
+            return ResponseEntity.ok(storeFavoriteList);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
     }
 
-    @GetMapping("/store/favorite/{userId}")
-    public ResponseEntity<List<MyPageStoreResponseDto>> getMyPageStoreFavoriteList(@PathVariable("userId") Long userId) {
-        List<MyPageStoreResponseDto> storeFavoriteList = storeService.getStoreFavoriteList(userId);
-        return ResponseEntity.ok(storeFavoriteList);
+    @GetMapping("/mystore/details/{userId}")
+    public ResponseEntity<MyStoreResponseDto> getMyStoreDetails(@PathVariable("userId") Long userId) {
+        MyStoreResponseDto myStoreDetails = storeService.getMyStoreDetails(userId);
+
+        if (myStoreDetails == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+
+        return ResponseEntity.ok(myStoreDetails);
     }
 
     @GetMapping("/store/category/{category}")

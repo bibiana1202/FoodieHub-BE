@@ -9,7 +9,7 @@ public class MyStoreResponseDto {
 
     private Long id;
     private String name;
-    private Double averageTotalRating;
+    private Double averageTotalRating; 
     private Double averageTasteRating;
     private Double averagePriceRating;
     private Double averageCleanRating;
