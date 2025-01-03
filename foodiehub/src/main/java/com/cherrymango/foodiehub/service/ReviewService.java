@@ -187,12 +187,17 @@ public class ReviewService {
         }
     }
 
-    public void deleteReview(Long reviewId) {
-        Review review = reviewRepository.findById(reviewId).get();
-        if (review.getStoreImageName() != null) {
-            fileStore.deleteFile(review.getStoreImageName());
+    public boolean deleteReview(Long reviewId) {
+        Optional<Review> reviewOptional = reviewRepository.findById(reviewId);
+        if (reviewOptional.isPresent()) {
+            Review review = reviewOptional.get();
+            if (review.getStoreImageName() != null) {
+                fileStore.deleteFile(review.getStoreImageName());
+            }
+            reviewRepository.deleteById(reviewId);
+            return true;
         }
-        reviewRepository.deleteById(reviewId);
+        return false;
     }
 
 }
