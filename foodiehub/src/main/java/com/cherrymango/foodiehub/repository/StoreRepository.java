@@ -14,6 +14,8 @@ import java.util.Optional;
 public interface StoreRepository extends JpaRepository<Store, Long> {
     Optional<Store> findByUser(SiteUser user);
 
+    List<Store> findAllByOrderByRegisterDateDesc(Pageable pageable);
+
     // 특정 카테고리 등록 최신순 정렬 반환
     List<Store> findByCategoryOrderByRegisterDateDesc(Category category, Pageable pageable);
 

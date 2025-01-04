@@ -4,7 +4,6 @@ import com.cherrymango.foodiehub.domain.Category;
 import com.cherrymango.foodiehub.dto.MyPageStoreResponseDto;
 import com.cherrymango.foodiehub.dto.MyStoreResponseDto;
 import com.cherrymango.foodiehub.dto.StoreListItemResponseDto;
-import com.cherrymango.foodiehub.file.FileStore;
 import com.cherrymango.foodiehub.service.StoreService;
 import com.cherrymango.foodiehub.util.TokenUtil;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,7 +19,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api")
 public class StoreApiController {
-    final private FileStore fileStore;
     final private StoreService storeService;
     final private TokenUtil tokenUtil;
 
@@ -68,6 +66,12 @@ public class StoreApiController {
     public ResponseEntity<List<StoreListItemResponseDto>> getStoreByTag(@PathVariable("tag") String tag,
                                                                              @RequestParam(value = "limit", required = false, defaultValue = "0") int limit) {
         List<StoreListItemResponseDto> stores = storeService.getStoresByTag(tag, limit);
+        return ResponseEntity.ok(stores);
+    }
+
+    @GetMapping("/store/all")
+    public ResponseEntity<List<StoreListItemResponseDto>> getAllStores(@RequestParam(value = "limit", required = false, defaultValue = "0") int limit) {
+        List<StoreListItemResponseDto> stores = storeService.getAllStores(limit);
         return ResponseEntity.ok(stores);
     }
 

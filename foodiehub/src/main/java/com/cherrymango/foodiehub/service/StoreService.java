@@ -326,4 +326,20 @@ public class StoreService {
                         .build())
                 .collect(Collectors.toList());
     }
+
+    public List<StoreListItemResponseDto> getAllStores(int limit) {
+        Pageable pageable = limit > 0 ? PageRequest.of(0, limit) : Pageable.unpaged();
+        List<Store> stores = storeRepository.findAllByOrderByRegisterDateDesc(pageable);
+
+        return stores.stream()
+                .map(store -> StoreListItemResponseDto.builder()
+                        .id(store.getId())
+                        .name(store.getName())
+                        .intro(store.getIntro())
+                        .content(store.getContent())
+                        .image(store.getStoreImageList().isEmpty() ? null : store.getStoreImageList().get(0).getStoreImageName())
+                        .avgRating(roundToFirstDecimal(calculateAverageRating(store, Review::getAvgRating)))
+                        .build())
+                .collect(Collectors.toList());
+    }
 }
