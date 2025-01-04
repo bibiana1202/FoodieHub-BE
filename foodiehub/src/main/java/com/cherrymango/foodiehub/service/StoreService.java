@@ -342,4 +342,17 @@ public class StoreService {
                         .build())
                 .collect(Collectors.toList());
     }
+
+    // 박혜정 2025-01-03
+    public Long getStoreIdByUserId(Long userId) {
+        SiteUser user = siteUserRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        Optional<Store> storeOptional = storeRepository.findByUser(user);
+        if (storeOptional.isEmpty()) {
+            return null; // Store 없을 시 null 반환
+        }
+
+        Store store = storeOptional.get();
+        return store.getId();
+    }
 }
