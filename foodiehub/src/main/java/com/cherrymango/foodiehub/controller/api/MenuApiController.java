@@ -28,38 +28,31 @@ public class MenuApiController {
     final private StoreService storeService;
     private final TokenUtil tokenUtil;
 
-//    @PostMapping("/menu/{storeId}")
-//    public ResponseEntity<MenuResponseDto> addMenu(@PathVariable("storeId") Long storeId, @RequestBody @Valid AddMenuRequestDto request) {
-//        Long id = menuService.save(storeId, request);
-//        Menu findMenu = menuService.findOne(id);
-//        return ResponseEntity.status(HttpStatus.CREATED)
-//                .body(new MenuResponseDto(findMenu.getId(), findMenu.getName(), findMenu.getPrice()));
-//    }
+    /** 메뉴 로그인 없이 넣기 위해 주석 제거 addMenu, findAllMenus */
+    @PostMapping("/menu/{storeId}")
+    public ResponseEntity<MenuResponseDto> addMenu(@PathVariable("storeId") Long storeId, @RequestBody @Valid AddMenuRequestDto request) {
+        Long id = menuService.save(storeId, request);
+        Menu findMenu = menuService.findOne(id);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(new MenuResponseDto(findMenu.getId(), findMenu.getName(), findMenu.getPrice()));
+    }
 
-//    @GetMapping("/menu/{storeId}")
-//    public ResponseEntity<List<MenuResponseDto>> findAllMenus(@PathVariable("storeId") Long storeId) {
-//        Store store = storeRepository.findById(storeId).get();
-//        List<MenuResponseDto> menus = menuService.findMenus(store).stream()
-//                .map(menu -> new MenuResponseDto(menu.getId(), menu.getName(), menu.getPrice()))
-//                .toList();
-//        return ResponseEntity.ok()
-//                .body(menus);
-//    }
-
-//    @PutMapping("/menu")
-//    public ResponseEntity<MenuResponseDto> updateMenu(@RequestBody @Valid UpdateMenuRequestDto request) {
-//        Long id = menuService.update(request);
-//        Menu findMenu = menuService.findOne(id);
-//        return ResponseEntity.ok()
-//                .body(new MenuResponseDto(findMenu.getId(), findMenu.getName(), findMenu.getPrice()));
-//    }
+    @GetMapping("/menu/{storeId}")
+    public ResponseEntity<List<MenuResponseDto>> findAllMenus(@PathVariable("storeId") Long storeId) {
+        Store store = storeRepository.findById(storeId).get();
+        List<MenuResponseDto> menus = menuService.findMenus(store).stream()
+                .map(menu -> new MenuResponseDto(menu.getId(), menu.getName(), menu.getPrice()))
+                .toList();
+        return ResponseEntity.ok()
+                .body(menus);
+    }
+    /** 메뉴 로그인 없이 넣기 위해 주석 제거 */
 
     @DeleteMapping("/menu/{id}")
     public ResponseEntity<Void> deleteMenu(@PathVariable("id") Long id) {
         menuService.delete(id);
         return ResponseEntity.ok().build();
     }
-
 
     // 식당 수정 (메뉴 로드) GET (박혜정 2025-01-03)
     @GetMapping("/menu")

@@ -1,24 +1,17 @@
 package com.cherrymango.foodiehub.controller.api;
 
 import com.cherrymango.foodiehub.domain.Category;
-import com.cherrymango.foodiehub.dto.MyPageStoreResponseDto;
-import com.cherrymango.foodiehub.dto.MyStoreResponseDto;
-import com.cherrymango.foodiehub.dto.StoreListItemResponseDto;
 import com.cherrymango.foodiehub.dto.*;
-import com.cherrymango.foodiehub.file.FileStore;
 import com.cherrymango.foodiehub.service.StoreService;
 import com.cherrymango.foodiehub.util.TokenUtil;
 import jakarta.servlet.http.HttpServletRequest;
-
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -81,6 +74,13 @@ public class StoreApiController {
     public ResponseEntity<List<StoreListItemResponseDto>> getAllStores(@RequestParam(value = "limit", required = false, defaultValue = "0") int limit) {
         List<StoreListItemResponseDto> stores = storeService.getAllStores(limit);
         return ResponseEntity.ok(stores);
+    }
+
+    @GetMapping("/store/detail/{storeId}")
+    public ResponseEntity<StoreDetailResponseDto> getStoreDetails(@PathVariable("storeId") Long storeId, Principal principal, HttpServletRequest request) {
+        Long userId = tokenUtil.getSiteUserIdOrNull(principal, request);
+        StoreDetailResponseDto storeDetails = storeService.getStoreDetails(storeId, userId);
+        return ResponseEntity.ok(storeDetails);
     }
 
     // 가게 정보 저장 (박혜정 2025-01-02)

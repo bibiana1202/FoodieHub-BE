@@ -35,21 +35,23 @@ public class StoreImageApiController {
         return new UrlResource("file:" + fileStore.getFullPath(filename));
     }
 
-//    @PostMapping("/images/{storeId}")
-//    public ResponseEntity<Long> uploadImage(@PathVariable("storeId") Long storeId, @RequestParam("image") MultipartFile image) {
-//        Long imageId = storeImageService.save(storeId, image);
-//        return ResponseEntity.ok(imageId);
-//    }
+    /** 식당 사진 로그인 없이 넣기 위해 주석 제거 uploadImage, findAllImages */
+    @PostMapping("/images/{storeId}")
+    public ResponseEntity<Long> uploadImage(@PathVariable("storeId") Long storeId, @RequestParam("image") MultipartFile image) {
+        Long imageId = storeImageService.save(storeId, image);
+        return ResponseEntity.ok(imageId);
+    }
 
-//    @GetMapping("/images/{storeId}")
-//    public ResponseEntity<List<StoreImageResponseDto>> findAllImages(@PathVariable("storeId") Long storeId) {
-//        Store store = storeRepository.findById(storeId).get();
-//        List<StoreImageResponseDto> images = storeImageService.findImages(store).stream()
-//                .map(image -> new StoreImageResponseDto(image.getId(), image.getStoreImageName()))
-//                .toList();
-//
-//        return ResponseEntity.ok(images);
-//    }
+    @GetMapping("/images/{storeId}")
+    public ResponseEntity<List<StoreImageResponseDto>> findAllImages(@PathVariable("storeId") Long storeId) {
+        Store store = storeRepository.findById(storeId).get();
+        List<StoreImageResponseDto> images = storeImageService.findImages(store).stream()
+                .map(image -> new StoreImageResponseDto(image.getId(), image.getStoreImageName()))
+                .toList();
+
+        return ResponseEntity.ok(images);
+    }
+    /** 식당 사진 로그인 없이 넣기 위해 주석 제거 uploadImage, findAllImages */
 
     // 이미지 삭제 (2025-01-03 박혜정)
     @DeleteMapping("/images/{imageId}")
@@ -57,7 +59,6 @@ public class StoreImageApiController {
         storeImageService.delete(imageId);
         return ResponseEntity.ok().build();
     }
-
 
     // 이미지 로드 (2025-01-03 박혜정)
     @GetMapping("/images")
