@@ -329,6 +329,7 @@ public class SiteUserController {
                 return ResponseEntity.badRequest().body(Map.of("errors", List.of("회원 수정 실패")));
             }
 
+
         } catch (DataIntegrityViolationException e) {
             System.out.println("이미 등록된 사용자입니다.");
             bindingResult.reject("updateFailed", "이미 등록된 사용자입니다.");
