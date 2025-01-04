@@ -209,6 +209,7 @@ public class StoreService {
                 .tags(tags)
                 .avgRating(avgRating)
                 .likes(store.getStoreLikes().size())
+                .favorites(store.getStoreFavorites().size())
                 .isLiked(isLiked)
                 .isFavorite(isFavorite)
                 .build();

@@ -3,6 +3,7 @@ package com.cherrymango.foodiehub.service;
 import com.cherrymango.foodiehub.domain.SiteUser;
 import com.cherrymango.foodiehub.domain.Store;
 import com.cherrymango.foodiehub.domain.StoreFavorite;
+import com.cherrymango.foodiehub.dto.FavoriteResponseDto;
 import com.cherrymango.foodiehub.repository.SiteUserRepository;
 import com.cherrymango.foodiehub.repository.StoreFavoriteRepository;
 import com.cherrymango.foodiehub.repository.StoreRepository;
@@ -22,15 +23,16 @@ public class StoreFavoriteService {
 
     // 즐겨찾기 토글
     @Transactional
-    public Boolean toggleFavorite(Long storeId, Long userId) {
+    public FavoriteResponseDto toggleFavorite(Long storeId, Long userId) {
         Store store = storeRepository.findById(storeId).orElseThrow(() -> new IllegalArgumentException("Store not found"));
         SiteUser user = siteUserRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
 
         Optional<StoreFavorite> existingFavorite = storeFavoriteRepository.findByStoreAndUser(store, user);
+        boolean isFavorited;
 
         if (existingFavorite.isPresent()) { // 즐겨찾기 취소
             storeFavoriteRepository.delete(existingFavorite.get());
-            return false;
+            isFavorited = false;
         } else { // 즐겨찾기 추가
             StoreFavorite storeFavorite = StoreFavorite.builder()
                     .store(store)
@@ -38,9 +40,11 @@ public class StoreFavoriteService {
                     .favoriteTime(LocalDateTime.now()).build();
 
             storeFavoriteRepository.save(storeFavorite);
-
-            return true;
+            isFavorited = true;
         }
+
+        long favoriteCount = storeFavoriteRepository.countByStore(store);
+        return new FavoriteResponseDto(favoriteCount, isFavorited);
     }
 
     // 즐겨찾기 제거

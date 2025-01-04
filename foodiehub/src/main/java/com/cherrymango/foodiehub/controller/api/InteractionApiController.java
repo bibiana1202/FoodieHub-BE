@@ -1,5 +1,6 @@
 package com.cherrymango.foodiehub.controller.api;
 
+import com.cherrymango.foodiehub.dto.FavoriteResponseDto;
 import com.cherrymango.foodiehub.dto.LikeResponseDto;
 import com.cherrymango.foodiehub.service.ReviewLikeService;
 import com.cherrymango.foodiehub.service.StoreFavoriteService;
@@ -21,15 +22,29 @@ public class InteractionApiController {
     private final ReviewLikeService reviewLikeService;
     private final TokenUtil tokenUtil;
 
-    @PostMapping("/store/{storeId}/favorite")
-    public ResponseEntity<Boolean> toggleStoreFavorite(@PathVariable("storeId") Long storeId, @RequestParam(value = "userId") Long userId) {
+    @PostMapping("/store/favorite/{storeId}")
+    public ResponseEntity<FavoriteResponseDto> toggleStoreFavorite(@PathVariable("storeId") Long storeId, Principal principal, HttpServletRequest request) {
+        Long userId = tokenUtil.getSiteUserIdOrThrow(principal, request);
         return ResponseEntity.ok(storeFavoriteService.toggleFavorite(storeId, userId));
     }
 
-    @PostMapping("/store/{storeId}/like")
-    public ResponseEntity<LikeResponseDto> toggleStoreLike(@PathVariable("storeId") Long storeId, @RequestParam(value = "userId") Long userId) {
+    @PostMapping("/store/like/{storeId}")
+    public ResponseEntity<LikeResponseDto> toggleStoreLike(@PathVariable("storeId") Long storeId, Principal principal, HttpServletRequest request) {
+        Long userId = tokenUtil.getSiteUserIdOrThrow(principal, request);
         return ResponseEntity.ok(storeLikeService.toggleLike(storeId, userId));
     }
+
+    /** 테스트를 위한 api */
+    @PostMapping("/store/{storeId}/favorite/{userId}")
+    public ResponseEntity<FavoriteResponseDto> toggleStoreFavoriteTest(@PathVariable("storeId") Long storeId, @PathVariable("userId") Long userId) {
+        return ResponseEntity.ok(storeFavoriteService.toggleFavorite(storeId, userId));
+    }
+
+    @PostMapping("/store/{storeId}/like/{userId}")
+    public ResponseEntity<LikeResponseDto> toggleStoreLikeTest(@PathVariable("storeId") Long storeId, @PathVariable("userId") Long userId) {
+        return ResponseEntity.ok(storeLikeService.toggleLike(storeId, userId));
+    }
+    /** 테스트를 위한 api */
 
     @PostMapping("/review/{reviewId}/like")
     public ResponseEntity<LikeResponseDto> toggleReviewLike(@PathVariable("reviewId") Long reviewId, @RequestParam(value = "userId") Long userId) {
