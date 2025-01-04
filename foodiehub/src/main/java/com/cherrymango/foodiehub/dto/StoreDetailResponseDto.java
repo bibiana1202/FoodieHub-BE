@@ -29,6 +29,7 @@ public class StoreDetailResponseDto {
     private Double avgRating;
 
     private Integer likes;
+    private Integer favorites;
 
     private Boolean isLiked;
     private Boolean isFavorite;

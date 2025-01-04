@@ -7,9 +7,9 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class LikeResponseDto {
+public class FavoriteResponseDto {
 
-    private long likeCount;
-    private boolean liked;
+    private long favoriteCount;
+    private boolean favorited;
 
 }

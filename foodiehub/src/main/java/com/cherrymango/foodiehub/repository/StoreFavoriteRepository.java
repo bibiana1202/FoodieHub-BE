@@ -14,6 +14,8 @@ public interface StoreFavoriteRepository extends JpaRepository<StoreFavorite, Lo
     // Id 기반 조회
     Optional<StoreFavorite> findByStoreIdAndUserId(Long storeId, Long userId);
 
+    long countByStore(Store store);
+
     boolean existsByStoreAndUser(Store store, SiteUser user);
 
     List<StoreFavorite> findByUserOrderByFavoriteTimeDesc(SiteUser user);
