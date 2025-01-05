@@ -31,27 +31,9 @@ public class StoreImageApiController {
 
     @GetMapping("/image/{filename}")
     public Resource downloadImage(@PathVariable("filename") String filename) throws MalformedURLException {
-        // 파일명이 왔을 때 UrlResource로 실제 파일에 접근해서 리소스를 가져온 다음 바이너리 데이터를 웹브라우저로 전송
+        // 파일명이 왔을 때 UrlResource로 실제 파일에 접근해서 리소스를 가져온 다음 바이너리 데이터를 웹 브라우저로 전송
         return new UrlResource("file:" + fileStore.getFullPath(filename));
     }
-
-    /** 식당 사진 로그인 없이 넣기 위해 주석 제거 uploadImage, findAllImages */
-    @PostMapping("/images/{storeId}")
-    public ResponseEntity<Long> uploadImage(@PathVariable("storeId") Long storeId, @RequestParam("image") MultipartFile image) {
-        Long imageId = storeImageService.save(storeId, image);
-        return ResponseEntity.ok(imageId);
-    }
-
-    @GetMapping("/images/{storeId}")
-    public ResponseEntity<List<StoreImageResponseDto>> findAllImages(@PathVariable("storeId") Long storeId) {
-        Store store = storeRepository.findById(storeId).get();
-        List<StoreImageResponseDto> images = storeImageService.findImages(store).stream()
-                .map(image -> new StoreImageResponseDto(image.getId(), image.getStoreImageName()))
-                .toList();
-
-        return ResponseEntity.ok(images);
-    }
-    /** 식당 사진 로그인 없이 넣기 위해 주석 제거 uploadImage, findAllImages */
 
     // 이미지 삭제 (2025-01-03 박혜정)
     @DeleteMapping("/images/{imageId}")
@@ -64,8 +46,7 @@ public class StoreImageApiController {
     @GetMapping("/images")
     public ResponseEntity<List<StoreImageResponseDto>> findAllImages(Principal principal, HttpServletRequest request) {
         Long userId = tokenUtil.getSiteUserIdOrThrow(principal, request);
-        // userId로 storeId 찾기
-        Long storeId = storeService.getStoreIdByUserId(userId);
+        Long storeId = storeService.getStoreIdByUserId(userId); // userId로 storeId 찾기
 
         Store store = storeRepository.findById(storeId).get();
         List<StoreImageResponseDto> images = storeImageService.findImages(store).stream()
@@ -79,8 +60,7 @@ public class StoreImageApiController {
     @PostMapping("/images")
     public ResponseEntity<Long> uploadImage(Principal principal, HttpServletRequest request, @RequestParam("image") MultipartFile image) {
         Long userId = tokenUtil.getSiteUserIdOrThrow(principal, request);
-        // userId로 storeId 찾기
-        Long storeId = storeService.getStoreIdByUserId(userId);
+        Long storeId = storeService.getStoreIdByUserId(userId); // userId로 storeId 찾기
 
         Long imageId = storeImageService.save(storeId, image);
         return ResponseEntity.ok(imageId);

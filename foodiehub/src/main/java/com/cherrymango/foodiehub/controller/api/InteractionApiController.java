@@ -40,23 +40,6 @@ public class InteractionApiController {
         return ResponseEntity.ok(reviewLikeService.toggleLike(reviewId, userId));
     }
 
-    /** 테스트를 위한 api */
-    @PostMapping("/store/{storeId}/favorite/{userId}")
-    public ResponseEntity<FavoriteResponseDto> toggleStoreFavoriteTest(@PathVariable("storeId") Long storeId, @PathVariable("userId") Long userId) {
-        return ResponseEntity.ok(storeFavoriteService.toggleFavorite(storeId, userId));
-    }
-
-    @PostMapping("/store/{storeId}/like/{userId}")
-    public ResponseEntity<LikeResponseDto> toggleStoreLikeTest(@PathVariable("storeId") Long storeId, @PathVariable("userId") Long userId) {
-        return ResponseEntity.ok(storeLikeService.toggleLike(storeId, userId));
-    }
-
-    @PostMapping("/review/{reviewId}/like/{userId}")
-    public ResponseEntity<LikeResponseDto> toggleReviewLikeTest(@PathVariable("reviewId") Long reviewId, @PathVariable("userId") Long userId) {
-        return ResponseEntity.ok(reviewLikeService.toggleLike(reviewId, userId));
-    }
-    /** 테스트를 위한 api */
-
     @DeleteMapping("/store/{storeId}/favorite")
     public ResponseEntity<Boolean> removeStoreFavorite(@PathVariable("storeId") Long storeId, Principal principal, HttpServletRequest request) {
         Long userId = tokenUtil.getSiteUserIdOrThrow(principal, request);

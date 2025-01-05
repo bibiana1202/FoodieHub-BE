@@ -120,8 +120,7 @@ public class StoreApiController {
     public ResponseEntity<?> getUpdateStore(Principal principal, HttpServletRequest request) {
         try {
             Long userId = tokenUtil.getSiteUserIdOrThrow(principal, request);
-            // userId로 storeId 찾기
-            Long storeId = storeService.getStoreIdByUserId(userId);
+            Long storeId = storeService.getStoreIdByUserId(userId); // userId로 storeId 찾기
             UpdateStoreDetailDto store = storeService.getUpdateDetails(storeId);
             if (store == null) {
                 return ResponseEntity.ok(Collections.singletonMap("isStore", false));
@@ -141,8 +140,7 @@ public class StoreApiController {
     public ResponseEntity<Long>  postUpdateStore(@RequestBody @Valid UpdateStoreRequestDto updateStoreRequestDto, Principal principal, HttpServletRequest request) {
         try {
             Long userId = tokenUtil.getSiteUserIdOrThrow(principal, request);
-            // userId로 storeId 찾기
-            Long storeId = storeService.getStoreIdByUserId(userId);
+            Long storeId = storeService.getStoreIdByUserId(userId); // userId로 storeId 찾기
             storeService.update(storeId, updateStoreRequestDto);
             return ResponseEntity.ok(storeId);
         } catch (Exception e) {

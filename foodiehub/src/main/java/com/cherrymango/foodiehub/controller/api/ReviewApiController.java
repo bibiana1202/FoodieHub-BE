@@ -2,7 +2,6 @@ package com.cherrymango.foodiehub.controller.api;
 
 import com.cherrymango.foodiehub.dto.*;
 import com.cherrymango.foodiehub.file.FileStore;
-import com.cherrymango.foodiehub.repository.SiteUserRepository;
 import com.cherrymango.foodiehub.service.ReviewService;
 import com.cherrymango.foodiehub.util.TokenUtil;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,7 +22,6 @@ import java.util.List;
 public class ReviewApiController {
     private final ReviewService reviewService;
     private final FileStore fileStore;
-    private final SiteUserRepository siteUserRepository;
     private final TokenUtil tokenUtil;
 
     // 디폴트 이미지
@@ -46,15 +44,7 @@ public class ReviewApiController {
         return ResponseEntity.ok(reviewId);
     }
 
-    /** 테스트를 위한 api */
-    @PostMapping("/user/{userId}/store/{storeId}")
-    public ResponseEntity<Long> addReviewTest(@PathVariable("userId") Long userId, @PathVariable("storeId") Long storeId,
-                                          @ModelAttribute @Valid AddReviewRequestDto addReviewRequestDto) {
-        Long reviewId = reviewService.save(userId, storeId, addReviewRequestDto);
-        return ResponseEntity.ok(reviewId);
-    }
-
-    @GetMapping("/admin/store/{storeId}")
+    @GetMapping("/mystore/{storeId}")
     public ResponseEntity<List<StoreReviewResponseDto>> findStoreReviews(@PathVariable("storeId") Long storeId) {
         List<StoreReviewResponseDto> storeReviews = reviewService.getStoreReviews(storeId);
         return ResponseEntity.ok(storeReviews);
