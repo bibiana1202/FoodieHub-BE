@@ -23,6 +23,7 @@ public class StoreApiController {
     final private StoreService storeService;
     final private TokenUtil tokenUtil;
 
+    // 마이페이지 like, favorite 가게 리스트
     @GetMapping("/store/like")
     public ResponseEntity<List<MyPageStoreResponseDto>> getMyPageStoreLikeList(Principal principal, HttpServletRequest request) {
         try {
@@ -45,15 +46,11 @@ public class StoreApiController {
         }
     }
 
-    @GetMapping("/mystore/details/{userId}")
-    public ResponseEntity<MyStoreResponseDto> getMyStoreDetails(@PathVariable("userId") Long userId) {
-        MyStoreResponseDto myStoreDetails = storeService.getMyStoreDetails(userId);
-
-        if (myStoreDetails == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
-
-        return ResponseEntity.ok(myStoreDetails);
+    // 가게 전체 리스트, 카테고리 리스트, 태그 리스트
+    @GetMapping("/store/all")
+    public ResponseEntity<List<StoreListItemResponseDto>> getAllStores(@RequestParam(value = "limit", required = false, defaultValue = "0") int limit) {
+        List<StoreListItemResponseDto> stores = storeService.getAllStores(limit);
+        return ResponseEntity.ok(stores);
     }
 
     @GetMapping("/store/category/{category}")
@@ -70,12 +67,7 @@ public class StoreApiController {
         return ResponseEntity.ok(stores);
     }
 
-    @GetMapping("/store/all")
-    public ResponseEntity<List<StoreListItemResponseDto>> getAllStores(@RequestParam(value = "limit", required = false, defaultValue = "0") int limit) {
-        List<StoreListItemResponseDto> stores = storeService.getAllStores(limit);
-        return ResponseEntity.ok(stores);
-    }
-
+    // 가게 상세 페이지
     @GetMapping("/store/detail/{storeId}")
     public ResponseEntity<StoreDetailResponseDto> getStoreDetails(@PathVariable("storeId") Long storeId, Principal principal, HttpServletRequest request) {
         Long userId = tokenUtil.getSiteUserIdOrNull(principal, request);
@@ -95,7 +87,7 @@ public class StoreApiController {
         }
     }
 
-    // 내 식당 확인 (박혜정 2025-01-03)
+    // 내 식당 확인 (박혜정 2025-01-03), ResponseEntity<MyStoreResponseDto>
     @GetMapping("/mystore/details")
     public ResponseEntity<?> getMyStoreDetails(Principal principal, HttpServletRequest request) {
         try {
@@ -121,7 +113,7 @@ public class StoreApiController {
         try {
             Long userId = tokenUtil.getSiteUserIdOrThrow(principal, request);
             Long storeId = storeService.getStoreIdByUserId(userId); // userId로 storeId 찾기
-            UpdateStoreDetailDto store = storeService.getUpdateDetails(storeId);
+            UpdateStoreDetailResponseDto store = storeService.getUpdateDetails(storeId);
             if (store == null) {
                 return ResponseEntity.ok(Collections.singletonMap("isStore", false));
             }

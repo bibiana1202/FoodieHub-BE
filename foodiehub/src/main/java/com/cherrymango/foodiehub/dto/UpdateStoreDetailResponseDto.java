@@ -9,7 +9,7 @@ import java.util.List;
 
 @Getter
 @Builder
-public class UpdateStoreDetailDto {
+public class UpdateStoreDetailResponseDto {
 
     private Long id;
     private String name;

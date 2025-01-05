@@ -29,17 +29,16 @@ public class StoreImageApiController {
     final private StoreService storeService;
     private final TokenUtil tokenUtil;
 
+    // 디폴트 이미지
+    @GetMapping("/image/default")
+    public Resource getDefaultImage() throws MalformedURLException {
+        return new UrlResource("classpath:/static/images/profile.png");
+    }
+
     @GetMapping("/image/{filename}")
     public Resource downloadImage(@PathVariable("filename") String filename) throws MalformedURLException {
         // 파일명이 왔을 때 UrlResource로 실제 파일에 접근해서 리소스를 가져온 다음 바이너리 데이터를 웹 브라우저로 전송
         return new UrlResource("file:" + fileStore.getFullPath(filename));
-    }
-
-    // 이미지 삭제 (2025-01-03 박혜정)
-    @DeleteMapping("/images/{imageId}")
-    public ResponseEntity<Void> deleteImage(@PathVariable("imageId") Long imageId) {
-        storeImageService.delete(imageId);
-        return ResponseEntity.ok().build();
     }
 
     // 이미지 로드 (2025-01-03 박혜정)
@@ -66,5 +65,11 @@ public class StoreImageApiController {
         return ResponseEntity.ok(imageId);
     }
 
+    // 이미지 삭제 (2025-01-03 박혜정)
+    @DeleteMapping("/images/{imageId}")
+    public ResponseEntity<Void> deleteImage(@PathVariable("imageId") Long imageId) {
+        storeImageService.delete(imageId);
+        return ResponseEntity.ok().build();
+    }
 
 }

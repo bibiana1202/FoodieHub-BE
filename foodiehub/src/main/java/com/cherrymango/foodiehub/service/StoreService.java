@@ -75,7 +75,7 @@ public class StoreService {
         return store.getId();
     }
 
-    public UpdateStoreDetailDto getUpdateDetails(Long id) {
+    public UpdateStoreDetailResponseDto getUpdateDetails(Long id) {
         Store store = storeRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Store not found with id: " + id));
 
@@ -83,7 +83,7 @@ public class StoreService {
                 .map(storeTag -> storeTag.getTag().getName())
                 .toList();
 
-        return UpdateStoreDetailDto.builder()
+        return UpdateStoreDetailResponseDto.builder()
                 .id(store.getId())
                 .name(store.getName())
                 .intro(store.getIntro())

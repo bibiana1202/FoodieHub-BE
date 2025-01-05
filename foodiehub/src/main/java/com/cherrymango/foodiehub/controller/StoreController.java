@@ -3,7 +3,7 @@ package com.cherrymango.foodiehub.controller;
 import com.cherrymango.foodiehub.domain.SiteUser;
 import com.cherrymango.foodiehub.dto.AddStoreRequestDto;
 import com.cherrymango.foodiehub.dto.StoreDetailResponseDto;
-import com.cherrymango.foodiehub.dto.UpdateStoreDetailDto;
+import com.cherrymango.foodiehub.dto.UpdateStoreDetailResponseDto;
 import com.cherrymango.foodiehub.dto.UpdateStoreRequestDto;
 import com.cherrymango.foodiehub.repository.SiteUserRepository;
 import com.cherrymango.foodiehub.service.StoreService;
@@ -36,7 +36,7 @@ public class StoreController {
 
     @GetMapping("/update/{storeId}")
     public String getUpdateStore(@PathVariable("storeId") Long storeId, Model model) {
-        UpdateStoreDetailDto store = storeService.getUpdateDetails(storeId);
+        UpdateStoreDetailResponseDto store = storeService.getUpdateDetails(storeId);
         model.addAttribute("store", store);
         return "store/update";
     }
