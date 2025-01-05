@@ -1,6 +1,5 @@
 package com.cherrymango.foodiehub.controller.api;
 
-import com.cherrymango.foodiehub.domain.SiteUser;
 import com.cherrymango.foodiehub.dto.*;
 import com.cherrymango.foodiehub.file.FileStore;
 import com.cherrymango.foodiehub.repository.SiteUserRepository;
@@ -38,9 +37,18 @@ public class ReviewApiController {
         return new UrlResource("file:" + fileStore.getFullPath(filename));
     }
 
-    //@PostMapping("/user/{userId}/store/{storeId}")
-    @PostMapping("/{userId}/{storeId}")
-    public ResponseEntity<Long> addReview(@PathVariable("userId") Long userId, @PathVariable("storeId") Long storeId,
+    @PostMapping("/{storeId}")
+    public ResponseEntity<Long> addReview(@PathVariable("storeId") Long storeId,
+                                          @ModelAttribute @Valid AddReviewRequestDto addReviewRequestDto,
+                                          Principal principal, HttpServletRequest request) {
+        Long userId = tokenUtil.getSiteUserIdOrThrow(principal, request);
+        Long reviewId = reviewService.save(userId, storeId, addReviewRequestDto);
+        return ResponseEntity.ok(reviewId);
+    }
+
+    /** 테스트를 위한 api */
+    @PostMapping("/user/{userId}/store/{storeId}")
+    public ResponseEntity<Long> addReviewTest(@PathVariable("userId") Long userId, @PathVariable("storeId") Long storeId,
                                           @ModelAttribute @Valid AddReviewRequestDto addReviewRequestDto) {
         Long reviewId = reviewService.save(userId, storeId, addReviewRequestDto);
         return ResponseEntity.ok(reviewId);
@@ -55,19 +63,10 @@ public class ReviewApiController {
     // 가게 상세 리뷰 목록
     @GetMapping("/store/{storeId}")
     public ResponseEntity<PagedResponseDto<StoreReviewResponseDto>> findPagedStoreReviews(@PathVariable("storeId") Long storeId,
-                                                                                     @RequestParam(value = "page", defaultValue = "0") int page,
-                                                                                     Principal principal) {
-        // Principal에서 사용자 정보 가져오기
-        Long userId = null;
-        if (principal != null) {
-            String email = principal.getName(); // 사용자명 가져오기
-            SiteUser user = siteUserRepository.findByEmail(email)
-                    .orElseThrow(() -> new IllegalArgumentException("User not found"));
-            userId = user.getId(); // 사용자 ID 가져오기
-        }
-
+                                                                                          @RequestParam(value = "page", defaultValue = "0") int page,
+                                                                                          Principal principal, HttpServletRequest request) {
+        Long userId = tokenUtil.getSiteUserIdOrNull(principal, request);
         PagedResponseDto<StoreReviewResponseDto> storeReviews = reviewService.getPagedStoreReviews(storeId, page, userId);
-        // PagedResponseDto<StoreReviewResponseDto> storeReviews = reviewService.getPagedStoreReviews(storeId, page, 1L);
         return ResponseEntity.ok(storeReviews);
     }
 

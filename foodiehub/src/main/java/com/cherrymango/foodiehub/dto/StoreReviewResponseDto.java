@@ -15,7 +15,7 @@ public class StoreReviewResponseDto {
     private String profileImage;
 
     private Long id;
-    private Double avgRating; // 소수점 첫번째 자리로 반환
+    private Double avgRating;
     private Integer tasteRating;
     private Integer priceRating;
     private Integer cleanRating;
@@ -25,5 +25,5 @@ public class StoreReviewResponseDto {
     private String reviewImage;
     private Integer likes;
 
-    private Boolean isLiked;
+    private Boolean liked;
 }
