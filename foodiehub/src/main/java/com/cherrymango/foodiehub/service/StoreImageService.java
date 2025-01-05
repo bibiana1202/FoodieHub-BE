@@ -2,7 +2,7 @@ package com.cherrymango.foodiehub.service;
 
 import com.cherrymango.foodiehub.domain.Store;
 import com.cherrymango.foodiehub.domain.StoreImage;
-import com.cherrymango.foodiehub.dto.UploadImageDto;
+import com.cherrymango.foodiehub.dto.image.UploadImageDto;
 import com.cherrymango.foodiehub.file.FileStore;
 import com.cherrymango.foodiehub.repository.StoreImageRepository;
 import com.cherrymango.foodiehub.repository.StoreRepository;

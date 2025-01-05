@@ -1,4 +1,4 @@
-package com.cherrymango.foodiehub.dto;
+package com.cherrymango.foodiehub.dto.review;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -9,7 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @Setter
-public class UpdateReviewRequestDto {
+public class AddReviewRequestDto {
 
     @NotNull
     @Positive
@@ -26,6 +26,5 @@ public class UpdateReviewRequestDto {
     @NotEmpty
     private String content;
     private MultipartFile image;
-    private boolean deleteImage; // 이미지 삭제 여부
 
 }

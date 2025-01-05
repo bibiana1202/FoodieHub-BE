@@ -1,4 +1,4 @@
-package com.cherrymango.foodiehub.dto;
+package com.cherrymango.foodiehub.dto.menu;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;

@@ -1,5 +1,6 @@
-package com.cherrymango.foodiehub.dto;
+package com.cherrymango.foodiehub.dto.store;
 
+import com.cherrymango.foodiehub.domain.Category;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -8,30 +9,19 @@ import java.util.List;
 
 @Getter
 @Builder
-public class StoreDetailResponseDto {
+public class UpdateStoreDetailResponseDto {
 
     private Long id;
     private String name;
     private String intro;
     private String phone;
     private String address;
-    private String category;
+    private Category category;
     private Integer parking;
     private String operationHours;
     private String lastOrder;
     private String content;
     private LocalDateTime registerDate;
-    private List<MenuResponseDto> menus; // new MenuResponseDto(null, , )
-    private List<String> images;
     private List<String> tags;
-
-    // 전체 리뷰 평균 별점 소수점 첫번째 자리
-    private Double avgRating;
-
-    private Integer likes;
-    private Integer favorites;
-
-    private Boolean isLiked;
-    private Boolean isFavorite;
 
 }

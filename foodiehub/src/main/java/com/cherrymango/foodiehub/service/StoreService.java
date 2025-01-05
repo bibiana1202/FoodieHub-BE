@@ -2,7 +2,8 @@ package com.cherrymango.foodiehub.service;
 
 
 import com.cherrymango.foodiehub.domain.*;
-import com.cherrymango.foodiehub.dto.*;
+import com.cherrymango.foodiehub.dto.menu.MenuResponseDto;
+import com.cherrymango.foodiehub.dto.store.*;
 import com.cherrymango.foodiehub.file.FileStore;
 import com.cherrymango.foodiehub.repository.*;
 import lombok.RequiredArgsConstructor;

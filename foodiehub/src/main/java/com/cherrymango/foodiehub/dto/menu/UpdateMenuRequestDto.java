@@ -1,4 +1,4 @@
-package com.cherrymango.foodiehub.dto;
+package com.cherrymango.foodiehub.dto.menu;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -8,11 +8,12 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class AddMenuRequestDto {
+public class UpdateMenuRequestDto {
 
-    @NotEmpty(message = "메뉴 이름은 필수 입력 항목입니다.")
+    private Long id;
+    @NotEmpty
     private String name;
-    @NotNull(message = "메뉴 가격은 필수 입력 항목입니다.")
+    @NotNull
     @Positive
     private Integer price;
 

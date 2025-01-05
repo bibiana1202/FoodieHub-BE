@@ -1,7 +1,7 @@
 package com.cherrymango.foodiehub.controller.api;
 
-import com.cherrymango.foodiehub.dto.FavoriteResponseDto;
-import com.cherrymango.foodiehub.dto.LikeResponseDto;
+import com.cherrymango.foodiehub.dto.FavoriteLike.FavoriteResponseDto;
+import com.cherrymango.foodiehub.dto.FavoriteLike.LikeResponseDto;
 import com.cherrymango.foodiehub.service.ReviewLikeService;
 import com.cherrymango.foodiehub.service.StoreFavoriteService;
 import com.cherrymango.foodiehub.service.StoreLikeService;

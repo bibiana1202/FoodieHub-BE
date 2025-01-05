@@ -1,7 +1,7 @@
 package com.cherrymango.foodiehub.controller.api;
 
 import com.cherrymango.foodiehub.domain.Category;
-import com.cherrymango.foodiehub.dto.*;
+import com.cherrymango.foodiehub.dto.store.*;
 import com.cherrymango.foodiehub.service.StoreService;
 import com.cherrymango.foodiehub.util.TokenUtil;
 import jakarta.servlet.http.HttpServletRequest;

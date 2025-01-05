@@ -2,9 +2,9 @@ package com.cherrymango.foodiehub.controller.api;
 
 import com.cherrymango.foodiehub.domain.Menu;
 import com.cherrymango.foodiehub.domain.Store;
-import com.cherrymango.foodiehub.dto.AddMenuRequestDto;
-import com.cherrymango.foodiehub.dto.MenuResponseDto;
-import com.cherrymango.foodiehub.dto.UpdateMenuRequestDto;
+import com.cherrymango.foodiehub.dto.menu.AddMenuRequestDto;
+import com.cherrymango.foodiehub.dto.menu.MenuResponseDto;
+import com.cherrymango.foodiehub.dto.menu.UpdateMenuRequestDto;
 import com.cherrymango.foodiehub.repository.StoreRepository;
 import com.cherrymango.foodiehub.service.MenuService;
 import com.cherrymango.foodiehub.service.StoreService;

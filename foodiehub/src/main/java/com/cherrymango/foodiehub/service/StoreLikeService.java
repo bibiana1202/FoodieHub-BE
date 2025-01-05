@@ -3,7 +3,7 @@ package com.cherrymango.foodiehub.service;
 import com.cherrymango.foodiehub.domain.SiteUser;
 import com.cherrymango.foodiehub.domain.Store;
 import com.cherrymango.foodiehub.domain.StoreLike;
-import com.cherrymango.foodiehub.dto.LikeResponseDto;
+import com.cherrymango.foodiehub.dto.FavoriteLike.LikeResponseDto;
 import com.cherrymango.foodiehub.repository.SiteUserRepository;
 import com.cherrymango.foodiehub.repository.StoreLikeRepository;
 import com.cherrymango.foodiehub.repository.StoreRepository;

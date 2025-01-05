@@ -1,4 +1,4 @@
-package com.cherrymango.foodiehub.dto;
+package com.cherrymango.foodiehub.dto.FavoriteLike;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

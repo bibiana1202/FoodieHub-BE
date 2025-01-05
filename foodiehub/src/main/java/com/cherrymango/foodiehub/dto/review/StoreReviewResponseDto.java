@@ -1,4 +1,4 @@
-package com.cherrymango.foodiehub.dto;
+package com.cherrymango.foodiehub.dto.review;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,9 +9,10 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @AllArgsConstructor
-public class MyPageReviewResponseDto {
+public class StoreReviewResponseDto {
 
-    private String storeName;
+    private String nickname;
+    private String profileImage;
 
     private Long id;
     private Double avgRating;
@@ -22,5 +23,7 @@ public class MyPageReviewResponseDto {
     private LocalDateTime createDate;
     private String content;
     private String reviewImage;
+    private Integer likes;
 
+    private Boolean liked;
 }

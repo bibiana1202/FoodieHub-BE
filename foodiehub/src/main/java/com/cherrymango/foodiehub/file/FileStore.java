@@ -1,6 +1,6 @@
 package com.cherrymango.foodiehub.file;
 
-import com.cherrymango.foodiehub.dto.UploadImageDto;
+import com.cherrymango.foodiehub.dto.image.UploadImageDto;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;

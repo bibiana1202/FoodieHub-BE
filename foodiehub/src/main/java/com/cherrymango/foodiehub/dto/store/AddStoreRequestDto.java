@@ -1,6 +1,7 @@
-package com.cherrymango.foodiehub.dto;
+package com.cherrymango.foodiehub.dto.store;
 
 import com.cherrymango.foodiehub.domain.Category;
+import com.cherrymango.foodiehub.dto.menu.AddMenuRequestDto;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
