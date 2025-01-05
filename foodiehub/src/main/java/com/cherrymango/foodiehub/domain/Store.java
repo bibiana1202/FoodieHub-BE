@@ -63,13 +63,13 @@ public class Store {
     @OneToMany(mappedBy = "store", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<StoreLike> storeLikes = new ArrayList<>();
 
-    @OneToMany(mappedBy = "store", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "store", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Review> reviews = new ArrayList<>();
 
     @OneToMany(mappedBy = "store", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<StoreTag> storeTags = new ArrayList<>();
 
-    @OneToMany(mappedBy = "store", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "store", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<StoreImage> storeImageList = new ArrayList<>();
 
     //==연관관계 메소드==//
@@ -86,15 +86,6 @@ public class Store {
     public void addStoreImage(StoreImage storeImage) {
         storeImageList.add(storeImage);
         storeImage.setStore(this);
-    }
-
-    // favorite 연관 메소드, 토글 메소드에서 save하고 따로 사용하지 않으면 필요 없음
-    public void addStoreFavorite(StoreFavorite storeFavorite) {
-        this.storeFavorites.add(storeFavorite);
-    }
-
-    public void removeStoreFavorite(StoreFavorite storeFavorite) {
-        this.storeFavorites.remove(storeFavorite);
     }
 
     //==생성 메소드==//

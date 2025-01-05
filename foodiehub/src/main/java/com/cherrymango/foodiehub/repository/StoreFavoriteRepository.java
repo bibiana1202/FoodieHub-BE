@@ -11,7 +11,6 @@ import java.util.Optional;
 public interface StoreFavoriteRepository extends JpaRepository<StoreFavorite, Long> {
     Optional<StoreFavorite> findByStoreAndUser(Store store, SiteUser user);
 
-    // Id 기반 조회
     Optional<StoreFavorite> findByStoreIdAndUserId(Long storeId, Long userId);
 
     long countByStore(Store store);

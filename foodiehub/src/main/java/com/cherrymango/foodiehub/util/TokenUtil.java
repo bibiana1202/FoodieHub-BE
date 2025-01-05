@@ -4,7 +4,6 @@ import com.cherrymango.foodiehub.domain.SiteUser;
 import com.cherrymango.foodiehub.service.SiteUserService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
@@ -18,12 +17,6 @@ public class TokenUtil {
 
     private final JwtUtil jwtUtil;
     private final SiteUserService siteUserService;
-
-//    @Autowired
-//    public TokenUtil(JwtUtil jwtUtil, SiteUserService siteUserService) {
-//        this.jwtUtil = jwtUtil;
-//        this.siteUserService = siteUserService;
-//    }
 
     /**
      * HttpServletRequest를 받아 JWT를 검증하고 SiteUser를 반환하는 메서드
@@ -59,24 +52,6 @@ public class TokenUtil {
             return siteUser;
         } catch (Exception e) {
             throw new IllegalArgumentException("Invalid or expired token", e);
-        }
-    }
-
-    public SiteUser getSiteUser(Principal principal, HttpServletRequest request) {
-        if (principal instanceof OAuth2AuthenticationToken) {
-            // OAuth2 인증 방식 처리
-            return getSiteUserFromRequest(request);
-        } else if (principal != null) {
-            // 일반 인증 방식 처리
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            if (authentication == null) {
-                throw new IllegalArgumentException("Authentication object is null");
-            }
-            String email = authentication.getName();
-            return siteUserService.findByEmail(email)
-                    .orElseThrow(() -> new IllegalArgumentException("User not found with email: " + email));
-        } else {
-            throw new IllegalArgumentException("Principal is null or invalid");
         }
     }
 
