@@ -1,4 +1,4 @@
-package com.cherrymango.foodiehub.controller;
+package com.cherrymango.foodiehub.controller.api;
 
 import com.cherrymango.foodiehub.dto.user.CreateAccessTokenRequest;
 import com.cherrymango.foodiehub.dto.user.CreateAccessTokenResponse;

@@ -1,4 +1,4 @@
-package com.cherrymango.foodiehub.controller;
+package com.cherrymango.foodiehub.controller.api;
 
 import com.cherrymango.foodiehub.domain.Role;
 import com.cherrymango.foodiehub.domain.SiteUser;

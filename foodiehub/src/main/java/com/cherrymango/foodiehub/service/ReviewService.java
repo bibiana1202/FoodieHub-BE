@@ -8,7 +8,7 @@ import com.cherrymango.foodiehub.dto.review.AddReviewRequestDto;
 import com.cherrymango.foodiehub.dto.review.MyPageReviewResponseDto;
 import com.cherrymango.foodiehub.dto.review.StoreReviewResponseDto;
 import com.cherrymango.foodiehub.dto.review.UpdateReviewRequestDto;
-import com.cherrymango.foodiehub.dto.PagedResponseDto;
+import com.cherrymango.foodiehub.dto.review.PagedResponseDto;
 import com.cherrymango.foodiehub.file.FileStore;
 import com.cherrymango.foodiehub.repository.ReviewLikeRepository;
 import com.cherrymango.foodiehub.repository.ReviewRepository;

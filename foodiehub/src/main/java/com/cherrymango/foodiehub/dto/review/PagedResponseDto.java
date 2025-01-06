@@ -1,4 +1,4 @@
-package com.cherrymango.foodiehub.dto;
+package com.cherrymango.foodiehub.dto.review;
 
 import lombok.Getter;
 import lombok.Setter;

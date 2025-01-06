@@ -60,7 +60,6 @@ public class StoreController {
         }
 
         StoreDetailResponseDto storeDetails = storeService.getStoreDetails(storeId, userId);
-        // StoreDetailResponseDto storeDetails = storeService.getStoreDetails(storeId, 1L);
         model.addAttribute("store", storeDetails);
 
         return "store/detail";
