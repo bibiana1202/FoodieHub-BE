@@ -1,10 +1,10 @@
 package com.cherrymango.foodiehub.controller.api;
 
-import com.cherrymango.foodiehub.dto.*;
 import com.cherrymango.foodiehub.dto.review.AddReviewRequestDto;
 import com.cherrymango.foodiehub.dto.review.MyPageReviewResponseDto;
 import com.cherrymango.foodiehub.dto.review.StoreReviewResponseDto;
 import com.cherrymango.foodiehub.dto.review.UpdateReviewRequestDto;
+import com.cherrymango.foodiehub.dto.PagedResponseDto;
 import com.cherrymango.foodiehub.file.FileStore;
 import com.cherrymango.foodiehub.service.ReviewService;
 import com.cherrymango.foodiehub.util.TokenUtil;
@@ -73,7 +73,7 @@ public class ReviewApiController {
     // 가게 상세 리뷰 목록
     @GetMapping("/store/{storeId}")
     public ResponseEntity<PagedResponseDto<StoreReviewResponseDto>> findPagedStoreReviews(@PathVariable("storeId") Long storeId,
-                                                                                          @RequestParam(value = "page", defaultValue = "0") int page,Principal principal, HttpServletRequest request) {
+                                                                                          @RequestParam(value = "page", defaultValue = "0") int page, Principal principal, HttpServletRequest request) {
         Long userId = tokenUtil.getSiteUserIdOrNull(principal, request);
         PagedResponseDto<StoreReviewResponseDto> storeReviews = reviewService.getPagedStoreReviews(storeId, page, userId);
         return ResponseEntity.ok(storeReviews);

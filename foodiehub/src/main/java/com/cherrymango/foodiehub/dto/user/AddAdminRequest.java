@@ -1,15 +1,13 @@
-package com.cherrymango.foodiehub.dto;
+package com.cherrymango.foodiehub.dto.user;
 
-import com.cherrymango.foodiehub.domain.Role;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter @Setter
-public class AddUserRequest {
+public class AddAdminRequest {
 
     @NotBlank(message = "이메일은 필수 입력 항목입니다.")
     @Email(message = "유효한 이메일 형식이어야 합니다.")
@@ -33,4 +31,8 @@ public class AddUserRequest {
     private String cellphone;
 
     private String role;
+
+    @NotBlank(message = "사업자 등록번호 은 필수 입력 항목입니다.")
+    private String businessno;
+
 }

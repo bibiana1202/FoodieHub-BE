@@ -74,12 +74,14 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         // 소셜 로그인 제공자별 사용자 정보 추출
         switch (registrationId) {
             case "google":
+                System.out.println("google");
                 email = (String) attributes.get("email");
                 nickname = (String) attributes.get("name");
                 profileimageurl = (String) attributes.get("picture");
                 break;
 
             case "kakao":
+                System.out.println("kakao");
                 // 카카오 계정의 사용자 정보 추출
                 email = (String) oAuth2User.getAttributes().get("email");
                 nickname = (String) oAuth2User.getAttributes().get("nickname");
@@ -87,6 +89,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
                 break;
 
             case "naver":
+                System.out.println("naver");
                 // 네이버는 attributes에 바로 데이터가 포함되어 있음
                 email = (String) attributes.get("email");
                 nickname = (String) attributes.get("nickname");
