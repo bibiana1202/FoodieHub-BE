@@ -86,16 +86,7 @@
 
 <br><br><br>
 
-## 🌵 WBS
-![image](https://github.com/user-attachments/assets/567e872c-f350-46cb-87fb-5017b6cbd8c4)
-
-<div align=center>
-
-  [⬆️WBS바로가기](https://docs.google.com/spreadsheets/d/1KG-nACUmJLYxgZEtqr_lwpZiwZvqmnKEgIeqwX3E3Xk/edit?usp=sharing)
-</div>
-<br><br><br>
-
-## ☘️ ERD
+## 🥐 ERD
 ![image](https://github.com/user-attachments/assets/453e7644-16e1-4053-84f2-261af5076fc2)
 
 <br><br><br> 
