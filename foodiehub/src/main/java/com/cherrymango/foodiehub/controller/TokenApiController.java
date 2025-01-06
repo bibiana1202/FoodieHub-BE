@@ -1,7 +1,7 @@
 package com.cherrymango.foodiehub.controller;
 
-import com.cherrymango.foodiehub.dto.CreateAccessTokenRequest;
-import com.cherrymango.foodiehub.dto.CreateAccessTokenResponse;
+import com.cherrymango.foodiehub.dto.user.CreateAccessTokenRequest;
+import com.cherrymango.foodiehub.dto.user.CreateAccessTokenResponse;
 import com.cherrymango.foodiehub.service.RefreshTokenService;
 import com.cherrymango.foodiehub.service.TokenService;
 import lombok.RequiredArgsConstructor;

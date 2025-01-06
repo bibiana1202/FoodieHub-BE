@@ -43,7 +43,7 @@ public class OAuth2UserCustomService extends DefaultOAuth2UserService {
         OAuth2User oAuth2User = super.loadUser(userRequest); // OAuth2 인증요청(userRequest) 에 따라 사용자 정보 로드
         String registrationId = userRequest.getClientRegistration().getRegistrationId(); // 구글, 카카오 식별자
         SiteUser siteUser;
-
+        System.out.println("식별자!!!!!!!!!!!!!!!!!!!!!!!!!"+registrationId);
         // 카카오는 Access Token만 제공되므로 사용자 정보를 가져오기 위해 loadUser 메서드가 반드시 호출됩니다.
         if ("kakao".equals(registrationId)) {
             siteUser = saveOrUpdateForKakao(oAuth2User);

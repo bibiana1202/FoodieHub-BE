@@ -2,15 +2,16 @@ package com.cherrymango.foodiehub.controller;
 
 import com.cherrymango.foodiehub.domain.Role;
 import com.cherrymango.foodiehub.domain.SiteUser;
-import com.cherrymango.foodiehub.dto.*;
+import com.cherrymango.foodiehub.dto.user.AddAdminRequest;
+import com.cherrymango.foodiehub.dto.user.SiteUserInfoResponse;
+import com.cherrymango.foodiehub.dto.user.SiteUserProfileRequest;
+import com.cherrymango.foodiehub.dto.user.SiteUserProfileResponse;
 import com.cherrymango.foodiehub.repository.SiteUserRepository;
 import com.cherrymango.foodiehub.service.FileUploadService;
 import com.cherrymango.foodiehub.service.SiteUserService;
-import com.cherrymango.foodiehub.util.JwtUtil;
 import com.cherrymango.foodiehub.util.LoginUtil;
 import com.cherrymango.foodiehub.util.TokenUtil;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.security.Principal;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -218,55 +218,11 @@ public class SiteUserController {
 
         }
     }
-//    @GetMapping("/api/auth/me")
-//    public ResponseEntity<?> getUserInfo(Principal principal,HttpServletRequest request){
-//
-//        SiteUser siteUser = loginUtil.getSiteUserFromLogin(request,principal);
-//
-//        if(siteUser != null){
-//            try {
-//                // 사용자 정보 추출
-//                Long userId = siteUser.getId();
-//                String email = siteUser.getEmail();
-//                String cellPhone = siteUser.getCellphone();
-//                String nickName = siteUser.getNickname();
-//                Role role = siteUser.getRole();
-//                String provider = siteUser.getProvider();
-//                String businessNo = siteUser.getBusinessno();
-//                String getProfileImageUrl = siteUser.getProfileImageUrl();
-//
-//                // 응답 생성
-//                SiteUserInfoResponse response = SiteUserInfoResponse.builder()
-////                        .userid(userId)
-////                        .email(email)
-////                        .cellphone(cellPhone)
-//                        .nickname(nickName)
-//                        .role(role)
-////                        .provider(provider)
-////                        .businessno(businessNo)
-//                        .profileimageurl(getProfileImageUrl)
-//                        .build();
-//
-//                return ResponseEntity.ok(response);
-//            } catch (Exception e) {
-//                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-//                        .body(Map.of("message", "Invalid or expired token"));
-//            }
-//        }
-//        else{
-//            return ResponseEntity
-//                    .status(HttpStatus.UNAUTHORIZED)
-//                    .body(Map.of("message", "User not authenticated"));
-//        }
-//
-//
-//    }
-
 
 
     // 회원정보수정 POST
     @PostMapping("/api/user/update-profile")
-    public ResponseEntity<?> updateUserProfile(@ModelAttribute @Valid  SiteUserProfileRequest profileRequest, BindingResult bindingResult, HttpServletRequest request,Principal principal){
+    public ResponseEntity<?> updateUserProfile(@ModelAttribute @Valid SiteUserProfileRequest profileRequest, BindingResult bindingResult, HttpServletRequest request, Principal principal){
         System.out.println("updateUserProfile!!!");
         String profileImageUrl = null;
 

@@ -4,7 +4,7 @@
 //import com.cherrymango.foodiehub.config.jwt.JwtProperties;
 //import com.cherrymango.foodiehub.domain.RefreshToken;
 //import com.cherrymango.foodiehub.domain.SiteUser;
-//import com.cherrymango.foodiehub.dto.CreateAccessTokenRequest;
+//import com.cherrymango.foodiehub.dto.user.CreateAccessTokenRequest;
 //import com.cherrymango.foodiehub.repository.RefreshTokenRepository;
 //import com.cherrymango.foodiehub.repository.UserRepository;
 //import com.fasterxml.jackson.databind.ObjectMapper;

@@ -1,11 +1,7 @@
-package com.cherrymango.foodiehub.dto;
+package com.cherrymango.foodiehub.dto.user;
 
 import com.cherrymango.foodiehub.domain.Role;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import lombok.*;
-import org.springframework.web.multipart.MultipartFile;
 
 @AllArgsConstructor
 @NoArgsConstructor

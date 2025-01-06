@@ -1,4 +1,4 @@
-package com.cherrymango.foodiehub.dto;
+package com.cherrymango.foodiehub.dto.user;
 
 import com.cherrymango.foodiehub.domain.Role;
 import lombok.AllArgsConstructor;

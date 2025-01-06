@@ -1,9 +1,9 @@
 package com.cherrymango.foodiehub.service;
 
 import com.cherrymango.foodiehub.domain.SiteUser;
-import com.cherrymango.foodiehub.dto.AddAdminRequest;
-import com.cherrymango.foodiehub.dto.AddUserRequest;
-import com.cherrymango.foodiehub.dto.SiteUserProfileRequest;
+import com.cherrymango.foodiehub.dto.user.AddAdminRequest;
+import com.cherrymango.foodiehub.dto.user.AddUserRequest;
+import com.cherrymango.foodiehub.dto.user.SiteUserProfileRequest;
 import com.cherrymango.foodiehub.repository.SiteUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
