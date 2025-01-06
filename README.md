@@ -66,22 +66,49 @@
 <img src="https://img.shields.io/badge/html-E34F26?style=for-the-badge&logo=html5&logoColor=white">
 <img src="https://img.shields.io/badge/css-1572B6?style=for-the-badge&logo=css3&logoColor=white">
 <img src="https://img.shields.io/badge/javascript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black">
+<img src="https://img.shields.io/badge/react-ffffff?style=for-the-badge&logo=react">
+
 <br>
 
 **Backend**<br>
 <img src="https://img.shields.io/badge/Java-007396?style=for-the-badge&logo=Java&logoColor=white"> 
 <img src="https://img.shields.io/badge/Spring-6DB33F?style=for-the-badge&logo=Spring&logoColor=white">
+<img src="https://img.shields.io/badge/Spring%20Boot-%236DB33F?style=for-the-badge&logo=Spring%20Boot&logoColor=white">
+<img src="https://img.shields.io/badge/Spring%20JPA-%236DB33F?style=for-the-badge&logo=Spring&logoColor=white">
+<img src="https://img.shields.io/badge/Spring%20Security-%236DB33F?style=for-the-badge&logo=Spring%20Security&logoColor=white">
+<img src="https://img.shields.io/badge/JWT-%23A41E11?style=for-the-badge&logo=JSON-Web-Tokens&logoColor=white">
+<img src="https://img.shields.io/badge/OAuth%202.0-%23355288?style=for-the-badge&logo=OAuth&logoColor=white">
+<img src="https://img.shields.io/badge/nginx-%23009639?style=for-the-badge&logo=nginx&logoColor=white">
 <br><br>
+
 **Database**<br>
 <img src="https://img.shields.io/badge/oracle-F80000?style=for-the-badge&logo=oracle&logoColor=white">  
-<img src="https://img.shields.io/badge/MyBatis-000000?style=for-the-badge&logo=MyBatis&logoColor=white"> 
 <br><br>
+
 **Tools**<br>
-![Eclipse IDE](https://img.shields.io/badge/Eclipse%20IDE-2C2255.svg?&style=for-the-badge&logo=Eclipse%20IDE&logoColor=white)
+<img src="https://img.shields.io/badge/IntelliJ%20IDEA-%23000000?style=for-the-badge&logo=IntelliJ%20IDEA&logoColor=white">
+<img src="https://img.shields.io/badge/VS%20Code-%23007ACC?style=for-the-badge&logo=Visual%20Studio%20Code&logoColor=white">
 <img src="https://img.shields.io/badge/Postman-FF6C37?style=for-the-badge&logo=postman&logoColor=white">
 <img src="https://img.shields.io/badge/git-F05032?style=for-the-badge&logo=git&logoColor=white">
 <img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white">
 <img src="https://img.shields.io/badge/Notion-black?style=for-the-badge&logo=Notion&logoColor=white"/>
+
+<br><br><br>
+
+## 📺 개발환경
+- <img src="https://img.shields.io/badge/Framework-%23121011?style=for-the-badge">
+  <img src="https://img.shields.io/badge/Spring%20Boot-6DB33F?style=for-the-badge&logo=Spring%20Boot&logoColor=white">
+  <img src="https://img.shields.io/badge/3.4.0-515151?style=for-the-badge">
+
+- <img src="https://img.shields.io/badge/Build-%23121011?style=for-the-badge">
+  <img src="https://img.shields.io/badge/Gradle-02303A?style=for-the-badge&logo=Gradle&logoColor=white">
+
+- <img src="https://img.shields.io/badge/Language-%23121011?style=for-the-badge">
+  <img src="https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=OpenJDK&logoColor=white">
+  <img src="https://img.shields.io/badge/21-515151?style=for-the-badge">
+
+- <img src="https://img.shields.io/badge/Project%20Encoding-%23121011?style=for-the-badge">
+  <img src="https://img.shields.io/badge/UTF--8-EA2328?style=for-the-badge">
 
 
 <br><br><br>
