@@ -67,7 +67,6 @@
 <img src="https://img.shields.io/badge/css-1572B6?style=for-the-badge&logo=css3&logoColor=white">
 <img src="https://img.shields.io/badge/javascript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black">
 <img src="https://img.shields.io/badge/react-ffffff?style=for-the-badge&logo=react">
-
 <br>
 
 **Backend**<br>
@@ -79,12 +78,11 @@
 <img src="https://img.shields.io/badge/JWT-%23A41E11?style=for-the-badge&logo=JSON-Web-Tokens&logoColor=white">
 <img src="https://img.shields.io/badge/OAuth%202.0-%23355288?style=for-the-badge&logo=OAuth&logoColor=white">
 <img src="https://img.shields.io/badge/nginx-%23009639?style=for-the-badge&logo=nginx&logoColor=white">
-<br><br>
+<br>
 
 **Database**<br>
 <img src="https://img.shields.io/badge/oracle-F80000?style=for-the-badge&logo=oracle&logoColor=white">  
-<br><br>
-
+<br>
 **Tools**<br>
 <img src="https://img.shields.io/badge/IntelliJ%20IDEA-%23000000?style=for-the-badge&logo=IntelliJ%20IDEA&logoColor=white">
 <img src="https://img.shields.io/badge/VS%20Code-%23007ACC?style=for-the-badge&logo=Visual%20Studio%20Code&logoColor=white">
